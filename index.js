@@ -10,14 +10,11 @@ const server = http.createServer( (req, res) => {
 
 	const filename = req.url === '/' ? './public/index.html' : `./public${req.url}`;
 	
-	log('requst: %s', req.url);
+	log('request: %s', req.url);
 	log('filename: %s', filename);
 
-	// NOTE: readFileSync – синхронное чтение и запуск
-
-	const file = fs.readFile(filename , (err, file) => { 
-        if (err)
-        {
+	fs.readFile(filename , (err, file) => {
+        if (err) {
         	res.statusCode = 404;
 	    	res.end('404');
 	    	return;
