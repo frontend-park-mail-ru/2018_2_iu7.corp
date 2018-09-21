@@ -15,21 +15,18 @@ app.use(cookie());
 
 const users = {
     'n@mail.ru': {
-        login: 'nikita',
         email: 'n@mail.ru',
-        password: '11111111',
+        password: '1',
         score: '10'
     },
     'm@mail.ru': {
-        login: 'maxim',
         email: 'm@mail.ru',
-        password: '11111111',
+        password: '1',
         score: '10'
     },
     'd@mail.ru': {
-        login: 'denis',
         email: 'd@mail.ru',
-        password: '11111111',
+        password: '1',
         score: '10'
     }
 };
@@ -39,9 +36,8 @@ const ids = {};
 app.post('/signup', function (req, res) {
 	const password = req.body.password;
 	const email = req.body.email;
-	const login = req.body.login;
 	if (
-		!password || !email || !login ||
+		!password || !email || 
 		!password.match(/^\S{4,}$/) ||
 		!email.match(/@/)
 	) {
@@ -52,7 +48,7 @@ app.post('/signup', function (req, res) {
 	}
 
 	const id = uuid();
-	const user = {password, email, login, score: 0};
+	const user = {password, email, score: 0};
 	ids[id] = email;
 	users[email] = user;
 
@@ -64,10 +60,10 @@ app.post('/login', function (req, res) {
 	const password = req.body.password;
 	const email = req.body.email;
 	if (!password || !email) {
-		return res.status(400).json({error: 'Не указан E-Mail или пароль'});
+		return res.status(400).json({error: 'Не указан логин или пароль'});
 	}
 	if (!users[email] || users[email].password !== password) {
-		return res.status(400).json({error: 'Не верный E-Mail и/или пароль'});
+		return res.status(400).json({error: 'Не верный логин и/или пароль'});
 	}
 
 	const id = uuid();
@@ -95,7 +91,6 @@ app.get('/users', function (req, res) {
 		.map(user => {
 			return {
 				email: user.email,
-				login: user.login,
 				score: user.score,
 			}
 		});
@@ -103,7 +98,7 @@ app.get('/users', function (req, res) {
 	res.json(scorelist);
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8001;
 
 app.listen(port, function () {
 	console.log(`Server listening port ${port}`);

@@ -4,27 +4,46 @@ const root = document.getElementById('root');
 
 
 function ajax (callback, method, path, body) {
-	const xhr = new XMLHttpRequest();
-	xhr.open(method, path, true);
-	xhr.withCredentials = true;
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, path, true);
+    xhr.withCredentials = true;
 
-	if (body) {
-		xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-	}
+    if (body) {
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+    }
 
-	xhr.onreadystatechange = function () {
-		if (xhr.readyState !== 4) {
-			return;
-		}
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState !== 4) {
+            return;
+        }
 
-		callback(xhr);
-	};
+        callback(xhr);
+    };
 
-	if (body) {
-		xhr.send(JSON.stringify(body));
-	} else {
-		xhr.send();
-	}
+    if (body) {
+        xhr.send(JSON.stringify(body));
+    } else {
+        xhr.send();
+    }
+}
+
+function errorMessage(title) {
+    if (!document.getElementById('error')) {
+        const error_div = document.createElement('div');
+        error_div.id = 'error';
+
+        const p = document.createElement('p');
+        p.textContent = title;
+        error_div.appendChild(p);
+        root.appendChild(error_div);
+    } else {
+        return;
+    }
+}
+
+function buildErrorPage (error, title) { 
+    root.appendChild(buildheader(title));
+    errorMessage(error);
 }
 
 function buildMenuLink () {
@@ -70,7 +89,7 @@ function buildMenu () {
 
         a.href = href;
         a.dataset.href = href;
-		a.textContent = title;
+        a.textContent = title;
         root.appendChild(a);
         root.appendChild(document.createElement('br'));
     });
@@ -83,8 +102,8 @@ function buildSignIn() {
     const inputs = [
         {
             type: 'text',
-            name: 'login',
-            label: 'Логин: '
+            name: 'email',
+            label: 'E-mail: '
         },
 
         {
@@ -119,14 +138,16 @@ function buildSignIn() {
 
     form.addEventListener('submit', function ( event ) {
         event.preventDefault();
-        const login = form.elements[ 'login' ].value;
+        const email = form.elements[ 'email' ].value;
         const password = form.elements[ 'password' ].value;
 
+        console.log(email);
+        console.log(password);
         ajax(function (xhr) {
             root.innerHTML = '';
             buildProfile();
         }, 'POST', '/login', {
-            login: login,
+            email: email,
             password: password
         });
         
@@ -140,11 +161,6 @@ function buildSignUp () {
     const form = document.createElement('form');
 
     const inputs = [
-        {
-            type: 'text',
-            name: 'login',
-            label: 'Логин: '
-        },
         {
             type: 'email',
             name: 'email',
@@ -187,13 +203,12 @@ function buildSignUp () {
 
     form.addEventListener('submit', function ( event ) {
         event.preventDefault();
-        const login = form.elements[ 'login' ].value;
         const email = form.elements[ 'email' ].value;
         const password = form.elements[ 'password' ].value;
         const password_repeat = form.elements[ 'password_repeat' ].value;
 
         if (password !== password_repeat) {
-            alert('Пароли не совпадают');
+            errorMessage('Пароли не совпадают');
             return;
         }
 
@@ -201,7 +216,6 @@ function buildSignUp () {
             root.innerHTML = '';
             buildProfile();
         }, 'POST', '/signup', {
-            login: login,
             email: email,
             password: password
         });
@@ -216,51 +230,52 @@ function buildSignUp () {
 
 function buildLeaderboard (users) {
 
-	if (users) {
-		const table = document.createElement('table');
-		const thead = document.createElement('thead');
-		thead.innerHTML = `
-		<tr>
-			<th>Email</th>
-			<th>Score</th>
-		</th>
-		`;
-		const tbody = document.createElement('tbody');
+    root.appendChild(buildheader('Таблица лидеров'));
+    if (users) {
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        thead.innerHTML = `
+        <tr>
+            <th>Email</th>
+            <th>Score</th>
+        </th>
+        `;
+        const tbody = document.createElement('tbody');
 
-		table.appendChild(thead);
-		table.appendChild(tbody);
-		table.border = 1;
-		table.cellSpacing = table.cellPadding = 0;
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        table.border = 1;
+        table.cellSpacing = table.cellPadding = 0;
 
-		users.forEach(function (user) {
-			const email = user.email;
-			const score = user.score;
+        users.forEach(function (user) {
+            const email = user.email;
+            const score = user.score;
 
-			const tr = document.createElement('tr');
-			const tdEmail = document.createElement('td');
-			const tdScore = document.createElement('td');
+            const tr = document.createElement('tr');
+            const tdEmail = document.createElement('td');
+            const tdScore = document.createElement('td');
 
-			tdEmail.textContent = email;
-			tdScore.textContent = score;
+            tdEmail.textContent = email;
+            tdScore.textContent = score;
 
-			tr.appendChild(tdEmail);
-			tr.appendChild(tdScore);
+            tr.appendChild(tdEmail);
+            tr.appendChild(tdScore);
 
-			tbody.appendChild(tr);
+            tbody.appendChild(tr);
 
-			root.appendChild(table);
-		});
-	} else {
-		const em = document.createElement('em');
-		em.textContent = 'Loading';
-		root.appendChild(em);
+            root.appendChild(table);
+        });
+    } else {
+        const em = document.createElement('em');
+        em.textContent = 'Loading';
+        root.appendChild(em);
 
-		ajax(function (xhr) {
-			const users = JSON.parse(xhr.responseText);
-			root.innerHTML = '';
-			buildLeaderboard(users);
-		}, 'GET', '/users');
-	}
+        ajax(function (xhr) {
+            const users = JSON.parse(xhr.responseText);
+            root.innerHTML = '';
+            buildLeaderboard(users);
+        }, 'GET', '/users');
+    }
 }
 
 
@@ -269,75 +284,35 @@ function buildLeaderboard (users) {
 function buildProfile(me) {
     const page_label = document.createElement('h2');
     page_label.textContent = 'Настройки учетной записи'
-    
-    const form = document.createElement('form')
+    const parent_div = document.createElement('div');
 
     if (me) {
-        inputs = [
-            {
-                type: 'text',
-                name: 'login',
-                placeholder: `${me.login}`,
-                label: 'Логин: '
-            },
-            {
-                type: 'email',
-                name: 'email',
-                placeholder: `${me.email}`,
-                label: 'E-mail: '
-            },
-            {
-                type: 'password',
-                name: 'password',
-                placeholder: `${me.password}`,
-                label: 'Пароль: '
-            },
-            {
-                type: 'password',
-                name: 'password_repeat',
-                placeholder: `${me.password}`,
-                label: 'Повторите пароль: '
-            }
-        ];
-        inputs.forEach(function(item) {
-            const form_part = document.createElement('p');
-            form_part.appendChild(
-                document.createElement('b').textContent = item.label
-            )
-            form_part.appendChild(
-                document.createElement('br')
-            )
-    
-            const input = document.createElement('input');
-            input.type = item.type;
-            input.name = item.name;
-            input.placeholder = item.placeholder;
-            form_part.appendChild(input);
-            form.appendChild(form_part);
-        });
-        const button = document.createElement('input');
-        button.type = 'submit';
-        button.name = 'save';
-        button.value = 'Сохранить'
-        form.appendChild(button);
+        const div1 = document.createElement('div');
+        div1.textContent = `E-mail ${me.email}`;
+
+        const div2 = document.createElement('div');
+        div2.textContent = `Password ${me.password}`;
+
+        parent_div.appendChild(div1);
+        parent_div.appendChild(div2);
+
+
 
     } else {
-		ajax(function (xhr) {
-			if (!xhr.responseText) {
-				alert('Unauthorized');
-				root.innerHTML = '';
-				buildMenu();
-				return;
-			}
-
-			const user = JSON.parse(xhr.responseText);
-			root.innerHTML = '';
-			buildProfile(user);
-		}, 'GET', '/me');
+        ajax(function (xhr) {
+            if (!xhr.responseText) {
+                root.innerHTML = '';
+                buildErrorPage('Unauthorized', 'Профиль');
+                return;
+            }
+            const user = JSON.parse(xhr.responseText);
+            root.innerHTML = '';
+            buildProfile(user);
+        }, 'GET', '/me');
     }
     
     root.appendChild(buildheader('Профиль'));
-    root.appendChild(form);
+    root.appendChild(parent_div);
 }  
 
 function buildRules() {
@@ -415,16 +390,16 @@ buildMenu();
 
 root.addEventListener('click', function (event) {
     if (!(event.target instanceof HTMLAnchorElement)) {
-		return;
+        return;
     }
     event.preventDefault();
-	const link = event.target;
+    const link = event.target;
 
-	console.log({
+    console.log({
         href: link.href,
         datahref: link.dataset.href
-	});
-	root.innerHTML = '';
+    });
+    root.innerHTML = '';
 
-	pages[ link.dataset.href ]();
+    pages[ link.dataset.href ]();
 });
