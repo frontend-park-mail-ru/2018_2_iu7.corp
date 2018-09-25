@@ -229,7 +229,6 @@ function buildSignUp () {
 
 
 function buildLeaderboard (users) {
-
     root.appendChild(buildheader('Таблица лидеров'));
     if (users) {
         const table = document.createElement('table');
@@ -293,8 +292,13 @@ function buildProfile(me) {
         const div2 = document.createElement('div');
         div2.textContent = `Password ${me.password}`;
 
+        const a = document.createElement('a');
+        a.textContent = 'Изменить данные';
+        a.href = a.dataset.href= 'change';
+    
         parent_div.appendChild(div1);
         parent_div.appendChild(div2);
+        parent_div.appendChild(a);
 
 
 
@@ -314,6 +318,73 @@ function buildProfile(me) {
     root.appendChild(buildheader('Профиль'));
     root.appendChild(parent_div);
 }  
+
+function changeProfile() {
+    const form = document.createElement('form');
+    const inputs = [
+        {
+            type: 'email',
+            name: 'email',
+            label: 'Новый E-mail: '
+        },
+        {
+            type: 'password',
+            name: 'password',
+            label: 'Новый Пароль: '
+        },
+        {
+            type: 'password',
+            name: 'password_repeat',
+            label: 'Новый Повторите пароль: '
+        }
+    ];
+
+    inputs.forEach(function(item) {
+        const form_part = document.createElement('p');
+        const b = document.createElement('b');
+        b.textContent = item.label;
+        form_part.appendChild(b);
+
+        form_part.appendChild(
+            document.createElement('br')
+        )
+
+        const input = document.createElement('input');
+        input.type = item.type;
+        input.name = item.name;
+        form_part.appendChild(input);
+        form.appendChild(form_part);
+
+    });
+    const button = document.createElement('input');
+    button.type = 'submit';
+    button.name = 'submit';
+    form.appendChild(button);
+
+    form.addEventListener('submit', function ( event ) {
+        event.preventDefault();
+        const email = form.elements[ 'email' ].value;
+        const password = form.elements[ 'password' ].value;
+        const password_repeat = form.elements[ 'password_repeat' ].value;
+
+        if (password !== password_repeat) {
+            errorMessage('Пароли не совпадают');
+            return;
+        }
+
+        ajax(function (xhr) {
+            root.innerHTML = '';
+            buildProfile();
+        }, 'POST', '/change', {
+            email: email,
+            password: password
+        });
+        
+    });
+
+    root.appendChild(buildheader('Изменение данных'));
+    root.appendChild(form);
+}
 
 function buildRules() {
     const rules_label = document.createElement( 'h2' );
@@ -383,7 +454,8 @@ const pages = {
     sign_in: buildSignIn,
     sign_up: buildSignUp,
     leaders: buildLeaderboard,
-    me: buildProfile
+    me: buildProfile,
+    change: changeProfile
 };
 
 buildMenu();

@@ -30,7 +30,6 @@ const users = {
         score: '10'
     }
 };
-
 const ids = {};
 
 app.post('/signup', function (req, res) {
@@ -73,6 +72,18 @@ app.post('/login', function (req, res) {
 	res.status(201).json({id});
 });
 
+app.post('/change', function (req, res) {
+
+	const new_email = req.body.email;
+	const new_password = req.body.password;
+
+	const id = req.cookies['sessionid'];
+	const email = ids[id];
+	users[email].email = new_email;
+	users[email].password = new_password;
+	res.json(users[new_email]);
+});
+
 app.get('/me', function (req, res) {
 	const id = req.cookies['sessionid'];
 	const email = ids[id];
@@ -86,6 +97,8 @@ app.get('/me', function (req, res) {
 });
 
 app.get('/users', function (req, res) {
+	const page = req.params.page;
+	console.log(page);
 	const scorelist = Object.values(users)
 		.sort((l, r) => r.score - l.score)
 		.map(user => {
@@ -98,7 +111,7 @@ app.get('/users', function (req, res) {
 	res.json(scorelist);
 });
 
-const port = process.env.PORT || 8001;
+const port = process.env.PORT || 8000;
 
 app.listen(port, function () {
 	console.log(`Server listening port ${port}`);
