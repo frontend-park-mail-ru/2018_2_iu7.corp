@@ -2,7 +2,6 @@
 
 const root = document.getElementById('root');
 
-
 function ajax (callback, method, path, body) {
     const xhr = new XMLHttpRequest();
     xhr.open(method, path, true);
@@ -16,7 +15,6 @@ function ajax (callback, method, path, body) {
         if (xhr.readyState !== 4) {
             return;
         }
-
         callback(xhr);
     };
 
@@ -27,8 +25,9 @@ function ajax (callback, method, path, body) {
     }
 }
 
+
 function errorMessage(title) { 
-    if (!document.getElementById('error')) {
+    if (!document.getElementById('error')) { // если сообщение об ошибке еще не было выведено
         const error_div = document.createElement('div');
         error_div.id = 'error';
 
@@ -41,10 +40,12 @@ function errorMessage(title) {
     }
 }
 
+
 function buildErrorPage (error, title) { 
-    root.appendChild(buildheader(title));
-    errorMessage(error);
+    root.appendChild(buildheader(title)); // добавляем заголовок который был на странице
+    errorMessage(error); // добавляем сообщение об ошибке
 }
+
 
 function buildMenuLink () {
     const link = document.createElement('a');
@@ -67,7 +68,6 @@ function buildheader ( title ) {
     header.appendChild(line);
     return header;
 }
-
 
 
 function buildMenu () {
@@ -156,6 +156,7 @@ function buildSignIn() {
     root.appendChild(buildheader('Вход'));
     root.appendChild(form);
 }
+
 
 function buildSignUp () { // аналогично функци логина только больше полей в форме
     const form = document.createElement('form');
@@ -258,7 +259,6 @@ function buildLeaderboard (users) {
 
             tr.appendChild(tdEmail);
             tr.appendChild(tdScore);
-
             tbody.appendChild(tr);
 
             root.appendChild(table);
@@ -275,8 +275,6 @@ function buildLeaderboard (users) {
         }, 'GET', '/users');
     }
 }
-
-
 
 
 function buildProfile(me) {
@@ -299,8 +297,6 @@ function buildProfile(me) {
         parent_div.appendChild(div2);
         parent_div.appendChild(a);
 
-
-
     } else {
         ajax(function (xhr) {
             if (!xhr.responseText) {
@@ -317,6 +313,7 @@ function buildProfile(me) {
     root.appendChild(buildheader('Профиль'));
     root.appendChild(parent_div);
 }  
+
 
 function changeProfile() {
     const form = document.createElement('form');
@@ -343,7 +340,6 @@ function changeProfile() {
         const b = document.createElement('b');
         b.textContent = item.label;
         form_part.appendChild(b);
-
         form_part.appendChild(
             document.createElement('br')
         )
@@ -384,6 +380,7 @@ function changeProfile() {
     root.appendChild(buildheader('Изменение данных'));
     root.appendChild(form);
 }
+
 
 function buildRules() {
     const rules_label = document.createElement( 'h2' );
