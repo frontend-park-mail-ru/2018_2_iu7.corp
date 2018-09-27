@@ -27,7 +27,7 @@ function ajax (callback, method, path, body) {
     }
 }
 
-function errorMessage(title) {
+function errorMessage(title) { 
     if (!document.getElementById('error')) {
         const error_div = document.createElement('div');
         error_div.id = 'error';
@@ -97,7 +97,7 @@ function buildMenu () {
 
 
 function buildSignIn() {
-    const form = document.createElement('form');
+    const form = document.createElement('form');  // общая форма
 
     const inputs = [
         {
@@ -114,8 +114,8 @@ function buildSignIn() {
     ];
 
     inputs.forEach(function(item) {
-        const form_part = document.createElement('p');
-        const b = document.createElement('b');
+        const form_part = document.createElement('p'); // содержит заголовок и поле ввода
+        const b = document.createElement('b'); // заголовок поля
         b.textContent = item.label;
         form_part.appendChild(b);
 
@@ -157,7 +157,7 @@ function buildSignIn() {
     root.appendChild(form);
 }
 
-function buildSignUp () {
+function buildSignUp () { // аналогично функци логина только больше полей в форме
     const form = document.createElement('form');
 
     const inputs = [
@@ -181,7 +181,7 @@ function buildSignUp () {
     inputs.forEach(function(item) {
         const form_part = document.createElement('p');
         const b = document.createElement('b');
-        b.textContent = item.label;
+        b.textContent = item.label; // 
         form_part.appendChild(b);
 
         form_part.appendChild(
@@ -224,7 +224,6 @@ function buildSignUp () {
 
     root.appendChild(buildheader('Регистрация'));
     root.appendChild(form);
-
 }
 
 
@@ -472,6 +471,5 @@ root.addEventListener('click', function (event) {
         datahref: link.dataset.href
     });
     root.innerHTML = '';
-
     pages[ link.dataset.href ]();
 });
