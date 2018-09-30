@@ -1,29 +1,12 @@
 'use strict'
 
+import {
+	BoardComponent,
+	RENDER_TYPES,
+} from './components/Board/Board.mjs';
+
 const root = document.getElementById('root');
-
-function ajax (callback, method, path, body) {
-    const xhr = new XMLHttpRequest();
-    xhr.open(method, path, true);
-    xhr.withCredentials = true;
-
-    if (body) {
-        xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-    }
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState !== 4) {
-            return;
-        }
-        callback(xhr);
-    };
-
-    if (body) {
-        xhr.send(JSON.stringify(body));
-    } else {
-        xhr.send();
-    }
-}
+const AJAX = window.AjaxModule;
 
 
 function errorMessage(title) { 
@@ -143,13 +126,26 @@ function buildSignIn() {
 
         console.log(email);
         console.log(password);
-        ajax(function (xhr) {
-            root.innerHTML = '';
-            buildProfile();
-        }, 'POST', '/login', {
-            email: email,
-            password: password
+
+        AJAX.doPost({
+            callback (xhr) {
+                root.innerHTML = '';
+                buildProfile();                
+            },
+            path: '/login',
+            body: {
+                email,
+                password
+            }
         });
+
+        // ajax(function (xhr) {
+        //     root.innerHTML = '';
+        //     buildProfile();
+        // }, 'POST', '/login', {
+        //     email: email,
+        //     password: password
+        // });
         
     });
 
@@ -213,13 +209,27 @@ function buildSignUp () { // аналогично функци логина то
             return;
         }
 
-        ajax(function (xhr) {
-            root.innerHTML = '';
-            buildProfile();
-        }, 'POST', '/signup', {
-            email: email,
-            password: password
+
+
+        AJAX.doPost({
+            callback (xhr) {
+                root.innerHTML = '';
+                buildProfile();                
+            },
+            path: '/signup',
+            body: {
+                email,
+                password
+            }
         });
+
+        // ajax(function (xhr) {
+        //     root.innerHTML = '';
+        //     buildProfile();
+        // }, 'POST', '/signup', {
+        //     email: email,
+        //     password: password
+        // });
         
     });
 
@@ -229,50 +239,73 @@ function buildSignUp () { // аналогично функци логина то
 
 
 function buildLeaderboard (users) {
-    root.appendChild(buildheader('Таблица лидеров'));
-    if (users) {
-        const table = document.createElement('table');
-        const thead = document.createElement('thead');
-        thead.innerHTML = `
-        <tr>
-            <th>Email</th>
-            <th>Score</th>
-        </th>
-        `;
-        const tbody = document.createElement('tbody');
+    
 
-        table.appendChild(thead);
-        table.appendChild(tbody);
-        table.border = 1;
-        table.cellSpacing = table.cellPadding = 0;
+    const tableWrapper = document.createElement('div');
+    // if (users) {
+    //     const table = document.createElement('table');
+    //     const thead = document.createElement('thead');
+    //     thead.innerHTML = `
+    //     <tr>
+    //         <th>Email</th>
+    //         <th>Score</th>
+    //     </th>
+    //     `;
+    //     const tbody = document.createElement('tbody');
 
-        users.forEach(function (user) {
-            const email = user.email;
-            const score = user.score;
+    //     table.appendChild(thead);
+    //     table.appendChild(tbody);
+    //     table.border = 1;
+    //     table.cellSpacing = table.cellPadding = 0;
 
-            const tr = document.createElement('tr');
-            const tdEmail = document.createElement('td');
-            const tdScore = document.createElement('td');
+    //     users.forEach(function (user) {
+    //         const email = user.email;
+    //         const score = user.score;
 
-            tdEmail.textContent = email;
-            tdScore.textContent = score;
+    //         const tr = document.createElement('tr');
+    //         const tdEmail = document.createElement('td');
+    //         const tdScore = document.createElement('td');
 
-            tr.appendChild(tdEmail);
-            tr.appendChild(tdScore);
-            tbody.appendChild(tr);
+    //         tdEmail.textContent = email;
+    //         tdScore.textContent = score;
 
-            root.appendChild(table);
-        });
-    } else {
-        const em = document.createElement('em');
-        em.textContent = 'Loading';
+    //         tr.appendChild(tdEmail);
+    //         tr.appendChild(tdScore);
+    //         tbody.appendChild(tr);
+
+    //         root.appendChild(table);
+    //     });
+    // } else {
+    //     const em = document.createElement('em');
+    //     em.textContent = 'Loading';
+    //     root.appendChild(em);
+
+	if (users) {
+		const board = new BoardComponent({el: tableWrapper, type: RENDER_TYPES.STRING});
+		board.data = users;
+		board.render();
+	} else {
+		const em = document.createElement('em');
+		em.textContent = 'Loading';
         root.appendChild(em);
+        
+		AJAX.doGet({
+			callback (xhr) {
+				const users = JSON.parse(xhr.responseText);
+				root.innerHTML = '';
+				buildLeaderboard(users);
+			},
+			path: '/users',
+		});
 
-        ajax(function (xhr) {
-            const users = JSON.parse(xhr.responseText);
-            root.innerHTML = '';
-            buildLeaderboard(users);
-        }, 'GET', '/users');
+        // ajax(function (xhr) {
+        //     const users = JSON.parse(xhr.responseText);
+        //     root.innerHTML = '';
+        //     buildLeaderboard(users);
+        // }, 'GET', '/users');
+
+        root.appendChild(buildheader('Таблица лидеров'));
+        root.appendChild(tableWrapper);
     }
 }
 
@@ -298,16 +331,31 @@ function buildProfile(me) {
         parent_div.appendChild(a);
 
     } else {
-        ajax(function (xhr) {
-            if (!xhr.responseText) {
+
+        AJAX.doGet({
+            callback (xhr) {
+                if (!xhr.responseText) {
+                    root.innerHTML = '';
+                    buildErrorPage('Unauthorized', 'Профиль');
+                    return;
+                }
+                const user = JSON.parse(xhr.responseText);
                 root.innerHTML = '';
-                buildErrorPage('Unauthorized', 'Профиль');
-                return;
-            }
-            const user = JSON.parse(xhr.responseText);
-            root.innerHTML = '';
-            buildProfile(user);
-        }, 'GET', '/me');
+                buildProfile(user);
+            },
+            path: '/me'
+        });
+        
+        // ajax(function (xhr) {
+        //     if (!xhr.responseText) {
+        //         root.innerHTML = '';
+        //         buildErrorPage('Unauthorized', 'Профиль');
+        //         return;
+        //     }
+        //     const user = JSON.parse(xhr.responseText);
+        //     root.innerHTML = '';
+        //     buildProfile(user);
+        // }, 'GET', '/me');
     }
     
     root.appendChild(buildheader('Профиль'));
@@ -367,13 +415,26 @@ function changeProfile() {
             return;
         }
 
-        ajax(function (xhr) {
-            root.innerHTML = '';
-            buildProfile();
-        }, 'POST', '/change', {
-            email: email,
-            password: password
+
+        AJAX.doPost({
+            callback (xhr) {
+                root.innerHTML = '';
+                buildProfile();                
+            },
+            path: '/change',
+            body: {
+                email,
+                password
+            }
         });
+        // ajax(function (xhr) {
+        //     root.innerHTML = '';
+        //     buildProfile();
+        // }, 'POST', '/change', {
+        //     email: email,
+        //     password: password
+        // });
+
         
     });
 
