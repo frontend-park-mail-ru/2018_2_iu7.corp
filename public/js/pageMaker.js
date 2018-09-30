@@ -138,15 +138,6 @@ function buildSignIn() {
                 password
             }
         });
-
-        // ajax(function (xhr) {
-        //     root.innerHTML = '';
-        //     buildProfile();
-        // }, 'POST', '/login', {
-        //     email: email,
-        //     password: password
-        // });
-        
     });
 
     root.appendChild(buildheader('Вход'));
@@ -222,15 +213,6 @@ function buildSignUp () { // аналогично функци логина то
                 password
             }
         });
-
-        // ajax(function (xhr) {
-        //     root.innerHTML = '';
-        //     buildProfile();
-        // }, 'POST', '/signup', {
-        //     email: email,
-        //     password: password
-        // });
-        
     });
 
     root.appendChild(buildheader('Регистрация'));
@@ -242,43 +224,6 @@ function buildLeaderboard (users) {
     
 
     const tableWrapper = document.createElement('div');
-    // if (users) {
-    //     const table = document.createElement('table');
-    //     const thead = document.createElement('thead');
-    //     thead.innerHTML = `
-    //     <tr>
-    //         <th>Email</th>
-    //         <th>Score</th>
-    //     </th>
-    //     `;
-    //     const tbody = document.createElement('tbody');
-
-    //     table.appendChild(thead);
-    //     table.appendChild(tbody);
-    //     table.border = 1;
-    //     table.cellSpacing = table.cellPadding = 0;
-
-    //     users.forEach(function (user) {
-    //         const email = user.email;
-    //         const score = user.score;
-
-    //         const tr = document.createElement('tr');
-    //         const tdEmail = document.createElement('td');
-    //         const tdScore = document.createElement('td');
-
-    //         tdEmail.textContent = email;
-    //         tdScore.textContent = score;
-
-    //         tr.appendChild(tdEmail);
-    //         tr.appendChild(tdScore);
-    //         tbody.appendChild(tr);
-
-    //         root.appendChild(table);
-    //     });
-    // } else {
-    //     const em = document.createElement('em');
-    //     em.textContent = 'Loading';
-    //     root.appendChild(em);
 
 	if (users) {
 		const board = new BoardComponent({el: tableWrapper, type: RENDER_TYPES.STRING});
@@ -297,12 +242,6 @@ function buildLeaderboard (users) {
 			},
 			path: '/users',
 		});
-
-        // ajax(function (xhr) {
-        //     const users = JSON.parse(xhr.responseText);
-        //     root.innerHTML = '';
-        //     buildLeaderboard(users);
-        // }, 'GET', '/users');
 
         root.appendChild(buildheader('Таблица лидеров'));
         root.appendChild(tableWrapper);
@@ -345,17 +284,6 @@ function buildProfile(me) {
             },
             path: '/me'
         });
-        
-        // ajax(function (xhr) {
-        //     if (!xhr.responseText) {
-        //         root.innerHTML = '';
-        //         buildErrorPage('Unauthorized', 'Профиль');
-        //         return;
-        //     }
-        //     const user = JSON.parse(xhr.responseText);
-        //     root.innerHTML = '';
-        //     buildProfile(user);
-        // }, 'GET', '/me');
     }
     
     root.appendChild(buildheader('Профиль'));
@@ -427,14 +355,6 @@ function changeProfile() {
                 password
             }
         });
-        // ajax(function (xhr) {
-        //     root.innerHTML = '';
-        //     buildProfile();
-        // }, 'POST', '/change', {
-        //     email: email,
-        //     password: password
-        // });
-
         
     });
 
