@@ -117,7 +117,7 @@ function createSignIn () {
 				root.innerHTML = '';
 				createProfile();
 			},
-			path: '/login',
+			path: '/auth/login',
 			body: {
 				username,
 				password,
@@ -185,7 +185,7 @@ function createSignUp () {
 		event.preventDefault();
 
 		const username = form.elements[ 'username' ].value;
-		const email = parseInt(form.elements[ 'email' ].value);
+		const email = form.elements[ 'email' ].value;
 		const password = form.elements[ 'password' ].value;
 		const password_repeat = form.elements[ 'password_repeat' ].value;
 
@@ -200,7 +200,7 @@ function createSignUp () {
 				root.innerHTML = '';
 				createProfile();
 			},
-			path: '/register',
+			path: '/auth/register',
 			body: {
 				username,
 				email,
@@ -286,7 +286,7 @@ function createProfile (me) {
 				root.innerHTML = '';
 				createProfile(user);
 			},
-			path: '/profile',
+			path: '/profiles/current',
 		});
 	}
 
