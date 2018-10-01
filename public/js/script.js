@@ -200,7 +200,7 @@ function createSignUp () {
 				root.innerHTML = '';
 				createProfile();
 			},
-			path: '/register',
+			path: '/auth/register',
 			body: {
 				username,
 				email,
