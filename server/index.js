@@ -19,7 +19,7 @@ if (process.env.MOCKS) {
 	initMocks(app);
 }
 
-app.use("*", proxy("https://20182iu7corp-exbqlocwqv.now.sh/", {
+app.use("*", proxy("https://20182iu7corp-lgpyilvzpk.now.sh/", {
   proxyReqPathResolver: function(req) {
     return req.originalUrl;
   }

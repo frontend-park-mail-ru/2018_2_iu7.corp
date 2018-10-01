@@ -57,7 +57,7 @@ const initMocks = (app) => {
 		ids[id] = email;
 		users[email] = user;
 
-		res.cookie('sessionid', id, {
+		res.cookie('session_id', id, {
 			expires: new Date(Date.now() + 1000 * 60 * 10)
 		});
 		res.status(201).json({
@@ -82,7 +82,7 @@ const initMocks = (app) => {
 		const id = uuid();
 		ids[id] = email;
 
-		res.cookie('sessionid', id, {
+		res.cookie('session_id', id, {
 			expires: new Date(Date.now() + 1000 * 60 * 10)
 		});
 		res.status(201).json({
@@ -91,7 +91,7 @@ const initMocks = (app) => {
 	});
 
 	app.get('/me', function (req, res) {
-		const id = req.cookies['sessionid'];
+		const id = req.cookies['session_id'];
 		const email = ids[id];
 		if (!email || !users[email]) {
 			return res.status(401).end();
