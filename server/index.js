@@ -19,12 +19,13 @@ if (process.env.MOCKS) {
 	initMocks(app);
 }
 
-app.use("*", proxy("https://20182iu7corp-nrefeedxsh.now.sh/", {
+app.use("*", proxy("https://20182iu7corp-exbqlocwqv.now.sh/", {
   proxyReqPathResolver: function(req) {
     return req.originalUrl;
   }
-}));
-const port = process.env.PORT || 8000;
+}))
+
+const port = process.env.PORT || 8002;
 
 app.listen(port, function () {
 	console.log(`Server listening port ${port}`);

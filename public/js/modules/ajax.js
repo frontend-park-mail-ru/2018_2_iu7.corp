@@ -1,31 +1,39 @@
 (function () {
 	const noop = () => null;
- 	class AjaxModule {
+
+	class AjaxModule {
 		_ajax ({callback = noop, method = 'GET', path = '/', body} = {}) {
 			const xhr = new XMLHttpRequest();
 			xhr.open(method, path, true);
 			xhr.withCredentials = true;
- 			if (body) {
+
+			if (body) {
 				xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
 			}
- 			xhr.onreadystatechange = function () {
+
+			xhr.onreadystatechange = function () {
 				if (xhr.readyState !== 4) {
 					return;
 				}
- 				callback(xhr);
+
+				callback(xhr);
 			};
- 			if (body) {
+
+			if (body) {
 				xhr.send(JSON.stringify(body));
 			} else {
 				xhr.send();
 			}
 		}
- 		doGet (params = {}) {
+
+		doGet (params = {}) {
 			this._ajax({...params, method: 'GET'});
 		}
- 		doPost (params = {}) {
+
+		doPost (params = {}) {
 			this._ajax({...params, method: 'POST'});
 		}
 	}
- 	window.AjaxModule = new AjaxModule();
+
+	window.AjaxModule = new AjaxModule();
 })();

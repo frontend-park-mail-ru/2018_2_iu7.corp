@@ -3,22 +3,27 @@ export const RENDER_TYPES = {
 	STRING: 'string',
 	TMPL: 'template',
 };
- export class BoardComponent {
+
+export class BoardComponent {
 	constructor ({el = document.body, type = RENDER_TYPES.DOM} = {}) {
 		this._el = el;
 		this._type = type;
 	}
- 	get data () {
+
+	get data () {
 		this._data;
 	}
- 	set data (data = []) {
+
+	set data (data = []) {
 		this._data = data;
 	}
- 	render () {
+
+	render () {
 		if (!this._data) {
 			return;
 		}
- 		switch (this._type) {
+
+		switch (this._type) {
 			case RENDER_TYPES.DOM:
 				this._renderDOM();
 				return;
@@ -30,25 +35,33 @@ export const RENDER_TYPES = {
 				return;
 		}
 	}
- 	_renderTMPL () {
+
+	_renderTMPL () {
 		const template = window.fest['js/components/Board/Board.tmpl'](this._data);
 		this._el.innerHTML = template;
 	}
- 	_renderString () {
+
+	_renderString () {
+		console.log('leaders_data: ', this._data);
 		this._el.innerHTML = `
 		<table border="1" cellpadding="0" cellspacing="0">
 			<thead>
 				<tr class="table-head__row">
-					<th>Email</th>
-					<th>Score</th>
- 				</tr>
+					<th>avatar</th>
+					<th>id</th>
+					<th>score</th>
+					<th>username</th>
+
+				</tr>
 			</thead>
 			<tbody>
-				${this._data.map(({email, age, score}) => (
+				${this._data.profiles.map(({avatar, id, score, username}) => (
 					`
 						<tr class="table-body__row">
-							<td>${email}</td>
+							<td>${avatar}</td>
+							<td>${id}</td>
 							<td>${score}</td>
+							<td>${username}</td>
 						</tr>
 					`.trim()
 				)).join('\n')}
@@ -56,33 +69,46 @@ export const RENDER_TYPES = {
 		</table>
 		`.trim();
 	}
- 	_renderDOM () {
- 		const table = document.createElement('table');
+
+	_renderDOM () {
+
+		const table = document.createElement('table');
 		const thead = document.createElement('thead');
 		thead.innerHTML = `
 		<tr>
 			<th>Email</th>
+			<th>Age</th>
 			<th>Score</th>
 		</th>
 		`;
 		const tbody = document.createElement('tbody');
- 		table.appendChild(thead);
+
+		table.appendChild(thead);
 		table.appendChild(tbody);
 		table.border = 1;
 		table.cellSpacing = table.cellPadding = 0;
- 		this._data.forEach(function (user) {
+
+		this._data.forEach(function (user) {
 			const email = user.email;
+			const age = user.age;
 			const score = user.score;
- 			const tr = document.createElement('tr');
+
+			const tr = document.createElement('tr');
 			const tdEmail = document.createElement('td');
+			const tdAge = document.createElement('td');
 			const tdScore = document.createElement('td');
- 			tdEmail.textContent = email;
+
+			tdEmail.textContent = email;
+			tdAge.textContent = age;
 			tdScore.textContent = score;
- 			tr.appendChild(tdEmail);
+
+			tr.appendChild(tdEmail);
+			tr.appendChild(tdAge);
 			tr.appendChild(tdScore);
- 			tbody.appendChild(tr);
- 			this._el.appendChild(table);
+
+			tbody.appendChild(tr);
+
+			this._el.appendChild(table);
 		}.bind(this));
 	}
 }
- 
