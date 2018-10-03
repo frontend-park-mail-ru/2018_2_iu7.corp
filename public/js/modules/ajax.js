@@ -23,7 +23,9 @@
 				xhr.send(JSON.stringify(body));
 			} else {
 				xhr.send();
+				console.log(xhr.responseText)
 			}
+			// xhr.send();
 		}
 
 		doGet (params = {}) {

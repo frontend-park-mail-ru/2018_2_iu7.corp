@@ -5,6 +5,8 @@ import {
 	RENDER_TYPES,
 } from './components/Board/Board.mjs';
 
+const CORS_URL = "https://strategio-api.now.sh";
+
 const root = document.getElementById('root');
 const AJAX = window.AjaxModule;
 
@@ -117,7 +119,7 @@ function createSignIn () {
 				root.innerHTML = '';
 				createProfile();
 			},
-			path: '/auth/login',
+			path: CORS_URL+'/auth/login',
 			body: {
 				username,
 				password,
@@ -200,7 +202,7 @@ function createSignUp () {
 				root.innerHTML = '';
 				createProfile();
 			},
-			path: '/auth/register',
+			path: CORS_URL+'/auth/register',
 			body: {
 				username,
 				email,
@@ -236,11 +238,12 @@ function createLeaderboard (users) {
 
 		AJAX.doGet({
 			callback (xhr) {
+				console.log(xhr.responseText);
 				const users = JSON.parse(xhr.responseText);
 				root.innerHTML = '';
 				createLeaderboard(users);
 			},
-			path: '/profiles/leaderboard/pages/1',
+			path: CORS_URL+'/profiles/leaderboard/pages/1',
 		});
 	}
 
@@ -286,7 +289,7 @@ function createProfile (me) {
 				root.innerHTML = '';
 				createProfile(user);
 			},
-			path: '/profiles/current',
+			path: CORS_URL+'/profiles/current',
 		});
 	}
 
