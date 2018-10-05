@@ -30,16 +30,16 @@ export class BoardComponent {
 			case RENDER_TYPES.STRING:
 				this._renderString();
 				return;
-			case RENDER_TYPES.TMPL:
-				this._renderTMPL();
-				return;
+			// case RENDER_TYPES.TMPL:
+			// 	this._renderTMPL();
+			// 	return;
 		}
 	}
 
-	_renderTMPL () {
-		const template = window.fest['js/components/Board/Board.tmpl'](this._data);
-		this._el.innerHTML = template;
-	}
+	// _renderTMPL () {
+	// 	const template = window.fest['js/components/Board/Board.tmpl'](this._data);
+	// 	this._el.innerHTML = template;
+	// }
 
 	_renderString () {
 		console.log('leaders_data: ', this._data);
@@ -51,7 +51,6 @@ export class BoardComponent {
 					<th>id</th>
 					<th>score</th>
 					<th>username</th>
-
 				</tr>
 			</thead>
 			<tbody>

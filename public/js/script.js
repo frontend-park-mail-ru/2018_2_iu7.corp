@@ -5,106 +5,119 @@ import {
 	RENDER_TYPES,
 } from './components/Board/Board.mjs';
 
+const CORS_URL = "https://strategio-api.now.sh";
+
 const root = document.getElementById('root');
 const AJAX = window.AjaxModule;
 
+
+function errorMessage(title) { 
+    if (!document.getElementById('error')) { // если сообщение об ошибке еще не было выведено
+        const error_div = document.createElement('div');
+        error_div.id = 'error';
+
+        const p = document.createElement('p');
+        p.textContent = title;
+        error_div.appendChild(p);
+        root.appendChild(error_div);
+    } else {
+        return;
+    }
+}
+
+
+function buildErrorPage (error, title) { 
+    root.appendChild(buildheader(title)); // добавляем заголовок который был на странице
+    errorMessage(error); // добавляем сообщение об ошибке
+}
+
+
+function buildheader ( title ) {
+    const header = document.createElement('div');
+    const link = document.createElement('h1');
+    const t = document.createElement('h1');
+    link.appendChild(createMenuLink());
+    t.textContent = title
+    const line = document.createElement('hr');
+    
+    header.appendChild(link);
+    header.appendChild(t);
+    header.appendChild(line);
+    return header;
+}
+
 function createMenuLink () {
-	const menuLink = document.createElement('a');
-	menuLink.href = menuLink.dataset.href = 'menu';
-
-	menuLink.textContent = 'Back to main menu';
-
-	return menuLink;
+    const link = document.createElement('a');
+    link.href = link.dataset.href = 'menu';
+    link.textContent = 'Главная';
+    return link;
 }
 
 function createMenu () {
-	const menuSection = document.createElement('section');
-	menuSection.dataset.sectionName = 'menu';
-
-	const logo = document.createElement('div');
-	logo.id = 'logo';
-	const logoHeader = document.createElement('h1');
-	logoHeader.textContent = 'Our game';
-
-	logo.appendChild(logoHeader);
-
-
-	const main = document.createElement('div');
-	main.id = 'main';
-	const mainInner = document.createElement('div');
-
-	main.appendChild(mainInner);
+    const header = document.createElement('div');
+    header.textContent = 'Меню';
+    root.appendChild(header);
 
 	const titles = {
 		login: 'Sign in',
 		register: 'Sign up',
 		leaders: 'Leaders',
-		profile: 'Profile'
+		profile: 'Profile',
+		rules: 'Rules'
 	};
 
 
-	Object.entries(titles).forEach(function (entry) {
-		const href = entry[ 0 ];
-		const title = entry[ 1 ];
+    Object.entries(titles).forEach(function (entry) {
+        const href = entry[0];
+        const title = entry[1];
+        const a = document.createElement('a');
 
-		const a = document.createElement('a');
-		a.href = href;
-		a.dataset.href = href;
-		a.textContent = title;
-		a.classList.add('menu-button');
-
-		mainInner.appendChild(a);
-	});
-
-
-	menuSection.appendChild(logo);
-	menuSection.appendChild(main);
-
-	root.appendChild(menuSection);
+        a.href = href;
+        a.dataset.href = href;
+        a.textContent = title;
+        root.appendChild(a);
+        root.appendChild(document.createElement('br'));
+    });
 }
 
 function createSignIn () {
-	const signInSection = document.createElement('section');
-	signInSection.dataset.sectionName = 'login';
-
-	const header = document.createElement('h1');
-	header.textContent = 'Sign In';
-
-
 	const form = document.createElement('form');
 
 	const inputs = [
 		{
 			name: 'username',
 			type: 'text',
-			placeholder: 'username'
+			label: 'Username'
 		},
 		{
 			name: 'password',
 			type: 'password',
-			placeholder: 'Password'
-		},
-		{
-			name: 'submit',
-			type: 'submit'
+			label: 'Password'
 		}
 	];
 
 	inputs.forEach(function (item) {
-		const input = document.createElement('input');
+        const form_part = document.createElement('p'); // содержит заголовок и поле ввода
+        const b = document.createElement('b'); // заголовок поля
+        b.textContent = item.label;
+        form_part.appendChild(b);
 
+        form_part.appendChild(
+            document.createElement('br')
+        )
+
+		const input = document.createElement('input');
 		input.name = item.name;
 		input.type = item.type;
 
-		input.placeholder = item.placeholder;
-
-		form.appendChild(input);
-		form.appendChild(document.createElement('br'));
+        form_part.appendChild(input);
+        form.appendChild(form_part);
 	});
 
-	signInSection.appendChild(header);
-	signInSection.appendChild(form);
-	signInSection.appendChild(createMenuLink());
+    const button = document.createElement('input');
+    button.type = 'submit';
+    button.name = 'submit';
+    form.appendChild(button);
 
 	form.addEventListener('submit', function (event) {
 		event.preventDefault();
@@ -117,7 +130,7 @@ function createSignIn () {
 				root.innerHTML = '';
 				createProfile();
 			},
-			path: '/auth/login',
+			path: CORS_URL+'/auth/login',
 			body: {
 				username,
 				password,
@@ -125,61 +138,59 @@ function createSignIn () {
 		});
 	});
 
-	root.appendChild(signInSection);
+    root.appendChild(buildheader('Вход'));
+    root.appendChild(form);
 }
 
 function createSignUp () {
-	const signUpSection = document.createElement('section');
-	signUpSection.dataset.sectionName = 'register';
-
-	const header = document.createElement('h1');
-	header.textContent = 'register';
-
-
 	const form = document.createElement('form');
 
 	const inputs = [
 		{
 			name: 'username',
 			type: 'text',
-			placeholder: 'Username'
+			label: 'Username'
 		},
 		{
 			name: 'email',
 			type: 'email',
-			placeholder: 'Email'
+			label: 'Email'
 		},
 		{
 			name: 'password',
 			type: 'password',
-			placeholder: 'Password'
+			label: 'Password'
 		},
 		{
 			name: 'password_repeat',
 			type: 'password',
-			placeholder: 'Repeat Password'
-		},
-		{
-			name: 'submit',
-			type: 'submit'
+			label: 'Repeat Password'
 		}
 	];
 
 	inputs.forEach(function (item) {
-		const input = document.createElement('input');
+        const form_part = document.createElement('p');
+        const b = document.createElement('b');
+        b.textContent = item.label; // 
+        form_part.appendChild(b);
+
+        form_part.appendChild(
+            document.createElement('br')
+        )
+
+        const input = document.createElement('input');
 
 		input.name = item.name;
 		input.type = item.type;
 
-		input.placeholder = item.placeholder;
-
-		form.appendChild(input);
-		form.appendChild(document.createElement('br'));
+        form_part.appendChild(input);
+        form.appendChild(form_part);
 	});
 
-	signUpSection.appendChild(header);
-	signUpSection.appendChild(form);
-	signUpSection.appendChild(createMenuLink());
+    const button = document.createElement('input');
+    button.type = 'submit';
+    button.name = 'submit';
+    form.appendChild(button);
 
 	form.addEventListener('submit', function (event) {
 		event.preventDefault();
@@ -190,8 +201,7 @@ function createSignUp () {
 		const password_repeat = form.elements[ 'password_repeat' ].value;
 
 		if (password !== password_repeat) {
-			alert('Passwords is not equals');
-
+			errorMessage('Пароли не совпадают');
 			return;
 		}
 
@@ -200,7 +210,7 @@ function createSignUp () {
 				root.innerHTML = '';
 				createProfile();
 			},
-			path: '/auth/register',
+			path: CORS_URL+'/auth/register',
 			body: {
 				username,
 				email,
@@ -209,21 +219,12 @@ function createSignUp () {
 		});
 	});
 
-	root.appendChild(signUpSection);
+    root.appendChild(buildheader('Регистрация'));
+    root.appendChild(form);
 }
 
 function createLeaderboard (users) {
-	const leaderboardSection = document.createElement('section');
-	leaderboardSection.dataset.sectionName = 'leaderboard';
-
-	const header = document.createElement('h1');
-	header.textContent = 'Leaders';
-
-	leaderboardSection.appendChild(header);
-	leaderboardSection.appendChild(createMenuLink());
-	leaderboardSection.appendChild(document.createElement('br'));
-	const tableWrapper = document.createElement('div');
-	leaderboardSection.appendChild(tableWrapper);
+    const tableWrapper = document.createElement('div');
 
 	if (users) {
 		const board = new BoardComponent({el: tableWrapper, type: RENDER_TYPES.STRING});
@@ -232,53 +233,48 @@ function createLeaderboard (users) {
 	} else {
 		const em = document.createElement('em');
 		em.textContent = 'Loading';
-		leaderboardSection.appendChild(em);
-
+        root.appendChild(em);
+        
 		AJAX.doGet({
 			callback (xhr) {
 				const users = JSON.parse(xhr.responseText);
-				root.innerHTML = '';
-				createLeaderboard(users);
+                root.innerHTML = '';
+                // root.innerHTML = users;
+				buildLeaderboard(users);
 			},
-			path: '/profiles/leaderboard/pages/1',
+			path: CORS_URL+'/profiles/leaderboard/pages/1',
 		});
-	}
 
-	root.appendChild(leaderboardSection);
+        root.appendChild(buildheader('Таблица лидеров'));
+        root.appendChild(tableWrapper);
+    }
 }
 
 function createProfile (me) {
-	const profileSection = document.createElement('section');
-	profileSection.dataset.sectionName = 'profile';
+    const page_label = document.createElement('h2');
+    page_label.textContent = 'Настройки учетной записи'
+    const parent_div = document.createElement('div');
 
-	const header = document.createElement('h1');
-	header.textContent = 'Profile';
+    if (me) {
+        const div1 = document.createElement('div');
+        div1.textContent = `E-mail ${me.email}`;
 
-	profileSection.appendChild(header);
-	profileSection.appendChild(createMenuLink());
+        const div2 = document.createElement('div');
+        div2.textContent = `Password ${me.password}`;
 
-	if (me) {
-		const p = document.createElement('p');
-
-		const div1 = document.createElement('div');
-		div1.textContent = `Email ${me.username}`;
-		const div2 = document.createElement('div');
-		div2.textContent = `Age ${me.email}`;
-		const div3 = document.createElement('div');
-		div3.textContent = `Score ${me.score}`;
-
-		p.appendChild(div1);
-		p.appendChild(div3);
-		p.appendChild(div3);
-
-		profileSection.appendChild(p);
+        const a = document.createElement('a');
+        a.textContent = 'Изменить данные';
+        a.href = a.dataset.href= 'change';
+    
+        parent_div.appendChild(div1);
+        parent_div.appendChild(div2);
+        parent_div.appendChild(a);
 	} else {
 		AJAX.doGet({
 			callback (xhr) {
 				if (!xhr.responseText) {
-					alert('Unauthorized');
 					root.innerHTML = '';
-					createMenu();
+					buildErrorPage('Unauthorized', 'Профиль');
 					return;
 				}
 
@@ -286,11 +282,143 @@ function createProfile (me) {
 				root.innerHTML = '';
 				createProfile(user);
 			},
-			path: '/profiles/current',
+			path: CORS_URL+'/profiles/current',
 		});
 	}
+    root.appendChild(buildheader('Профиль'));
+    root.appendChild(parent_div);
+}
 
-	root.appendChild(profileSection);
+
+function changeProfile() {
+    const form = document.createElement('form');
+    const inputs = [
+        {
+            type: 'email',
+            name: 'email',
+            label: 'Новый E-mail: '
+        },
+        {
+            type: 'password',
+            name: 'password',
+            label: 'Новый Пароль: '
+        },
+        {
+            type: 'password',
+            name: 'password_repeat',
+            label: 'Новый Повторите пароль: '
+        }
+    ];
+
+    inputs.forEach(function(item) {
+        const form_part = document.createElement('p');
+        const b = document.createElement('b');
+        b.textContent = item.label;
+        form_part.appendChild(b);
+        form_part.appendChild(
+            document.createElement('br')
+        )
+
+        const input = document.createElement('input');
+        input.type = item.type;
+        input.name = item.name;
+        form_part.appendChild(input);
+        form.appendChild(form_part);
+
+    });
+    const button = document.createElement('input');
+    button.type = 'submit';
+    button.name = 'submit';
+    form.appendChild(button);
+
+    form.addEventListener('submit', function ( event ) {
+        event.preventDefault();
+        const email = form.elements[ 'email' ].value;
+        const password = form.elements[ 'password' ].value;
+        const password_repeat = form.elements[ 'password_repeat' ].value;
+
+        if (password !== password_repeat) {
+            errorMessage('Пароли не совпадают');
+            return;
+        }
+        AJAX.doPost({
+            callback (xhr) {
+                root.innerHTML = '';
+                buildProfile();                
+            },
+            path: '/change',
+            body: {
+                email,
+                password
+            }
+        });
+    });
+
+    root.appendChild(buildheader('Изменение данных'));
+    root.appendChild(form);
+}
+
+
+function createRules() {
+    const rules_label = document.createElement( 'h2' );
+    rules_label.textContent = 'Захвати или будь захвачен!';
+
+    const main_ul = document.createElement('ul');
+    const map = document.createElement('ul');
+    const zone_parameters = document.createElement('ul');
+    
+    const rules = [
+        {rule: 'Управление зажиманием и направлением мышки или джойстиком'},
+        {rule: 'Цветной круг - персонаж игры'},
+        {rule: 'Остановись в области или квадрате, чтобы захватить'},
+        {rule: 'Карта:'}
+    ];
+
+    rules.forEach(function(item){
+        const li = document.createElement('li')
+        li.textContent = item.rule;
+        main_ul.appendChild(li);
+    });
+
+    const map_rules = [
+        {rule: 'Квадраты - элементы карты, время захвата отдельного квадрата = 1 сек.'},
+        {rule: 'Зоны - выделены жирной линией, состоят из нескольких квадратов, время захвата = 0.5 сек. за каждый квадрат:'}
+    ];
+
+    map_rules.forEach(function(item){
+        const li = document.createElement('li');
+        li.textContent = item.rule;
+        map.appendChild(li);
+    });
+    
+    const li = document.createElement('li');
+    li.textContent = 'Параметры зон: ';
+
+    const zone_parameters_rules = [
+        {rule: '[ ] - пустая зона, захват которых происходит целиком (0.5 секунды / квадрат)'},
+        {rule: '[ x ] - зона, недоступная для захвата'},
+        {rule: '[ваш цвет] - ваша зона, её могут захватить, защищайте её'},
+        {rule: '[цвет другого игрока] - зона врага, захватите её'}
+    ];
+
+    zone_parameters_rules.forEach(function(item){
+        const li = document.createElement('li');
+        li.textContent = item.rule;
+        zone_parameters.appendChild(li)
+    });
+
+    main_ul.appendChild(map);
+    main_ul.appendChild(li);
+    main_ul.appendChild(zone_parameters);
+
+    root.appendChild(buildheader('Правила игры '));
+    root.appendChild(rules_label);
+    root.appendChild(main_ul);
+    root.appendChild(document.createElement('hr'));
+
+    const good_luck = document.createElement('h2');
+    good_luck.textContent = 'Удачи в игре!';
+    root.appendChild(good_luck);
 }
 
 const pages = {
@@ -298,7 +426,9 @@ const pages = {
 	login: createSignIn,
 	register: createSignUp,
 	leaders: createLeaderboard,
-	profile: createProfile
+	profile: createProfile,
+	rules: createRules,
+	change: changeProfile
 };
 
 createMenu();
