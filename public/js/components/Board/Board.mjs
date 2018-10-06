@@ -22,7 +22,6 @@ export class BoardComponent {
 		if (!this._data) {
 			return;
 		}
-
 		switch (this._type) {
 			case RENDER_TYPES.DOM:
 				this._renderDOM();
@@ -30,9 +29,9 @@ export class BoardComponent {
 			case RENDER_TYPES.STRING:
 				this._renderString();
 				return;
-			// case RENDER_TYPES.TMPL:
-			// 	this._renderTMPL();
-			// 	return;
+			case RENDER_TYPES.TMPL:
+				this._renderTMPL();
+				return;
 		}
 	}
 

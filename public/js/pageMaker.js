@@ -1,11 +1,9 @@
-'use strict';
-import {createSignIn} from './components/Login/login.js';
+'use strict'
+
 import {
 	BoardComponent,
 	RENDER_TYPES,
 } from './components/Board/Board.mjs';
-
-export const CORS_URL = "https://strategio-api.now.sh";
 
 const root = document.getElementById('root');
 const AJAX = window.AjaxModule;
@@ -32,11 +30,19 @@ function buildErrorPage (error, title) {
 }
 
 
+function buildMenuLink () {
+    const link = document.createElement('a');
+    link.href = link.dataset.href = 'menu';
+    link.textContent = 'Главная';
+    return link;
+}
+
+
 function buildheader ( title ) {
     const header = document.createElement('div');
     const link = document.createElement('h1');
     const t = document.createElement('h1');
-    link.appendChild(createMenuLink());
+    link.appendChild(buildMenuLink());
     t.textContent = title
     const line = document.createElement('hr');
     
@@ -46,26 +52,18 @@ function buildheader ( title ) {
     return header;
 }
 
-function createMenuLink () {
-    const link = document.createElement('a');
-    link.href = link.dataset.href = 'menu';
-    link.textContent = 'Главная';
-    return link;
-}
 
-function createMenu () {
+function buildMenu () {
     const header = document.createElement('div');
     header.textContent = 'Меню';
     root.appendChild(header);
-
-	const titles = {
-		login: 'Sign in',
-		register: 'Sign up',
-		leaders: 'Leaders',
-		profile: 'Profile',
-		rules: 'Rules'
-	};
-
+    const titles = {
+        rules: 'Rules',
+        login: 'Sign in',
+        register: 'Sign up',
+        leaders: 'Leaders',
+        profile: 'Profile', 
+    };
 
     Object.entries(titles).forEach(function (entry) {
         const href = entry[0];
@@ -80,60 +78,100 @@ function createMenu () {
     });
 }
 
-// function createSignIn () {
-//     const loginDiv = document.createElement('div');
-//     const html = pug.renderFile('components/Login/login.pug');
-//     loginDiv.innerHTML = html;
 
-// 	form.addEventListener('submit', function (event) {
-// 		event.preventDefault();
+function buildSignIn() {
+    const form = document.createElement('form');  // общая форма
 
-// 		const username = form.elements[ 'username' ].value;
-// 		const password = form.elements[ 'password' ].value;
+    const inputs = [
+        {
+            type: 'text',
+            name: 'email',
+            label: 'E-mail: '
+        },
 
-// 		AJAX.doPost({
-// 			callback (xhr) {
-// 				root.innerHTML = '';
-// 				createProfile();
-// 			},
-// 			path: CORS_URL+'/auth/login',
-// 			body: {
-// 				username,
-// 				password,
-// 			},
-// 		});
-// 	});
-//     root.appendChild(buildheader('Вход'));
-//     root.appendChild(loginDiv);
-// }
+        {
+            type: 'password',
+            name: 'password',
+            label: 'Пароль: '
+        }
+    ];
 
-function createSignUp () {
-	const form = document.createElement('form');
+    inputs.forEach(function(item) {
+        const form_part = document.createElement('p'); // содержит заголовок и поле ввода
+        const b = document.createElement('b'); // заголовок поля
+        b.textContent = item.label;
+        form_part.appendChild(b);
 
-	const inputs = [
-		{
-			name: 'username',
-			type: 'text',
-			label: 'Username'
-		},
-		{
-			name: 'email',
-			type: 'email',
-			label: 'Email'
-		},
-		{
-			name: 'password',
-			type: 'password',
-			label: 'Password'
-		},
-		{
-			name: 'password_repeat',
-			type: 'password',
-			label: 'Repeat Password'
-		}
-	];
+        form_part.appendChild(
+            document.createElement('br')
+        )
 
-	inputs.forEach(function (item) {
+        const input = document.createElement('input');
+        input.type = item.type;
+        input.name = item.name;
+        form_part.appendChild(input);
+
+        form.appendChild(form_part);
+
+    });
+    const button = document.createElement('input');
+    button.type = 'submit';
+    button.name = 'submit';
+    form.appendChild(button);
+
+    form.addEventListener('submit', function ( event ) {
+        event.preventDefault();
+        const email = form.elements[ 'email' ].value;
+        const password = form.elements[ 'password' ].value;
+
+        console.log(email);
+        console.log(password);
+
+        AJAX.doPost({
+            callback (xhr) {
+                root.innerHTML = '';
+                buildProfile();                
+            },
+            path: '/login',
+            body: {
+                email,
+                password
+            }
+        });
+    });
+
+    root.appendChild(buildheader('Вход'));
+    root.appendChild(form);
+}
+
+
+function buildSignUp () { // аналогично функци логина только больше полей в форме
+    const form = document.createElement('form');
+
+    const inputs = [
+        {
+            type: 'email',
+            name: 'username',
+            label: 'Username: '
+        },
+        {
+            type: 'email',
+            name: 'email',
+            label: 'E-mail: '
+        },
+        {
+            type: 'password',
+            name: 'password',
+            label: 'Пароль: '
+        },
+        {
+            type: 'password',
+            name: 'password_repeat',
+            label: 'Повторите пароль: '
+        }
+    ];
+
+    inputs.forEach(function(item) {
         const form_part = document.createElement('p');
         const b = document.createElement('b');
         b.textContent = item.label; // 
@@ -144,51 +182,52 @@ function createSignUp () {
         )
 
         const input = document.createElement('input');
-
-		input.name = item.name;
-		input.type = item.type;
-
+        input.type = item.type;
+        input.name = item.name;
         form_part.appendChild(input);
-        form.appendChild(form_part);
-	});
 
+        form.appendChild(form_part);
+
+    });
     const button = document.createElement('input');
     button.type = 'submit';
     button.name = 'submit';
     form.appendChild(button);
 
-	form.addEventListener('submit', function (event) {
-		event.preventDefault();
+    form.addEventListener('submit', function ( event ) {
+        event.preventDefault();
+        const username = form.elements[ 'username' ].value;
+        const email = form.elements[ 'email' ].value;
+        const password = form.elements[ 'password' ].value;
+        const password_repeat = form.elements[ 'password_repeat' ].value;
 
-		const username = form.elements[ 'username' ].value;
-		const email = form.elements[ 'email' ].value;
-		const password = form.elements[ 'password' ].value;
-		const password_repeat = form.elements[ 'password_repeat' ].value;
+        if (password !== password_repeat) {
+            errorMessage('Пароли не совпадают');
+            return;
+        }
 
-		if (password !== password_repeat) {
-			errorMessage('Пароли не совпадают');
-			return;
-		}
-
-		AJAX.doPost({
-			callback (xhr) {
-				root.innerHTML = '';
-				createProfile();
-			},
-			path: CORS_URL+'/auth/register',
-			body: {
-				username,
-				email,
-				password,
-			},
-		});
-	});
+        AJAX.doPost({
+            callback (xhr) {
+                root.innerHTML = '';
+                buildProfile();                
+            },
+            path: '/register',
+            body: {
+                username,
+                email,
+                password
+            }
+        });
+    });
 
     root.appendChild(buildheader('Регистрация'));
     root.appendChild(form);
 }
 
-function createLeaderboard (users) {
+
+function buildLeaderboard (users) {
+    
+
     const tableWrapper = document.createElement('div');
 
 	if (users) {
@@ -207,15 +246,14 @@ function createLeaderboard (users) {
                 // root.innerHTML = users;
 				buildLeaderboard(users);
 			},
-			path: CORS_URL+'/profiles/leaderboard/pages/1',
+			path: '/leaderboard/pages/1',
 		});
 
         root.appendChild(buildheader('Таблица лидеров'));
         root.appendChild(tableWrapper);
     }
 }
-
-function createProfile (me) {
+function buildProfile(me) {
     const page_label = document.createElement('h2');
     page_label.textContent = 'Настройки учетной записи'
     const parent_div = document.createElement('div');
@@ -234,25 +272,26 @@ function createProfile (me) {
         parent_div.appendChild(div1);
         parent_div.appendChild(div2);
         parent_div.appendChild(a);
-	} else {
-		AJAX.doGet({
-			callback (xhr) {
-				if (!xhr.responseText) {
-					root.innerHTML = '';
-					buildErrorPage('Unauthorized', 'Профиль');
-					return;
-				}
 
-				const user = JSON.parse(xhr.responseText);
-				root.innerHTML = '';
-				createProfile(user);
-			},
-			path: CORS_URL+'/profiles/current',
-		});
-	}
+    } else {
+        AJAX.doGet({
+            callback (xhr) {
+                if (!xhr.responseText) {
+                    root.innerHTML = '';
+                    buildErrorPage('Unauthorized', 'Профиль');
+                    return;
+                }
+                const user = JSON.parse(xhr.responseText);
+                root.innerHTML = '';
+                buildProfile(user);
+            },
+            path: '/profile'
+        });
+    }
+    
     root.appendChild(buildheader('Профиль'));
     root.appendChild(parent_div);
-}
+} 
 
 
 function changeProfile() {
@@ -306,6 +345,8 @@ function changeProfile() {
             errorMessage('Пароли не совпадают');
             return;
         }
+
+
         AJAX.doPost({
             callback (xhr) {
                 root.innerHTML = '';
@@ -324,7 +365,7 @@ function changeProfile() {
 }
 
 
-function createRules() {
+function buildRules() {
     const rules_label = document.createElement( 'h2' );
     rules_label.textContent = 'Захвати или будь захвачен!';
 
@@ -387,31 +428,28 @@ function createRules() {
 }
 
 const pages = {
-	menu: createMenu,
-	login: createSignIn,
-	register: createSignUp,
-	leaders: createLeaderboard,
-	profile: createProfile,
-	rules: createRules,
-	change: changeProfile
+    menu: buildMenu,
+    rules: buildRules,
+    login: buildSignIn,
+    register: buildSignUp,
+    leaders: buildLeaderboard,
+    profile: buildProfile,
+    change: changeProfile
 };
 
-createMenu();
+buildMenu();
 
 root.addEventListener('click', function (event) {
-	if (!(event.target instanceof HTMLAnchorElement)) {
-		return;
-	}
+    if (!(event.target instanceof HTMLAnchorElement)) {
+        return;
+    }
+    event.preventDefault();
+    const link = event.target;
 
-	event.preventDefault();
-	const link = event.target;
-
-	console.log({
-		href: link.href,
-		dataHref: link.dataset.href
-	});
-
-	root.innerHTML = '';
-
-	pages[ link.dataset.href ]();
+    console.log({
+        href: link.href,
+        datahref: link.dataset.href
+    });
+    root.innerHTML = '';
+    pages[ link.dataset.href ]();
 });
