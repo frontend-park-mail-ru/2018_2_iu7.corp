@@ -32,7 +32,7 @@ export function createSignUp () {
 		AJAX.doPost({
 			callback (xhr) {
 				root.innerHTML = '';
-				createProfile();
+				// To do сообщение о успешной регистрации (перевод на страницу пользователя)
 			},
 			path: '/auth/register',
 			body: {
