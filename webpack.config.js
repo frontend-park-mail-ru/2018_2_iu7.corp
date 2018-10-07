@@ -4,12 +4,12 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    app: './public/js/script.js',
+    main: './src/js/script.js',
   },
 
   output: {
-    filename: 'app.bundle.js',
-    path: path.resolve(__dirname, 'public'),
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
   },
 
   module: {
@@ -28,8 +28,8 @@ module.exports = {
 
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Demo',
-      template: './public/index.html',
+      filename: 'index.html',
+      template: './src/index.html',
     }),
   ],
 
