@@ -18,7 +18,7 @@ export function createLeaderboard (users) {
 			callback (xhr) {
 				const users = JSON.parse(xhr.responseText);
                 root.innerHTML = '';
-				buildLeaderboard(users);
+				createLeaderboard(users);
 			},
 			path: '/profiles/leaderboard/pages/1',
 		});
