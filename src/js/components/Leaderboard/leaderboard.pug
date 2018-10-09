@@ -1,0 +1,14 @@
+div
+    include ../Header/header.pug
+
+div
+    table 
+        tr
+            th 
+            th
+        each user in usrs
+            tr
+                td=user.avatar
+                td=user.id
+                td=user.score
+                td=user.username

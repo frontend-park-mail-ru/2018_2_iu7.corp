@@ -1,0 +1,21 @@
+div
+ include ../Header/header.pug
+div
+    form#changeSettingsForm
+        p
+            b New Username
+            br
+            input(name="username", type="text")
+        p
+            b New Email
+            br
+            input(name="email", type="email")
+        p
+            b New password
+            br
+            input(name="password", type="password")
+        p
+            b Repeat new password
+            br
+            input(name="password_repeat", type="password")
+        input(name="submit", type="submit")

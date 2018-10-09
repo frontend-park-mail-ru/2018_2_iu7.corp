@@ -11,7 +11,7 @@ const initMocks = require('./mocks');
 const proxy = require('express-http-proxy');
 
 app.use(morgan('dev'));
-app.use(express.static(path.resolve(__dirname, '..', 'public')));
+app.use(express.static(path.resolve(__dirname, '..', 'dist')));
 app.use(body.json());
 app.use(cookie());
 
@@ -19,13 +19,14 @@ if (process.env.MOCKS) {
 	initMocks(app);
 }
 
-app.use("*", proxy("https://20182iu7corp-lgpyilvzpk.now.sh/", {
+
+app.use("*", proxy("https://strategio-api.now.sh/", {
   proxyReqPathResolver: function(req) {
     return req.originalUrl;
   }
 }))
 
-const port = process.env.PORT || 8002;
+const port = process.env.PORT || 8000;
 
 app.listen(port, function () {
 	console.log(`Server listening port ${port}`);
