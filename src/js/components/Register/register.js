@@ -3,10 +3,10 @@
 import {errorMessage} from '../Errors/error.js'
 import {AjaxModule} from '../../modules/ajax.js';
 const registerForm = require('./register.pug');
+const successMessage = require('./successRegister.pug');
 
 const root = document.getElementById('root');
 const AJAX = new AjaxModule;
-
 
 export function createSignUp () {
 
@@ -28,10 +28,9 @@ export function createSignUp () {
 			errorMessage('Пароли не совпадают');
 			return;
 		}
-
 		AJAX.doPost({
 			callback (xhr) {
-				root.innerHTML = '';
+				root.innerHTML = successMessage({title: 'Вы успешно зарегистрированы'});
 				// To do сообщение о успешной регистрации (перевод на страницу пользователя)
 			},
 			path: '/auth/register',

@@ -8,7 +8,7 @@ const root = document.getElementById('root');
 const AJAX = new AjaxModule;
 export function createLeaderboard (users) {
 	if (users) {
-		root.innerHTML = leaderboardTmpl({ title: 'Лидер борд', usrs: users });
+		root.innerHTML = leaderboardTmpl({ title: 'Лидер борд', usrs: users.profiles });
 	} else {
 		const em = document.createElement('em');
 		em.textContent = 'Loading';

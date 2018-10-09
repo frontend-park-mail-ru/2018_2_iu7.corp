@@ -1,12 +1,11 @@
 'use strict'
 
 import {AjaxModule} from '../../modules/ajax.js';
-
 const loginForm = require('./login.pug');
+const successMessage = require('./successLogin.pug');
 
 const root = document.getElementById('root');
 const AJAX = new AjaxModule;
-
 
 export function createSignIn () {
 	
@@ -23,7 +22,7 @@ export function createSignIn () {
 
 		AJAX.doPost({
 			callback (xhr) {
-				root.innerHTML = '';
+				root.innerHTML = successMessage({title: 'Вы успешно вошли'});
 			},
 			path: '/auth/login',
 			body: {
