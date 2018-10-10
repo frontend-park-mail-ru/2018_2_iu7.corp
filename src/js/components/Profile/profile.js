@@ -1,8 +1,6 @@
-'use strict'
-
-import {buildErrorPage} from '../Errors/error.js'
 import {AjaxModule} from '../../modules/ajax.js';
 const profileTmlp = require('./profile.pug');
+const notLoginEr = require('./ProfileErrors/NotLoginEr.pug');
 
 const root = document.getElementById('root');
 const AJAX = new AjaxModule;
@@ -16,9 +14,8 @@ export function createProfile (me) {
 	} else {
 		AJAX.doGet({
 			callback (xhr) {
-				if (!xhr.responseText) {
-					root.innerHTML = '';
-					buildErrorPage('Unauthorized', 'Профиль');
+				if (xhr.status >= 400) {
+					root.innerHTML = notLoginEr({title: 'Профиль'});
 					return;
 				}
 

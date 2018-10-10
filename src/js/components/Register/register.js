@@ -1,9 +1,7 @@
-'use strict'
-
-import {errorMessage} from '../Errors/error.js'
+import {errorMessage} from '../Errors/error.js';
 import {AjaxModule} from '../../modules/ajax.js';
 const registerForm = require('./register.pug');
-const successMessage = require('./successRegister.pug');
+const successMessage = require('./RegisterErrors/successRegister.pug');
 
 const root = document.getElementById('root');
 const AJAX = new AjaxModule;

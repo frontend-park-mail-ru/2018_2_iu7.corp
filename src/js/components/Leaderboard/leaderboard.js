@@ -1,4 +1,3 @@
-'use strict'
 import {AjaxModule} from '../../modules/ajax.js';
 const leaderboardTmpl = require('./leaderboard.pug');
 
