@@ -1,7 +1,4 @@
-'use strict'
-
 const menu = require('./menu.pug');
-
 const root = document.getElementById('root');
 
 export function createMenu () {

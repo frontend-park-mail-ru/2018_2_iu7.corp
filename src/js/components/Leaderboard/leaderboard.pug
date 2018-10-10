@@ -3,12 +3,12 @@ div
 
 div
     table 
-        tr
-            th 
-            th
-        each user in usrs
+        thead
             tr
-                td=user.avatar
-                td=user.id
-                td=user.score
-                td=user.username
+                th Username
+                th Score
+        tbody
+            each user in usrs
+                tr
+                    td= user.username
+                    td= user.score

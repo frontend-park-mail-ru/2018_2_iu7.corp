@@ -1,5 +1,5 @@
 {
-    "extends": "standart",
+    "extends": "standard",
 
     "parserOptions": {
         "ecmaVersion": 6,
