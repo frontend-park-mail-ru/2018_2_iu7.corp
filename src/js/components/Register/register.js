@@ -27,7 +27,7 @@ export function createSignUp () {
 			return;
 		}
 		AJAX.doPost({
-			callback (xhr) {
+			callback (response) {
 				root.innerHTML = successMessage({title: 'Вы успешно зарегистрированы'});
 				// To do сообщение о успешной регистрации (перевод на страницу пользователя)
 			},

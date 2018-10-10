@@ -14,10 +14,11 @@ export function createLeaderboard (users) {
         root.appendChild(em);
         
 		AJAX.doGet({
-			callback (xhr) {
-				const users = JSON.parse(xhr.responseText);
-                root.innerHTML = '';
-				createLeaderboard(users);
+			callback (response) {
+				response.json().then( (users) => {
+					root.innerHTML = '';
+					createLeaderboard(users);
+				});
 			},
 			path: '/profiles/leaderboard/pages/1',
 		});

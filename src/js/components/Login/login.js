@@ -20,8 +20,8 @@ export function createSignIn () {
 		const password = form.elements[ 'password' ].value;
 
 		AJAX.doPost({
-			callback (xhr) {
-				if (xhr.status >= 400) {
+			callback (response) {
+				if (response.status >= 400) {
 					root.innerHTML = unsuccessMessage({title: 'Вход'});
 					return;
 				}

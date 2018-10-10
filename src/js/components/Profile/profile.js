@@ -13,15 +13,16 @@ export function createProfile (me) {
 
 	} else {
 		AJAX.doGet({
-			callback (xhr) {
-				if (xhr.status >= 400) {
+			callback (response) {
+				if (response.status >= 400) {
 					root.innerHTML = notLoginEr({title: 'Профиль'});
 					return;
 				}
 
-				const user = JSON.parse(xhr.responseText);
-				root.innerHTML = '';
-				createProfile(user);
+				response.json().then( (user) => {
+					root.innerHTML = '';
+					createProfile(user);
+				});
 			},
 			path: '/profiles/current',
 		});
