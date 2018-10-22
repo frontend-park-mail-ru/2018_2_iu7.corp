@@ -1,3 +1,4 @@
+const uuid = require('uuid/v4');
 const users = {
 	'a.ostapenko@corp.mail.ru': {
 		email: 'a.ostapenko@corp.mail.ru',

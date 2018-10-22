@@ -1,10 +1,10 @@
 'use strict';
-import {createSignIn} from './components/Login/login.js';
-import {createSignUp} from './components/Register/register.js';
-import {createLeaderboard} from './components/Leaderboard/leaderboard.js';
-import {createProfile} from './components/Profile/profile.js';
-import {createMenu} from './components/Menu/menu.js';
-import {changeSettings} from './components/ChangeSettings/changeSettings.js';
+import { createSignIn } from './components/Login/login.js';
+import { createSignUp } from './components/Register/register.js';
+import { createLeaderboard } from './components/Leaderboard/leaderboard.js';
+import { createProfile } from './components/Profile/profile.js';
+import { createMenu } from './components/Menu/menu.js';
+import { changeSettings } from './components/ChangeSettings/changeSettings.js';
 
 const root = document.getElementById('root');
 

@@ -1,4 +1,4 @@
-import {fetchModule} from '../../modules/ajax.js';
+import { fetchModule } from '../../modules/ajax.js';
 const leaderboardTmpl = require('./leaderboard.pug');
 
 const root = document.getElementById('root');
@@ -9,18 +9,18 @@ export function createLeaderboard (users) {
 	} else {
 		const em = document.createElement('em');
 		em.textContent = 'Loading';
-        root.appendChild(em);
+		root.appendChild(em);
 
-		fetchModule.doGet({path: '/profiles/leaderboard/pages/1'})
-				.then(response => {
-					response.json()
-						.then( (users) => {
-							root.innerHTML = '';
-							createLeaderboard(users);
-						})
-						.catch( (err) => {
-							console.log(err);
-						});
-				});
-    }
+		fetchModule.doGet({ path: '/profiles/leaderboard/pages/1' })
+			.then(response => {
+				response.json()
+					.then((users) => {
+						root.innerHTML = '';
+						createLeaderboard(users);
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			});
+	}
 }
