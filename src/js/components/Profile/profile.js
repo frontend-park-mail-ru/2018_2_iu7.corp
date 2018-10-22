@@ -1,10 +1,8 @@
-import {AjaxModule} from '../../modules/ajax.js';
+import {fetchModule} from '../../modules/ajax.js';
 const profileTmlp = require('./profile.pug');
 const notLoginEr = require('./ProfileErrors/NotLoginEr.pug');
 
 const root = document.getElementById('root');
-const AJAX = new AjaxModule;
-
 
 export function createProfile (me) {
 
@@ -12,19 +10,20 @@ export function createProfile (me) {
         root.innerHTML = profileTmlp({title: 'Профиль', user: me});
 
 	} else {
-		AJAX.doGet({
-			callback (response) {
-				if (response.status >= 400) {
-					root.innerHTML = notLoginEr({title: 'Профиль'});
-					return;
-				}
-
-				response.json().then( (user) => {
-					root.innerHTML = '';
-					createProfile(user);
+		fetchModule.doGet({ path: '/profiles/current' })
+				.then(response => {
+					if (response.status >= 400) {
+						root.innerHTML = notLoginEr({title: 'Профиль'});
+						return;
+					}
+	
+					response.json().then( (user) => {
+						root.innerHTML = '';
+						createProfile(user);
+					});
+				})
+				.catch( (err) => {
+					console.log(err);
 				});
-			},
-			path: '/profiles/current',
-		});
 	}
 }

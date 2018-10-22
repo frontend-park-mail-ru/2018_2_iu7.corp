@@ -1,23 +1,35 @@
-const noop = () => null;
+const serverUrl = 'https://strategio-api.now.sh';
 
-export class AjaxModule {
-	_ajax ({callback = noop, method = 'GET', path = '/', body} = {}) {
-		if (body) {
-			body = JSON.stringify(body);
-		}
+export class fetchModule {
+    static _ajax({ method = 'GET', path = '/', body} = {}) {
+        const url = serverUrl + path;
 
-		fetch('https://strategio-api.now.sh' + path, {
-			method,
-			body,
-			mode: 'cors',
-			credentials: 'include',
-		  }).then(callback);
-	}
+        const options = {
+            mode: 'cors',
+            credentials: 'include',
+            method: method,
+        };
 
-	doGet (params = {}) {
-		this._ajax({...params, method: 'GET'});
-	}
-	doPost (params = {}) {
-		this._ajax({...params, method: 'POST'});
-	}
+        if (body) {
+            options.headers = { 'Content-Type': 'application/json; charset=utf-8' };
+            options.body = JSON.stringify(body);
+        }
+        return fetch(url, options);
+    }
+
+    static doGet(params = {}) {
+        return this._ajax({ ...params, method: 'GET' });
+    }
+
+    static doPost(params = {}) {
+        return this._ajax({ ...params, method: 'POST' });
+    }
+
+    static doDelete(params = {}) {
+        return this._ajax({ ...params, method: 'DELETE' });
+    }
+
+    static doPut (params = {}) {
+        return this._ajax({...params, method: "PUT"});
+    }
 }

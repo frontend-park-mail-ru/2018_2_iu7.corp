@@ -1,11 +1,11 @@
 'use strict'
 
 import {errorMessage} from '../Errors/error.js'
-import {AjaxModule} from '../../modules/ajax.js';
+import {fetchModule} from '../../modules/ajax.js';
 const changeSettingsForm = require('./changeSettings.pug');
 
 const root = document.getElementById('root');
-const AJAX = new AjaxModule;
+// const AJAX = new AjaxModule;
 
 
 
@@ -27,16 +27,18 @@ export function changeSettings() {
             errorMessage('Пароли не совпадают');
             return;
         }
-        AJAX.doPost({
-            callback (xhr) {
-                root.innerHTML = '';
-                // To do сообщение о успешном изменении настроек (перевод на страницу пользователя)                
-            },
+        fetchModule.doPost({
             path: '/change',
             body: {
                 email,
                 password
             }
-        });
+        })
+        .then( response => {
+            root. innerHTML = 'hello!'
+        })
+        .catch( (err) => {
+            console.log(err);
+        })
     });
 }

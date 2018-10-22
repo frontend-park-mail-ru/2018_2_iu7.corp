@@ -3,26 +3,26 @@ const users = {
 		email: 'a.ostapenko@corp.mail.ru',
 		password: 'password',
 		age: 21,
-		score: 72,
+		score: 72
 	},
 	'd.dorofeev@corp.mail.ru': {
 		email: 'd.dorofeev@corp.mail.ru',
 		password: 'password',
 		age: 21,
-		score: 100500,
+		score: 100500
 	},
 	's.volodin@corp.mail.ru': {
 		email: 'marina.titova@corp.mail.ru',
 		password: 'password',
 		age: 21,
-		score: 72,
+		score: 72
 	},
 	'a.tyuldyukov@corp.mail.ru': {
 		email: 'a.tyuldyukov@corp.mail.ru',
 		password: 'password',
 		age: 21,
-		score: 72,
-	},
+		score: 72
+	}
 };
 const ids = {};
 
@@ -109,13 +109,12 @@ const initMocks = (app) => {
 				return {
 					email: user.email,
 					age: user.age,
-					score: user.score,
-				}
+					score: user.score
+				};
 			});
 
 		res.json(scorelist);
 	});
-
-}
+};
 
 module.exports = initMocks;
