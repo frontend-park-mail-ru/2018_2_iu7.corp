@@ -35,7 +35,5 @@ export function errorMessage (errorMessage) {
 		p.textContent = errorMessage;
 		errorDiv.appendChild(p);
 		root.appendChild(errorDiv);
-	} else {
-
 	}
 }

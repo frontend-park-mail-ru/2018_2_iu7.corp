@@ -12,15 +12,15 @@ export function createLeaderboard (users) {
 		root.appendChild(em);
 
 		fetchModule.doGet({ path: '/profiles/leaderboard/pages/1' })
-			.then(response => {
-				response.json()
-					.then((users) => {
-						root.innerHTML = '';
-						createLeaderboard(users);
-					})
-					.catch((err) => {
-						console.log(err);
-					});
-			});
+		.then(response => {
+			return response.json()	
+		})
+		.then((users) => {
+			root.innerHTML = '';
+			createLeaderboard(users);
+		})
+		.catch((err) => {
+			console.log(err);
+		});
 	}
 }

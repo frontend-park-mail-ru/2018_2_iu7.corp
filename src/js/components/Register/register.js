@@ -33,11 +33,11 @@ export function createSignUp () {
 				password
 			}
 		})
-			.then(response => {
-				root.innerHTML = successMessage({ title: 'Вы успешно зарегистрированы' });
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		.then(response => {
+			root.innerHTML = successMessage({ title: 'Вы успешно зарегистрированы' });
+		})
+		.catch((err) => {
+			console.log(err);
+		});
 	});
 }

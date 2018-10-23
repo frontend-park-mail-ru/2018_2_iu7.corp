@@ -6,8 +6,8 @@
     "start": "node server/index.js",
     "build": "webpack --mode production",
     "build-dev": "webpack --mode development",
-    "lint": "eslint .",
-    "lint-fix": "eslint --fix ."
+    "lint": "eslint src",
+    "lint-fix": "eslint --fix src"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
