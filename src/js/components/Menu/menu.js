@@ -18,9 +18,10 @@ export function createMenu () {
 		.then((user) => {
 			const titles = {
 				leaders: 'Лидеры',
-				profile: 'Мой профиль'
+				profile: 'Мой профиль',
+				logout: 'Выйти'
 			};
-			const links = ['leaders', 'profile'];
+			const links = ['leaders', 'profile', 'logout'];
 		
 			const menuDiv = document.createElement('div');
 			menuDiv.innerHTML = menu({ 'hrefs': links, 'labels': titles });

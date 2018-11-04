@@ -5,8 +5,25 @@ import { createLeaderboard } from './components/Leaderboard/leaderboard.js';
 import { createProfile } from './components/Profile/profile.js';
 import { createMenu } from './components/Menu/menu.js';
 import { changeSettings } from './components/ChangeSettings/changeSettings.js';
+import { fetchModule } from './modules/ajax.js';
 
 const root = document.getElementById('root');
+
+
+function logOut() {
+	fetchModule.doPost({path: '/auth/logout'})
+		.then(response => {
+			if (response.status === 200) {
+				createMenu();
+			} else {
+				return Promise.reject(new Error(response.status));
+			}
+		}).
+		catch((err) => {
+			console.log(err);
+			createMenu();
+		});
+}
 
 const pages = {
 	menu: createMenu,
@@ -14,7 +31,8 @@ const pages = {
 	register: createSignUp,
 	leaders: createLeaderboard,
 	profile: createProfile,
-	change: changeSettings
+	change: changeSettings,
+	logout: logOut
 };
 
 createMenu();

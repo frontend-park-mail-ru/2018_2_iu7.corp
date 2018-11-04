@@ -15,6 +15,18 @@ export function createSignUp () {
 	form.addEventListener('submit', function (event) {
 		event.preventDefault();
 
+		let i = 0;
+		Array.from(form.elements).forEach( (item) => {
+			if (item.name != 'submit' && item.value == ''){
+				i = 1;
+			}
+		})
+
+		if (i) {
+			errorMessage('Заполните все поля');
+			return;
+		}
+
 		const username = form.elements[ 'username' ].value;
 		const email = form.elements[ 'email' ].value;
 		const password = form.elements[ 'password' ].value;
