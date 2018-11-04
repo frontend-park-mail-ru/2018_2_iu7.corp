@@ -1,7 +1,7 @@
 import { errorMessage } from '../Errors/error.js';
 import { fetchModule } from '../../modules/ajax.js';
+import { createMenu } from '../Menu/menu.js';
 const registerForm = require('./register.pug');
-const successMessage = require('./RegisterErrors/successRegister.pug');
 
 const root = document.getElementById('root');
 
@@ -33,8 +33,18 @@ export function createSignUp () {
 				password
 			}
 		})
-		.then(response => {
-			root.innerHTML = successMessage({ title: 'Вы успешно зарегистрированы' });
+		.then(response => { // TODO посмотреть что будет при сабмите путой формы
+			fetchModule.doPost({
+				path: '/auth/login',
+				body: {
+					username,
+					password
+				}
+			})
+			.then(response => {
+				root.innerHTML = '';
+				createMenu();
+			})
 		})
 		.catch((err) => {
 			console.log(err);
