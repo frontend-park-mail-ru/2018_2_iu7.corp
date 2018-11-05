@@ -1,55 +1,19 @@
-'use strict';
-import { createSignIn } from './components/Login/login.js';
-import { createSignUp } from './components/Register/register.js';
-import { createLeaderboard } from './components/Leaderboard/leaderboard.js';
-import { createProfile } from './components/Profile/profile.js';
-import { createMenu } from './components/Menu/menu.js';
-import { changeSettings } from './components/ChangeSettings/changeSettings.js';
-import { fetchModule } from './modules/ajax.js';
+import Router from './modules/Router.js';
+import Bus from './modules/Bus.js';
+import UserModel from './models/UserModel.js';
 
-const root = document.getElementById('root');
+import MenuView from './views/MenuView.js'
+
+UserModel._data = null;
+
+Bus.on('get-user', () => {UserModel.Fetch()});
 
 
-function logOut() {
-	fetchModule.doPost({path: '/auth/logout'})
-		.then(response => {
-			if (response.status === 200) {
-				createMenu();
-			} else {
-				return Promise.reject(new Error(response.status));
-			}
-		}).
-		catch((err) => {
-			console.log(err);
-			createMenu();
-		});
+function main() {
+    Router
+        .register('/', MenuView);
+
+    Router.open(window.location.pathname);
 }
 
-const pages = {
-	menu: createMenu,
-	login: createSignIn,
-	register: createSignUp,
-	leaders: createLeaderboard,
-	profile: createProfile,
-	change: changeSettings,
-	logout: logOut
-};
-
-createMenu();
-
-root.addEventListener('click', function (event) {
-	if (!(event.target instanceof HTMLAnchorElement)) {
-		return;
-	}
-
-	event.preventDefault();
-	const link = event.target;
-
-	console.log({
-		href: link.href
-	});
-
-	root.innerHTML = '';
-
-	pages[ link.getAttribute('href') ]();
-});
+main();
