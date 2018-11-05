@@ -4,7 +4,7 @@ class Router {
     constructor() {
         this._routes = {};
         this._currentRoute = null;
-        window.addEventListener('popstate', this.popstateCallback.bind(Router));
+        window.addEventListener('popstate', this.popstateCallback.bind(this));
     }
 
     /**
