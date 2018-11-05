@@ -8,7 +8,7 @@ const menu = require('./templates/menu.pug');
 const notAuthLinks = [
     {
         label: 'Вход',
-        href: '/login'        
+        href: '/signin'        
     },
     {
         label: 'Регистрация',
@@ -32,7 +32,7 @@ const authLinks = [
     },
     {
         label: 'Выйти',
-        href: '/logout'        
+        href: '/signout'        
     }
 ]
 
@@ -56,11 +56,13 @@ export default class MenuView extends BaseView {
         super.render();
         this._navigationController = new NavigationController();
 
+        let main = document.createElement('main');
         if (user.is_authenticated) {
-            this.viewDiv.innerHTML += menu({values: authLinks})
+            main.innerHTML += menu({values: authLinks})
         } else {
-            this.viewDiv.innerHTML += menu({values: notAuthLinks})
+            main.innerHTML += menu({values: notAuthLinks})
         }
+        this.viewDiv.appendChild(main);
 
         this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
         Bus.off('done-get-user', this.render.bind(this));

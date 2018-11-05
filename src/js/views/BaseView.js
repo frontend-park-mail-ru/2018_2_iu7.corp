@@ -24,6 +24,6 @@ export default class BaseView {
     }
 
     render() {
-        this.viewDiv.innerHTML += '';
+        this.viewDiv.innerHTML = '';
     }
 }
