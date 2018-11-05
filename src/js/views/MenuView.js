@@ -53,6 +53,7 @@ export default class MenuView extends BaseView {
 
     render(user) {
         console.log('MENU RENDER');
+        console.log('USER: ', user);
         super.render();
         this._navigationController = new NavigationController();
 

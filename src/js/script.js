@@ -10,6 +10,9 @@ import ChangeView from './views/ChangeView.js'
 
 UserModel._data = null;
 
+Bus.on('error', (error) => {console.log(error);
+                                return null;
+                            });
 Bus.on('get-user', () => {UserModel.Fetch()});
 Bus.on('submit-data-signup', (data) => {UserModel.Register(data)});
 Bus.on('submit-data-signin', (data) => {UserModel.Signin(data)});

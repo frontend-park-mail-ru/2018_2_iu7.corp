@@ -22,6 +22,7 @@ export default class SigninView extends BaseView {
 
     render(user) {
         console.log('LOGIN RENDER');
+        console.log('USER: ', user);
         super.render();
 
         if (user.is_authenticated) {

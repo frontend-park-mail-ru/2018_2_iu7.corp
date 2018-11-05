@@ -21,18 +21,17 @@ export default class FormController {
         // TODO сделать валидации 
         // TODO универсальный сборщик данныз из формы
 
-		const username = form.elements[ 'username' ].value;
-		const email = form.elements[ 'email' ].value;
-		const password = form.elements[ 'password' ].value;
-		const passwordRepeat = form.elements[ 'password_repeat' ].value;
-
-        Bus.emit(
-            "submit-data-" + this._formName,
-            {
-                username,
-                email,
-                password
+        let data = Array.from(event.target.elements).
+        reduce((acc, val) => {
+            if (val.value !== "" && val.name !== "password_repeat") {
+                acc[val.name] = val.value;
             }
-        );
+            return acc;
+        }, {});
+
+        console.log('this._formName', this._formName);
+        console.log(data);
+
+        Bus.emit("submit-data-" + this._formName, data);
     }
 }

@@ -8,22 +8,23 @@ const header = require('./templates/header.pug');
 
 export default class ChangeView extends BaseView {
     constructor() {
-        console.log('LOGIN CONSTRUCTOR');        
+        console.log('CANHGE CONSTRUCTOR');        
         super();
         Bus.on('done-get-user', this.render.bind(this));
     }
 
     show() {
         Bus.emit('get-user');
-        console.log('LOGIN SHOW');
+        console.log('CANHGE SHOW');
         super.show();
     }
 
     render(user) {
-        console.log('LOGIN RENDER');
+        console.log('CANHGE RENDER');
+        console.log('USER: ', user);
         super.render();
 
-        if (user.is_authenticated) {
+        if (!user.is_authenticated) {
             console.log("You are not logged in!");
             return;
         }

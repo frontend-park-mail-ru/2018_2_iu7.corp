@@ -22,6 +22,7 @@ export default class SignupView extends BaseView {
 
     render(user) {
         console.log('REGISTER RENDER');
+        console.log('USER: ', user);
         super.render();
 
         if (user.is_authenticated) {
