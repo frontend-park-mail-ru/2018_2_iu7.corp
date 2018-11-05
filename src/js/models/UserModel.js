@@ -43,7 +43,7 @@ export default class UserModel {
                 }
                 if (response.status === 200) {
                     UserModel._data = null;
-                    Emitter.emit("wipe-views");
+                    Bus.emit("wipe-views");
                 }
             })
             .catch( (err) => {
@@ -59,11 +59,22 @@ export default class UserModel {
                 }
                 if (resp.status === 200) {
                     UserModel._data = null;
-                    Emitter.emit("wipe-views");
+                    Bus.emit("wipe-views");
                 }
             })
             .catch( (err) => {
                 console.log(err);
             });
+    }
+
+    // TODO больше проверок
+    static Change(data) {
+        return fetchModule.doPut({path: '/profiles/current', body: data})
+            .then( response => {
+                Bus.emit("wipe-views");
+            })
+            .catch( (err) => {
+                console.log(err);
+            })
     }
 }

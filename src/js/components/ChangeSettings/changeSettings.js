@@ -4,7 +4,6 @@ import { createProfile } from '../Profile/profile.js';
 const changeSettingsForm = require('./changeSettings.pug');
 
 const root = document.getElementById('root');
-// const AJAX = new AjaxModule;
 
 export function changeSettings () {
 	const changeSettingsDiv = document.createElement('div');
