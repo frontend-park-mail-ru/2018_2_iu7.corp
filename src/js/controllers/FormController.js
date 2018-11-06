@@ -10,7 +10,7 @@ export default class FormController {
      * @param {string} formName name of the form (is used when emitting events)
      * @param {Class} Validator validator component
      */
-	constructor (formName, Validator = null) {
+	constructor (formName, Validator) {
 		if (Validator) {
 			this._validator = new Validator();
 		}
@@ -20,8 +20,7 @@ export default class FormController {
 
 	/**
      * Callback for view to apply. Takes values from form and passes it through validator if set, then emits event
-     * @param {Event} event "submit" event
-     * @return {undefined}
+     * @param {Event} event 'submit' event
      */
 	callbackSubmit (event) {
 		event.preventDefault();

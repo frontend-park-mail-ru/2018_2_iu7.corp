@@ -19,7 +19,7 @@ export default class LeaderboardController {
     }
 
     /**
-     * @return {undefined}
+     * 
      * Emits event on Leaderboard Model
      * @private
      */
@@ -28,17 +28,19 @@ export default class LeaderboardController {
     }
 
     /**
-     * @return {undefined}
+     * 
      * Increments page counter and navigates to next page
      * @private
      */
     _nextPage() {
+        console.log('_nextPage()');
+        console.log(typeof this._currentPage);
         this._currentPage += 1;
         Router.open(`/leaderboard/${this._currentPage}`);
     }
 
     /**
-     * @return {undefined}
+     * 
      * Decrements page counter and navigates to prev page if possible
      * @private
      */
@@ -50,14 +52,14 @@ export default class LeaderboardController {
     }
 
     /**
-     * @return {undefined}
      * @param {string|number} page page number
      * Sets page counter to specific number
      * @private
      */
-    _setPage(page) {
+    _setPage(page) { //TODO перейты на ts
+        console.log(typeof this._currentPage);
         if (page > 0) {
-            this._currentPage = page;
+            this._currentPage = +page;
         }
     }
 
