@@ -1,7 +1,7 @@
 import { errorMessage } from '../Errors/error.js';
 import { fetchModule } from '../../modules/ajax.js';
+import { createMenu } from '../Menu/menu.js';
 const registerForm = require('./register.pug');
-const successMessage = require('./RegisterErrors/successRegister.pug');
 
 const root = document.getElementById('root');
 
@@ -14,6 +14,18 @@ export function createSignUp () {
 
 	form.addEventListener('submit', function (event) {
 		event.preventDefault();
+
+		let i = 0;
+		Array.from(form.elements).forEach( (item) => {
+			if (item.name != 'submit' && item.value == ''){
+				i = 1;
+			}
+		})
+
+		if (i) {
+			errorMessage('Заполните все поля');
+			return;
+		}
 
 		const username = form.elements[ 'username' ].value;
 		const email = form.elements[ 'email' ].value;
@@ -33,8 +45,18 @@ export function createSignUp () {
 				password
 			}
 		})
-		.then(response => {
-			root.innerHTML = successMessage({ title: 'Вы успешно зарегистрированы' });
+		.then(response => { // TODO посмотреть что будет при сабмите путой формы
+			fetchModule.doPost({
+				path: '/auth/login',
+				body: {
+					username,
+					password
+				}
+			})
+			.then(response => {
+				root.innerHTML = '';
+				createMenu();
+			})
 		})
 		.catch((err) => {
 			console.log(err);

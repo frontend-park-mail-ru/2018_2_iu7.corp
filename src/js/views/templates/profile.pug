@@ -1,0 +1,12 @@
+div
+    div
+        h3= 'Username: ' + usr.username
+    div
+        h3= 'Email: ' + usr.email
+    div
+        h3= 'Очки: ' + usr.score
+    
+    p
+        a(href='/change' data-href='/change') Изменить данные
+    p
+        a(href='/signout' data-href='/signout') Выйти

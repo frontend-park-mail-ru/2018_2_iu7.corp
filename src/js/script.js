@@ -1,37 +1,37 @@
-'use strict';
-import { createSignIn } from './components/Login/login.js';
-import { createSignUp } from './components/Register/register.js';
-import { createLeaderboard } from './components/Leaderboard/leaderboard.js';
-import { createProfile } from './components/Profile/profile.js';
-import { createMenu } from './components/Menu/menu.js';
-import { changeSettings } from './components/ChangeSettings/changeSettings.js';
+import Router from './modules/Router.js';
+import Bus from './modules/Bus.js';
+import UserModel from './models/UserModel.js';
 
-const root = document.getElementById('root');
+import MenuView from './views/MenuView.js'
+import SignupView from './views/SignupView.js'
+import SigninView from './views/SigninView.js'
+import ProfileView from './views/ProfileView.js'
+import ChangeView from './views/ChangeView.js'
 
-const pages = {
-	menu: createMenu,
-	login: createSignIn,
-	register: createSignUp,
-	leaders: createLeaderboard,
-	profile: createProfile,
-	change: changeSettings
-};
+UserModel._data = null;
 
-createMenu();
-
-root.addEventListener('click', function (event) {
-	if (!(event.target instanceof HTMLAnchorElement)) {
-		return;
-	}
-
-	event.preventDefault();
-	const link = event.target;
-
-	console.log({
-		href: link.href
-	});
-
-	root.innerHTML = '';
-
-	pages[ link.getAttribute('href') ]();
+Bus.on('error', (error) => {console.log(error);
+                                return null;
+                            });
+Bus.on('get-user', () => {UserModel.Fetch()});
+Bus.on('submit-data-signup', (data) => {UserModel.Register(data)});
+Bus.on('submit-data-signin', (data) => {UserModel.Signin(data)});
+Bus.on('submit-data-change', (data) => {UserModel.Change(data)});
+Bus.on('wipe-views', () => {
+    Router.open('/');
+    Router.rerender();
 });
+
+
+function main() {
+    Router
+        .register('/', MenuView)
+        .register('/signup', SignupView)
+        .register('/signin', SigninView)
+        .register('/profile', ProfileView)
+        .register('/change', ChangeView);
+        
+    Router.open(window.location.pathname);
+}
+
+main();
