@@ -1,44 +1,38 @@
-import BaseView from "./BaseView.js";
+import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 const profileTmpl = require('./templates/profile.pug');
 const header = require('./templates/header.pug');
 
-
 export default class ProfileView extends BaseView {
-    constructor() {
-        console.log('PROFILE CONSTRUCTOR');        
-        super();
-        Bus.on('done-get-user', this.render.bind(this));
-    }
+	constructor () {
+		super();
+		Bus.on('done-get-user', this.render.bind(this));
+	}
 
-    show() {
-        Bus.emit('get-user');
-        console.log('PROFILE SHOW');
-        super.show();
-    } 
-     
-    render(user) {
-        console.log('PROFILE RENDER');
-        super.render();
+	show () {
+		Bus.emit('get-user');
+		super.show();
+	}
 
-        if (!user.is_authenticated) {
-            console.log("You are not logged in!");
-            return;
-        }
+	render (user) {
+		super.render();
 
-        this.viewDiv.innerHTML += header({title: 'Профиль'});
+		if (!user.is_authenticated) {
+			return;
+		}
 
-        this._navigationController = new NavigationController();
+		this.viewDiv.innerHTML += header({ title: 'Profile' });
 
-        let main = document.createElement('main');
-        main.innerHTML += profileTmpl({usr: user});
+		this._navigationController = new NavigationController();
 
-        this.viewDiv .appendChild(main);
+		let main = document.createElement('main');
+		main.innerHTML += profileTmpl({ usr: user });
 
-        this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+		this.viewDiv.appendChild(main);
 
-        Bus.off('done-get-user', this.render.bind(this));
-    }
+		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 
+		Bus.off('done-get-user', this.render.bind(this));
+	}
 }
