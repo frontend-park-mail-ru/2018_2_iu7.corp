@@ -17,16 +17,23 @@ export default class ProfileView extends BaseView {
 
 	render (user) {
 		super.render();
-
-		if (!user.is_authenticated) {
-			return;
-		}
-
+		
 		this.viewDiv.innerHTML += header({ title: 'Profile' });
 
 		this._navigationController = new NavigationController();
 
 		let main = document.createElement('main');
+
+		if (!user.is_authenticated) {
+			const span = document.createElement('span');
+			span.innerText = 'You are not singed in to see your profile'
+			main.appendChild(span);
+			this.viewDiv.appendChild(main);
+			return;
+		}
+
+
+
 		main.innerHTML += profileTmpl({ usr: user });
 
 		this.viewDiv.appendChild(main);

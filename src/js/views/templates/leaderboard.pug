@@ -1,0 +1,17 @@
+div
+    table 
+        thead
+            tr
+                th Username
+                th Score
+        tbody
+            each user in usrs
+                tr
+                    td= user.username
+                    td= user.score
+div
+    p
+        a(href="#" id="prev_page_link") Туда
+        a(href="#" id="next_page_link") Сюда
+          
+        

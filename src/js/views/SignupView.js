@@ -57,17 +57,22 @@ export default class SignupView extends BaseView {
 	render (user) {
 		super.render();
 
-		if (user.is_authenticated) {
-			console.log('You have been already registered and signed in!');
-			return;
-		}
-
 		this.viewDiv.innerHTML += header({ title: 'Registration' });
 
 		this._navigationController = new NavigationController();
 		this._formController = new FormController('signup', SignUpValidator);
 
 		let main = document.createElement('main');
+
+		if (user.is_authenticated) {
+			const span = document.createElement('span');
+			span.innerText = 'You have been already registered and signed in'
+			main.appendChild(span);
+			this.viewDiv.appendChild(main);
+			return;
+		}
+
+
 		main.innerHTML += form(data);
 
 		this.viewDiv.appendChild(main);

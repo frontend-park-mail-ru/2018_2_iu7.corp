@@ -14,15 +14,15 @@ const notAuthLinks = [
 		href: '/signup'
 	},
 	{
-		label: 'Leaders',
-		href: '/leaders'
+		label: 'Leaderboard',
+		href: '/leaderboard'
 	}
 ];
 
 const authLinks = [
 	{
-		label: 'Leaders',
-		href: '/leaders'
+		label: 'Leaderboard',
+		href: '/leaderboard'
 	},
 	{
 		label: 'Profile',

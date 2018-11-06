@@ -23,20 +23,6 @@ const data = {
 			placeholder: 'New email',
 			errorId: 'email_error'
 		}
-		// {
-		//     id: 'password_input',
-		//     name: 'password',
-		//     type: 'password',
-		//     placeholder: 'New password',
-		//     errorId: 'password_error'
-		// },
-		// {
-		//     id: 'password_repeat_input',
-		//     name: 'password_repeat',
-		//     type: 'password',
-		//     placeholder: 'Confirm password',
-		//     errorId: 'password_repeat_error'
-		// }
 	]
 };
 
@@ -54,19 +40,22 @@ export default class ChangeView extends BaseView {
 	render (user) {
 		super.render();
 
-		if (!user.is_authenticated) {
-			console.log('You are not logged in!');
-			return;
-		}
-
 		this.viewDiv.innerHTML += header({ title: 'Change Settings' });
 
 		this._navigationController = new NavigationController();
 		this._formController = new FormController('change');
 
-		let main = document.createElement('main');
-		main.innerHTML += form(data);
+		const main = document.createElement('main');
 
+		if (!user.is_authenticated) {
+			const span = document.createElement('span');
+			span.innerText = 'You are not singed in to change your settings';
+			main.appendChild(span);
+			this.viewDiv.appendChild(main);
+			return;
+		}
+
+		main.innerHTML += form(data);
 		this.viewDiv.appendChild(main);
 
 		main.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));

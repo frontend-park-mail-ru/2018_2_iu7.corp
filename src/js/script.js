@@ -7,6 +7,7 @@ import SignupView from './views/SignupView.js';
 import SigninView from './views/SigninView.js';
 import ProfileView from './views/ProfileView.js';
 import ChangeView from './views/ChangeView.js';
+import LeaderboardView from './views/LeaderboardView.js';
 
 UserModel._data = null;
 
@@ -32,7 +33,8 @@ function main () {
 		.register('/signup', SignupView)
 		.register('/signin', SigninView)
 		.register('/profile', ProfileView)
-		.register('/change', ChangeView);
+        .register('/change', ChangeView)
+        .register('/leaderboard', LeaderboardView);
 
 	Router.open(window.location.pathname);
 }

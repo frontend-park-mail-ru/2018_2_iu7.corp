@@ -65,17 +65,13 @@ class Router {
 		}
 
 		if (!viewEntity.isShown) { // если страница не была показана
-			console.log('if (!viewEntity.isShown)');
 			if (this._currentRoute) {
-				console.log('if (this._currentRoute)');
 				this._routes[this._currentRoute].viewEntity.hide(); // прячем страничку на которой находились
 			}
 
 			this._currentRoute = path;
-			console.log('viewEntity.show();');
 			viewEntity.show(); // показываем новую страницу
 		} else if (path === this._currentRoute) {
-			console.log('this.rerender();');
 			this.rerender();
 		}
 
@@ -87,9 +83,6 @@ class Router {
      * Allows to redraw open view
      */
 	rerender () {
-		console.log('RERENDER');
-		console.log('this._routes', this._routes);
-		console.log('this._currentRoute', this._currentRoute);
 		this._routes[this._currentRoute].viewEntity.show();
 	}
 
