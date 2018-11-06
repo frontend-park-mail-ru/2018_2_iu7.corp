@@ -2,11 +2,7 @@ export default class BaseView {
 	constructor () {
 		this.viewDiv = document.createElement('div');
 		BaseView.rootToRender.appendChild(this.viewDiv);
-		this.viewDiv.hidden = true;
-	}
-
-	get isShown () {
-		return this.viewDiv.hidden === false;
+		this._isHidden = true;
 	}
 
 	static get rootToRender () {
@@ -14,11 +10,13 @@ export default class BaseView {
 	}
 
 	show () {
-		this.viewDiv.hidden = false;
+		this._isHidden = false;
+		BaseView.rootToRender.appendChild(this.viewDiv);
 	}
 
 	hide () {
-		this.viewDiv.hidden = true;
+		this._isHidden = true;
+		document.getElementById('root').innerHTML = '';
 	}
 
 	render () {

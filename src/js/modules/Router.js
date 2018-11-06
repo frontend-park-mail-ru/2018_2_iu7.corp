@@ -43,7 +43,7 @@ class Router {
 	}
 
 	/**
-     * @return {undefined}
+     * 
      * Shows view linked with path
      * @param {string} pathname - path for the View
      */
@@ -64,7 +64,7 @@ class Router {
 			Bus.emit('leaderboard-set-page', page);
 		}
 
-		if (!viewEntity.isShown) { // если страница не была показана
+		if (viewEntity._isHidden) { // если страница не была показана
 			if (this._currentRoute) {
 				this._routes[this._currentRoute].viewEntity.hide(); // прячем страничку на которой находились
 			}
@@ -79,7 +79,7 @@ class Router {
 	}
 
 	/**
-     * @return {undefined}
+     * 
      * Allows to redraw open view
      */
 	rerender () {
@@ -100,7 +100,7 @@ class Router {
 	}
 
 	/**
-     * @return {undefined}
+     * 
      * work with history.api
      * @param {event} event popstate
      */
