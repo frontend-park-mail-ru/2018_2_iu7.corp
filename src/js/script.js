@@ -5,6 +5,8 @@ import UserModel from './models/UserModel.js';
 import MenuView from './views/MenuView.js';
 import SignupView from './views/SignupView.js';
 import SigninView from './views/SigninView.js';
+import 'babel-polyfill';
+
 import ProfileView from './views/ProfileView.js';
 import ChangeView from './views/ChangeView.js';
 import LeaderboardView from './views/LeaderboardView.js';
