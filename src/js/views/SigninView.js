@@ -40,7 +40,7 @@ export default class SigninView extends BaseView {
 
 	render (user) {
 		super.render();
-		
+
 		this.viewDiv.innerHTML += header({ title: 'Login' });
 
 		this._navigationController = new NavigationController();
@@ -50,7 +50,7 @@ export default class SigninView extends BaseView {
 
 		if (user.is_authenticated) {
 			const span = document.createElement('span');
-			span.innerText = 'You have been already signed in'
+			span.innerText = 'You have been already signed in';
 			main.appendChild(span);
 			this.viewDiv.appendChild(main);
 			return;

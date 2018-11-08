@@ -12,7 +12,7 @@ export default class SignUpValidator {
 					isValid = false;
 				} else { // если при повторном сабмите поле заполнилось ошибку нужно убрать
 					if (!document.getElementById(inp.name + '_error').hasAttribute('hidden')) {
-						document.getElementById(inp.name + '_error').setAttribute('hidden','hidden');
+						document.getElementById(inp.name + '_error').setAttribute('hidden', 'hidden');
 					}
 				}
 			}

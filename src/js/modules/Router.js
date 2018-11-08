@@ -43,7 +43,7 @@ class Router {
 	}
 
 	/**
-     * 
+     *
      * Shows view linked with path
      * @param {string} pathname - path for the View
      */
@@ -79,7 +79,7 @@ class Router {
 	}
 
 	/**
-     * 
+     *
      * Allows to redraw open view
      */
 	rerender () {
@@ -100,7 +100,7 @@ class Router {
 	}
 
 	/**
-     * 
+     *
      * work with history.api
      * @param {event} event popstate
      */

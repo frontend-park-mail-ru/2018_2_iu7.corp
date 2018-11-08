@@ -8,22 +8,19 @@ import MenuView from './views/MenuView.js';
 import SignupView from './views/SignupView.js';
 import SigninView from './views/SigninView.js';
 
-
 import ProfileView from './views/ProfileView.js';
 import ChangeView from './views/ChangeView.js';
 import LeaderboardView from './views/LeaderboardView.js';
 
-
 if ('serviceWorker' in navigator) {
 	navigator.serviceWorker.register('/sw.js', { scope: '/' })
-		.then(function(registration) {
+		.then(function (registration) {
 			console.log('SW registration OK:', registration);
 		})
-		.catch(function(err) {
+		.catch(function (err) {
 			console.log('SW registration FAIL:', err);
 		});
 }
-
 
 UserModel._data = null;
 
@@ -49,8 +46,8 @@ function main () {
 		.register('/signup', SignupView)
 		.register('/signin', SigninView)
 		.register('/profile', ProfileView)
-        .register('/change', ChangeView)
-        .register('/leaderboard', LeaderboardView);
+		.register('/change', ChangeView)
+		.register('/leaderboard', LeaderboardView);
 
 	Router.open(window.location.pathname);
 }
