@@ -1,0 +1,32 @@
+import Bus from '../modules/Bus.js';
+import { fetchModule } from '../modules/ajax.js';
+
+/**
+ * Leaderboard model
+ * @class LeaderboardModel
+ */
+export default class LeaderboardModel {
+	/**
+     * Creates the model
+     */
+	constructor () {
+		Bus.on('leaderboard-fetch', this.loadUsers.bind(this), false);
+	}
+
+	/**
+     * @param {string|number} page Page number
+     * @return {Promise} return
+     */
+	loadUsers (page) {
+		return fetchModule.doGet({ path: `/profiles/leaderboard/pages/${page}` })
+			.then((resp) => {
+				if (resp.status === 200) {
+					return resp.json();
+				}
+				Bus.emit('error'); // TODO errors
+			})
+			.then((data) => {
+				Bus.emit('done-leaderboard-fetch', data);
+			});
+	}
+}
