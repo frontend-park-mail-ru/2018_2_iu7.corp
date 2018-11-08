@@ -1,3 +1,5 @@
+import 'babel-polyfill';
+
 import Router from './modules/Router.js';
 import Bus from './modules/Bus.js';
 import UserModel from './models/UserModel.js';
@@ -5,11 +7,23 @@ import UserModel from './models/UserModel.js';
 import MenuView from './views/MenuView.js';
 import SignupView from './views/SignupView.js';
 import SigninView from './views/SigninView.js';
-import 'babel-polyfill';
+
 
 import ProfileView from './views/ProfileView.js';
 import ChangeView from './views/ChangeView.js';
 import LeaderboardView from './views/LeaderboardView.js';
+
+
+if ('serviceWorker' in navigator) {
+	navigator.serviceWorker.register('/sw.js', { scope: '/' })
+		.then(function(registration) {
+			console.log('SW registration OK:', registration);
+		})
+		.catch(function(err) {
+			console.log('SW registration FAIL:', err);
+		});
+}
+
 
 UserModel._data = null;
 
