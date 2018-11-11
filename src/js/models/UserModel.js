@@ -38,7 +38,6 @@ export default class UserModel {
 					return Promise.reject(response.status);
 				}
 				if (response.status === 201) {
-					console.log('Register done');
 					UserModel._data = null;
 					const username = data.username;
 					const password = data.password;

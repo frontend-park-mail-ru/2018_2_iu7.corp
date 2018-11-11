@@ -4,8 +4,8 @@ import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import LeaderboardModel from '../models/LeaderboardModel.js';
 
-const header = require('./templates/header.pug');
 const leaderboardTmpl = require('./templates/leaderboard.pug');
+const preloadTmpl = require('./templates/preload.pug');
 
 /**
  * View of the "Leaderboard" page
@@ -17,27 +17,27 @@ export default class LeaderboardView extends BaseView {
      * Creates view and registres view events
      */
     constructor() {
-        super();
+        super(leaderboardTmpl);
         this._leaderboardModel = new LeaderboardModel(); // handle events
         this._leaderboardController = new LeaderboardController();
         this._navigationController = new NavigationController();
 
-        this.render();
-        Bus.on('done-leaderboard-fetch', this.renderUsers.bind(this));
+        this.preload();
+        Bus.on('done-leaderboard-fetch', this.render.bind(this));
     }
 
     /**
      * Emits load event and shows view
-     * @return {undefined}
+     * 
      */
     show() {
         super.show();
-        Bus.emit('leaderboard-load');
+        Bus.emit('leaderboard-load');        
     }
 
     /**
      * Resets page number to 1
-     * @return {undefined}
+     * 
      */
     hide() {
         Bus.emit('leaderboard-set-page', 1);
@@ -45,37 +45,35 @@ export default class LeaderboardView extends BaseView {
     }
 
     /**
-     * Render header and loading
-     * @return {undefined}
+     * Render loading page
+     * 
      */
-    render() { 
-        super.render();
-
-        this.viewDiv.innerHTML += header({ title: 'Leaderboard' });
-        let main = document.createElement('main');
-        const loading = document.createElement('p');
-        loading.innerText = 'Loading leaderboard';
-        main.appendChild(loading);
-        this.viewDiv.appendChild(main);
-
+    preload() {
+        const data = {
+            title: 'Leaderboard'
+        };
+        this.viewDiv.innerHTML = '';
+        this.viewDiv.innerHTML = preloadTmpl(data);
     }
 
     /**
      * Render list of users
      * @param {Array} users List of users on this page
-     * @return {undefined}
      */
-    renderUsers(users) {
-        this.viewDiv.getElementsByTagName('main')[0].innerHTML = '';
-        this.viewDiv.getElementsByTagName('main')[0].innerHTML = leaderboardTmpl({usrs: users.profiles});
-        this.registerEvents();
+    render(users) {
+        const data = {
+            title: 'Leaderboard',
+            usrs: users.profiles
+        } 
+        super.render(data);
+        this.registerActions();
     }
 
     /**
      * Register events for NavigationController and LeaderboardController to handle
-     * @return {undefined}
+     * 
      */
-    registerEvents() {
+    registerActions () {
         document.getElementById('prev_page_link').
             addEventListener('click', this._leaderboardController.paginationPrevCallback.bind(this._leaderboardController));
         document.getElementById('next_page_link').

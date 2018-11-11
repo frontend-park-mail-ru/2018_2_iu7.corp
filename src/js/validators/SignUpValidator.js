@@ -14,6 +14,7 @@ export default class SignUpValidator {
 		if (!this._isPasswordsMatching(pass1, pass2)) {
 			return false;
 		}
+		return true
 	}
 
 

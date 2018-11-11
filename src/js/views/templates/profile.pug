@@ -1,12 +1,15 @@
-div
+extends base.pug
+
+block content
     div
-        h3= 'Username: ' + usr.username
-    div
-        h3= 'Email: ' + usr.email
-    div
-        h3= 'Очки: ' + usr.score
-    
-    p
-        a(href='/change' data-href='/change') Change Settings
-    p
-        a(href='/signout' data-href='/signout') Sign out
+        div
+            h3= 'Username: ' + usr.username
+        div
+            h3= 'Email: ' + usr.email
+        div
+            h3= 'Score: ' + usr.score
+        
+        p
+            a(href='/change' data-href='/change') Change Settings
+        p
+            a(href='/signout' data-href='/signout') Sign out

@@ -2,11 +2,12 @@ import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 import FormController from '../controllers/FormController.js';
-
 const form = require('./templates/form.pug');
-const header = require('./templates/header.pug');
+const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
+
 
 const data = {
+	title: 'Change Settings',
 	id: 'change',
 	fields: [
 		{
@@ -28,39 +29,35 @@ const data = {
 
 export default class ChangeView extends BaseView {
 	constructor () {
-		super();
+		super(form);
+		this._navigationController = new NavigationController();
+		this._formController = new FormController('change');
 		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
 		Bus.emit('get-user');
 		super.show();
+		this.registerActions();
 	}
 
 	render (user) {
-		super.render();
-
-		this.viewDiv.innerHTML += header({ title: 'Change Settings' });
-
-		this._navigationController = new NavigationController();
-		this._formController = new FormController('change');
-
-		const main = document.createElement('main');
-
-		if (!user.is_authenticated) {
-			const span = document.createElement('span');
-			span.innerText = 'You are not singed in to change your settings';
-			main.appendChild(span);
-			this.viewDiv.appendChild(main);
-			return;
+		if (user.is_authenticated) {
+			this._template = form;
+			super.render(data);
+		} else {
+			const permissionMessageData = {
+				title: 'Change settings',
+				message: 'You are not singed in to change your settings'
+			};
+			this._template = permissionMessageTmpl;
+			super.render(permissionMessageData);
 		}
-
-		main.innerHTML += form(data);
-		this.viewDiv.appendChild(main);
-
-		main.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
-		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
-
 		Bus.off('done-get-user', this.render.bind(this));
+	}
+
+	registerActions () {
+		this.viewDiv.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
+		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
 }

@@ -36,28 +36,27 @@ const authLinks = [
 
 export default class MenuView extends BaseView {
 	constructor () {
-		super();
+		super(menu);
+		this._navigationController = new NavigationController();
 		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
 		Bus.emit('get-user');
 		super.show();
+		this.registerActions()
 	}
 
 	render (user) {
-		super.render();
-		this._navigationController = new NavigationController();
-
-		let main = document.createElement('main');
 		if (user.is_authenticated) {
-			main.innerHTML += menu({ values: authLinks });
+			super.render({ values: authLinks });
 		} else {
-			main.innerHTML += menu({ values: notAuthLinks });
+			super.render({ values: notAuthLinks });
 		}
-		this.viewDiv.appendChild(main);
-
-		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 		Bus.off('done-get-user', this.render.bind(this));
+	}
+
+	registerActions () {
+		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
 }

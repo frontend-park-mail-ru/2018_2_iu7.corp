@@ -2,44 +2,43 @@ import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 const profileTmpl = require('./templates/profile.pug');
-const header = require('./templates/header.pug');
+const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
 
 export default class ProfileView extends BaseView {
 	constructor () {
-		super();
+		super(profileTmpl);
+		this._navigationController = new NavigationController();
 		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
 		Bus.emit('get-user');
 		super.show();
+		this.registerActions();
 	}
 
 	render (user) {
-		super.render();
-		
-		this.viewDiv.innerHTML += header({ title: 'Profile' });
+		const data = {
+			title: 'Profile',
+			usr: user
+		};
 
-		this._navigationController = new NavigationController();
-
-		let main = document.createElement('main');
-
-		if (!user.is_authenticated) {
-			const span = document.createElement('span');
-			span.innerText = 'You are not singed in to see your profile'
-			main.appendChild(span);
-			this.viewDiv.appendChild(main);
-			return;
+		if (user.is_authenticated) {
+			this._template = profileTmpl;
+			super.render(data);
+		} else {
+			const permissionMessageData = {
+				title: 'Profile',
+				message: 'You are not singed in to see your profile'
+			};
+			this._template = permissionMessageTmpl;
+			super.render(permissionMessageData);
 		}
-
-
-
-		main.innerHTML += profileTmpl({ usr: user });
-
-		this.viewDiv.appendChild(main);
-
-		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
-
 		Bus.off('done-get-user', this.render.bind(this));
 	}
+
+	registerActions () {
+		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+	}
+
 }

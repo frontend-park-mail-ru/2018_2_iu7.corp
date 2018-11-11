@@ -1,9 +1,12 @@
-div
-    form(id= id)
-        for field in fields
-            fieldset
-                input(name= field.name, type= field.type, placeholder= field.placeholder, id= field.id)
-                span(hidden, id= field.errorId)
-        input(name="submit", type="submit")
-div
-    span(hidden id= actionError)= actionErrorMessage
+extends base.pug
+
+block content
+    div
+        form(id= id)
+            for field in fields
+                fieldset
+                    input(name= field.name, type= field.type, placeholder= field.placeholder, id= field.id)
+                    span(hidden, id= field.errorId)
+            input(name="submit", type="submit")
+    div
+        span(hidden id= actionError)= actionErrorMessage

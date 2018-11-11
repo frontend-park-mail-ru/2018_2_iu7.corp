@@ -33,8 +33,6 @@ export default class LeaderboardController {
      * @private
      */
     _nextPage() {
-        console.log('_nextPage()');
-        console.log(typeof this._currentPage);
         this._currentPage += 1;
         Router.open(`/leaderboard/${this._currentPage}`);
     }
@@ -57,7 +55,6 @@ export default class LeaderboardController {
      * @private
      */
     _setPage(page) { //TODO перейты на ts
-        console.log(typeof this._currentPage);
         if (page > 0) {
             this._currentPage = +page;
         }

@@ -55,7 +55,6 @@ class Router {
 		}
 
 		let { View, viewEntity } = this._routes[path];
-
 		if (viewEntity === null) {
 			viewEntity = new View();
 		}
@@ -68,7 +67,6 @@ class Router {
 			if (this._currentRoute) {
 				this._routes[this._currentRoute].viewEntity.hide(); // прячем страничку на которой находились
 			}
-
 			this._currentRoute = path;
 			viewEntity.show(); // показываем новую страницу
 		} else if (path === this._currentRoute) {

@@ -1,5 +1,7 @@
 export default class BaseView {
-	constructor () {
+	constructor (template) {
+		this._template = template;
+
 		this.viewDiv = document.createElement('div');
 		BaseView.rootToRender.appendChild(this.viewDiv);
 		this._isHidden = true;
@@ -19,7 +21,10 @@ export default class BaseView {
 		document.getElementById('root').innerHTML = '';
 	}
 
-	render () {
+	render (context) {
 		this.viewDiv.innerHTML = '';
+		const main = document.createElement('main');
+		main.innerHTML = this._template(context);
+		this.viewDiv.appendChild(main);
 	}
 }

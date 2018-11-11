@@ -22,7 +22,6 @@ Bus.on('submit-data-change', (data) => { UserModel.Change(data); });
 Bus.on('user-signout', () => { UserModel.Signout(); });
 Bus.on('wipe-views', () => {
 	Router.open('/');
-	Router.rerender();
 });
 Bus.on('error', (error) => {
 	console.log(error);

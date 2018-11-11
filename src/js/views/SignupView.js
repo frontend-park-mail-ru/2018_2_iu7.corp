@@ -5,9 +5,10 @@ import FormController from '../controllers/FormController.js';
 import SignUpValidator from '../validators/SignUpValidator.js';
 
 const form = require('./templates/form.pug');
-const header = require('./templates/header.pug');
+const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
 
 const data = {
+	title: 'Registration',
 	id: 'signup',
 	actionError: 'signUpError',
 	actionErrorMessage: 'Such user has already been created',
@@ -45,43 +46,40 @@ const data = {
 
 export default class SignupView extends BaseView {
 	constructor () {
-		super();
+		super(form);
+		this._navigationController = new NavigationController();
+		this._formController = new FormController('signup', SignUpValidator);
 		Bus.on('done-get-user', this.render.bind(this));
+
 	}
 
 	show () {
 		Bus.emit('get-user');
 		super.show();
+		this.registerActions();
 	}
 
 	render (user) {
-		super.render();
 
-		this.viewDiv.innerHTML += header({ title: 'Registration' });
-
-		this._navigationController = new NavigationController();
-		this._formController = new FormController('signup', SignUpValidator);
-
-		let main = document.createElement('main');
-
-		if (user.is_authenticated) {
-			const span = document.createElement('span');
-			span.innerText = 'You have been already registered and signed in'
-			main.appendChild(span);
-			this.viewDiv.appendChild(main);
-			return;
+		if (!user.is_authenticated) {
+			this._template = form;
+			super.render(data);
+		} else {
+			const permissionMessageData = {
+				title: 'Registration',
+				message: 'You have been already registered and signed in'
+			};
+			this._template = permissionMessageTmpl;
+			super.render(permissionMessageData);
 		}
-
-
-		main.innerHTML += form(data);
-
-		this.viewDiv.appendChild(main);
-
-		main.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
-		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
-
 		Bus.off('done-get-user', this.render.bind(this));
 	}
+
+	registerActions () {
+		this.viewDiv.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
+		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+	}
+
 
 	static showUnsuccessMessage () {
 		let errorField = document.getElementById('signUpError');
