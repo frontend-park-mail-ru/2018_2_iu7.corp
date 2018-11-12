@@ -28,14 +28,13 @@ Bus.on('error', (error) => {
 	return null;
 });
 
-function main () {
-	Router
-		.register('/', MenuView)
-		.register('/signup', SignupView)
-		.register('/signin', SigninView)
-		.register('/profile', ProfileView)
-        .register('/change', ChangeView)
-        .register('/leaderboard', LeaderboardView);
+function main () {		
+	[['/', MenuView],
+	['/signup', SignupView],
+	['/signin', SigninView],
+	['/profile', ProfileView],
+	['/change', ChangeView],
+	['/leaderboard', LeaderboardView]].forEach((route) => {Router.register(route[0],route[1])})
 
 	Router.open(window.location.pathname);
 }
