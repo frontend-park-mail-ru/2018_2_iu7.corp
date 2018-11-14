@@ -1,4 +1,4 @@
-const serverUrl = 'https://strategio-api.now.sh';
+const serverUrl = 'https://bombergame-backend.now.sh';
 
 export class fetchModule {
 	static _ajax ({ method = 'GET', path = '/', body } = {}) {
