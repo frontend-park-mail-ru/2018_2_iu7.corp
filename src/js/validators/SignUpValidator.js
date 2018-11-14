@@ -14,6 +14,10 @@ export default class SignUpValidator {
 		if (!this._isPasswordsMatching(pass1, pass2)) {
 			return false;
 		}
+
+		if (!this._isPasswordLongEnough(pass1)) {
+			return false;
+		}
 		return true
 	}
 
@@ -41,6 +45,17 @@ export default class SignUpValidator {
 		return true;
 	}
 
+	_isPasswordLongEnough(pass) {
+
+		if (pass.value.length < 8) {
+			this._setError('password_error', 'Password must be at least 8 characters');
+			return false;
+		}
+		return true;
+		console.log(pass.value);
+		console.log(typeof(pass.value));
+	}
+
 	_isEmptyField (value) { // проверка на пустоту одного конкретного поля
 		return value === "" ? true : false;
 	}
@@ -51,3 +66,5 @@ export default class SignUpValidator {
 		errorField.removeAttribute('hidden');
 	}
 }
+
+
