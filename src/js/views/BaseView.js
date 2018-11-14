@@ -1,29 +1,30 @@
 export default class BaseView {
-    constructor() {
-        console.log('BASE CONSTRUCTOR');
-        this.viewDiv = document.createElement('div');
-        BaseView.rootToRender.appendChild(this.viewDiv);
-        this.viewDiv.hidden = true;
-    }
+	constructor (template) {
+		this._template = template;
 
-    get isShown() {
-        return this.viewDiv.hidden === false;
-    }
+		this.viewDiv = document.createElement('div');
+		BaseView.rootToRender.appendChild(this.viewDiv);
+		this._isHidden = true;
+	}
 
-    static get rootToRender() {
-        return document.getElementById('root');
-    }
+	static get rootToRender () {
+		return document.getElementById('root');
+	}
 
-    show() {
-        console.log('BASE SHOW');
-        this.viewDiv.hidden = false;
-    }
+	show () {
+		this._isHidden = false;
+		BaseView.rootToRender.appendChild(this.viewDiv);
+	}
 
-    hide() {
-        this.viewDiv.hidden = true;
-    }
+	hide () {
+		this._isHidden = true;
+		document.getElementById('root').innerHTML = '';
+	}
 
-    render() {
-        this.viewDiv.innerHTML = '';
-    }
+	render (context) {
+		this.viewDiv.innerHTML = '';
+		const main = document.createElement('main');
+		main.innerHTML = this._template(context);
+		this.viewDiv.appendChild(main);
+	}
 }

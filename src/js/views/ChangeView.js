@@ -1,47 +1,63 @@
-import BaseView from "./BaseView.js";
+import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 import FormController from '../controllers/FormController.js';
-const changeForm = require('./templates/changeSettings.pug');
-const header = require('./templates/header.pug');
+const form = require('./templates/form.pug');
+const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
 
+
+const data = {
+	title: 'Change Settings',
+	id: 'change',
+	fields: [
+		{
+			id: 'username_input',
+			name: 'username',
+			type: 'text',
+			placeholder: 'New username',
+			errorId: 'username_error'
+		},
+		{
+			id: 'email_input',
+			name: 'email',
+			type: 'email',
+			placeholder: 'New email',
+			errorId: 'email_error'
+		}
+	]
+};
 
 export default class ChangeView extends BaseView {
-    constructor() {
-        console.log('CANHGE CONSTRUCTOR');        
-        super();
-        Bus.on('done-get-user', this.render.bind(this));
-    }
+	constructor () {
+		super(form);
+		this._navigationController = new NavigationController();
+		this._formController = new FormController('change');
+		Bus.on('done-get-user', this.render.bind(this));
+	}
 
-    show() {
-        Bus.emit('get-user');
-        console.log('CANHGE SHOW');
-        super.show();
-    }
+	show () {
+		Bus.emit('get-user');
+		super.show();
+		this.registerActions();
+	}
 
-    render(user) {
-        console.log('CANHGE RENDER');
-        console.log('USER: ', user);
-        super.render();
+	render (user) {
+		if (user.is_authenticated) {
+			this._template = form;
+			super.render(data);
+		} else {
+			const permissionMessageData = {
+				title: 'Change settings',
+				message: 'You are not singed in to change your settings'
+			};
+			this._template = permissionMessageTmpl;
+			super.render(permissionMessageData);
+		}
+		Bus.off('done-get-user', this.render.bind(this));
+	}
 
-        if (!user.is_authenticated) {
-            console.log("You are not logged in!");
-            return;
-        }
-
-        this.viewDiv.innerHTML += header({title: 'Изменение настроек'});
-
-        this._navigationController = new NavigationController();
-        this._formController = new FormController('change'); 
-
-        let main = document.createElement('main');
-        main.innerHTML += changeForm();
-
-        this.viewDiv .appendChild(main);
-
-        main.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
-        this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
-
-        Bus.off('done-get-user', this.render.bind(this));
-    }
+	registerActions () {
+		this.viewDiv.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
+		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+	}
 }

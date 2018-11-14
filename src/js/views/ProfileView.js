@@ -1,44 +1,44 @@
-import BaseView from "./BaseView.js";
+import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 const profileTmpl = require('./templates/profile.pug');
-const header = require('./templates/header.pug');
-
+const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
 
 export default class ProfileView extends BaseView {
-    constructor() {
-        console.log('PROFILE CONSTRUCTOR');        
-        super();
-        Bus.on('done-get-user', this.render.bind(this));
-    }
+	constructor () {
+		super(profileTmpl);
+		this._navigationController = new NavigationController();
+		Bus.on('done-get-user', this.render.bind(this));
+	}
 
-    show() {
-        Bus.emit('get-user');
-        console.log('PROFILE SHOW');
-        super.show();
-    } 
-     
-    render(user) {
-        console.log('PROFILE RENDER');
-        super.render();
+	show () {
+		Bus.emit('get-user');
+		super.show();
+		this.registerActions();
+	}
 
-        if (!user.is_authenticated) {
-            console.log("You are not logged in!");
-            return;
-        }
+	render (user) {
+		const data = {
+			title: 'Profile',
+			usr: user
+		};
 
-        this.viewDiv.innerHTML += header({title: 'Профиль'});
+		if (user.is_authenticated) {
+			this._template = profileTmpl;
+			super.render(data);
+		} else {
+			const permissionMessageData = {
+				title: 'Profile',
+				message: 'You are not singed in to see your profile'
+			};
+			this._template = permissionMessageTmpl;
+			super.render(permissionMessageData);
+		}
+		Bus.off('done-get-user', this.render.bind(this));
+	}
 
-        this._navigationController = new NavigationController();
-
-        let main = document.createElement('main');
-        main.innerHTML += profileTmpl({usr: user});
-
-        this.viewDiv .appendChild(main);
-
-        this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
-
-        Bus.off('done-get-user', this.render.bind(this));
-    }
+	registerActions () {
+		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+	}
 
 }
