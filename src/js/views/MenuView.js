@@ -1,13 +1,16 @@
 import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
+import ProfileController from '../controllers/ProfileController.js';
+import ProfileModel from '../models/ProfileModel.js';
+import { getCookie } from '../utils.js'
 
 const menu = require('./templates/menu.pug');
 
 const notAuthLinks = [
 	{
 		label: 'Sign in',
-		href: `/profile/1`
+		href: '/signin'
 	},
 	{
 		label: 'Sign up',
@@ -19,12 +22,12 @@ const notAuthLinks = [
 	}
 ];
 
-
-
 export default class MenuView extends BaseView {
 	constructor () {
 		super(menu);
 		this._navigationController = new NavigationController();
+		this._profileController = new ProfileController();
+		this._profileModel = new ProfileModel();
 		Bus.on('done-get-user', this.render.bind(this));
 	}
 
@@ -35,6 +38,9 @@ export default class MenuView extends BaseView {
 	}
 
 	render (user) {
+		console.log(user)
+		console.log('COOOKIEEEEES:', getCookie('id'));
+		console.log('typeof COOOKIEEEEES:', typeof(getCookie('id')));
 		if (user.is_authenticated) {
 			const authLinks = [
 				{
@@ -43,7 +49,7 @@ export default class MenuView extends BaseView {
 				},
 				{
 					label: 'Profile',
-					href: `/profile/${user.profiles_id}`
+					href: `/profile/${user.id}`
 				},
 				{
 					label: 'Sign out',

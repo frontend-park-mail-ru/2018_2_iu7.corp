@@ -1,48 +1,79 @@
 import Bus from '../modules/Bus.js';
-import Router from "../modules/Router.js";
-
+import { getCookie } from '../utils.js';
+// import { fetchModule } from '../modules/ajax.js';
 
 export default class ProfileController {
-    constructor () {
-        this._targetProfileId = null;
-        Bus.on("profile-set-id", this._setId.bind(this));
-        Bus.on("profile-load", this._loadProfile.bind(this));
-    }
+	constructor () {
+		this._targetProfileId = null;
+		// ProfileController._currentUser = {is_authenticated: false};
+		Bus.on('set-target-id', this._setTargetId.bind(this));
+		// Bus.on('set-current-user', this._setCurrentUser.bind(this));
+		Bus.on('profile-load', this._loadProfile.bind(this));
+		Bus.on('done-profile-fetch', this._checkIdMatching.bind(this));
+		Bus.on('check-user-permissions', this._checkIdMatching.bind(this));
+	}
 
-    _setId(id) { //TODO перейты на ts
-        if (id && id > 0) {
-            this._targetProfileId = +id;
-        }
-    }
+	// _setCurrentUser(user) {
+	// 	ProfileController._currentUser = user;
+	// 	ProfileController._currentUser.is_authenticated = true;
+	// 	console.log('_currentUser:', ProfileController._currentUser);
+	// }
 
-    _loadProfile() {
-        Bus.emit('profile-fetch', this._targetProfileId);
-    }
+	_setTargetId (id) { // TODO перейты на ts
+		if (id && id > 0) {
+			this._targetProfileId = +id;
+			console.log('_targetProfileId:', this._targetProfileId);
+		}
+	}
 
-    // проверка если пользователь будучи залогининым пытается изменить профиль под другим id
-    // если незалогининный пользователь пытается изменить данные то usr = {is_authenticated: false}
-    // то есть usr.profiles_id - undefined и проверка завершится на первом if 
-    _checkUserBeforeChange(usr) {
-        if (usr.profiles_id === this._targetProfileId) { 
-            const userData = {
-                user: usr,
-                idMatching: true
-            };
-            Bus.emit('verified-user-change', userData);
-        } else { // пользователь пытался изменить не свои данные
-            const userData = {
-                user: usr,
-                idMatching: false
-            };
-            Bus.emit('verified-user-change', userData);
-        }
-    }
-    // говорим модели сделать запрос на сервер для изменения данных пользователя
-    _makeSettingsChanges(data) {
-        const userData = {
-            profiles_id: this._targetProfileId,
-            newData: data
-        };
-        Bus.emit('changes-fetch', userData);
-    }
+	_loadProfile () { // говорим profileModel загрузить пользователя
+		Bus.emit('profile-fetch', this._targetProfileId);
+	}
+
+	// проверяем свой ли профиль хочет посмотреть или изменить пользователь
+	_checkIdMatching (data) { 
+		const currentUserId = parseInt(getCookie('id'));
+		console.log('_checkIdMatching data', data);
+		console.log('currentUserId AND this._targetProfileId', currentUserId, this._targetProfileId);
+		if (currentUserId) { // если залогинен
+			if (currentUserId === this._targetProfileId) { // если хочет что-то сделать со своим профилем
+				const renderData = {
+					user: data,
+					myProfile: true
+				}
+				Bus.emit('profile-render', renderData);
+			} else { // если хочет что-то сделать не со своим профилем
+				const renderData = {
+					user: data,
+					myProfile: false
+				}
+				Bus.emit('profile-render', renderData);
+			}
+		} else { // если незалогинен
+			const renderData = {
+				user: data,
+				myProfile: false
+			}
+			Bus.emit('profile-render', renderData);	
+		}
+	}
+
+	// // получаем данные текущего пользователя
+	// static _getCurrentUser () {
+	// 	console.log('ProfileController._currentUser _getCurrentUser', ProfileController._currentUser);
+	// 	Bus.emit('done-get-user', ProfileController._currentUser);
+	// }
+
+	static _getCurrentUser () {
+		Bus.emit('current-profile-fetch');
+	}
+
+	// говорим модели сделать запрос на сервер для изменения данных пользователя
+	static _makeSettingsChanges (data) {
+		const userData = {
+			id: this._targetProfileId,
+			newData: data
+		};
+		Bus.emit('changes-fetch', userData);
+	}
 }

@@ -7,13 +7,11 @@ export class fetchModule {
 		const options = {
 			mode: 'cors',
 			credentials: 'include',
-			method: method,
-			headers: {'Access-Control-Allow-Origin':'*'}
+			method: method
 		};
 
 		if (body) {
-
-			options.headers['Content-Type'] = 'application/json; charset=utf-8';
+			options.headers = { 'Content-Type': 'application/json; charset=utf-8' };
 			options.body = JSON.stringify(body);
 		}
 		return fetch(url, options);

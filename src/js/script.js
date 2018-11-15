@@ -1,6 +1,6 @@
 import Router from './modules/Router.js';
 import Bus from './modules/Bus.js';
-import UserModel from './models/UserModel.js';
+import AuthModel from './models/AuthModel.js';
 
 import MenuView from './views/MenuView.js';
 import SignupView from './views/SignupView.js';
@@ -10,18 +10,16 @@ import 'babel-polyfill';
 import ProfileView from './views/ProfileView.js';
 import ChangeView from './views/ChangeView.js';
 import LeaderboardView from './views/LeaderboardView.js';
-import ProfileController from './controllers/ProfileController.js'
+import ProfileController from './controllers/ProfileController.js';
 
-UserModel._data = null;
 
 Bus.on('unsuccess-signup', () => { SignupView.showUnsuccessMessage(); });
 Bus.on('unsuccess-signin', () => { SigninView.showUnsuccessMessage(); });
-Bus.on('get-user', () => { UserModel.Fetch(); });
-Bus.on('submit-data-signup', (data) => { UserModel.Register(data); });
-Bus.on('submit-data-signin', (data) => { UserModel.Signin(data); });
-// Bus.on('submit-data-change', (data) => { UserModel.Change(data); });
+Bus.on('get-user', () => { ProfileController._getCurrentUser(); });
+Bus.on('submit-data-signup', (data) => { AuthModel.Register(data); });
+Bus.on('submit-data-signin', (data) => { AuthModel.Signin(data); });
 Bus.on('submit-data-change', (data) => { ProfileController._makeSettingsChanges(data); });
-Bus.on('user-signout', () => { UserModel.Signout(); });
+Bus.on('user-signout', () => { AuthModel.Signout(); });
 Bus.on('wipe-views', () => {
 	Router.open('/');
 });
@@ -30,13 +28,13 @@ Bus.on('error', (error) => {
 	return null;
 });
 
-function main () {		
+function main () {
 	[['/', MenuView],
-	['/signup', SignupView],
-	['/signin', SigninView],
-	['/profile', ProfileView],
-	['/change', ChangeView],
-	['/leaderboard', LeaderboardView]].forEach((route) => {Router.register(route[0],route[1])})
+		['/signup', SignupView],
+		['/signin', SigninView],
+		['/profile', ProfileView],
+		['/change', ChangeView],
+		['/leaderboard', LeaderboardView]].forEach((route) => { Router.register(route[0], route[1]); });
 
 	console.log(window.location.pathname);
 	Router.open(window.location.pathname);

@@ -29,15 +29,15 @@ class Router {
 	parsePath (path) {
 		let queryParams = {
 			path: null,
-			profiles_id: null,
+			id: null,
 			page_index: null
-		}
-	
+		};
+
 		if (path.includes('page_index')) {
 			const query = path.split('?');
 			queryParams.path = query[0];
 			const params = query[1].split('&');
-			params.forEach( (p) => {
+			params.forEach((p) => {
 				let pair = p.split('=');
 				queryParams[pair[0]] = pair[1];
 			});
@@ -45,7 +45,7 @@ class Router {
 		} else {
 			let aPath = path.split('/');
 			queryParams.path = `/${aPath[1]}`;
-			queryParams.profiles_id = aPath[2];
+			queryParams.id = aPath[2];
 			return queryParams;
 		}
 		// let aPath = path.split('/');
@@ -64,15 +64,14 @@ class Router {
 	}
 
 	/**
-     * 
+     *
      * Shows view linked with path
      * @param {string} pathname - path for the View
      */
 	_open (pathname) {
-
-		console.log('pathname',pathname);
-		let {path, profiles_id, page_index} = this.parsePath(pathname);
-		console.log(path, profiles_id, page_index);
+		console.log('pathname', pathname);
+		let { path, id, page_index } = this.parsePath(pathname);
+		console.log(path, id, page_index);
 		if (!this._routes[path]) {
 			Bus.emit('error', 'no such path is registred');
 			return;
@@ -87,8 +86,8 @@ class Router {
 			Bus.emit('leaderboard-set-page', page_index);
 		}
 
-		if (profiles_id) { // устанавливаем id нужного пользователя через контроллер
-			Bus.emit('profile-set-id', profiles_id);
+		if (id) { // устанавливаем id нужного пользователя через контроллер
+			Bus.emit('set-target-id', id);
 		}
 
 		if (viewEntity._isHidden) { // если страница не была показана
@@ -105,7 +104,7 @@ class Router {
 	}
 
 	/**
-     * 
+     *
      * Allows to redraw open view
      */
 	rerender () {
@@ -126,7 +125,7 @@ class Router {
 	}
 
 	/**
-     * 
+     *
      * work with history.api
      * @param {event} event popstate
      */
