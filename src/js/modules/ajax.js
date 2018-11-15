@@ -1,4 +1,4 @@
-const serverUrl = 'https://bombergame-backend.now.sh';
+const serverUrl = 'http://176.119.156.66';
 
 export class fetchModule {
 	static _ajax ({ method = 'GET', path = '/', body } = {}) {
@@ -7,11 +7,13 @@ export class fetchModule {
 		const options = {
 			mode: 'cors',
 			credentials: 'include',
-			method: method
+			method: method,
+			headers: {'Access-Control-Allow-Origin':'*'}
 		};
 
 		if (body) {
-			options.headers = { 'Content-Type': 'application/json; charset=utf-8' };
+
+			options.headers['Content-Type'] = 'application/json; charset=utf-8';
 			options.body = JSON.stringify(body);
 		}
 		return fetch(url, options);
@@ -31,5 +33,8 @@ export class fetchModule {
 
 	static doPut (params = {}) {
 		return this._ajax({ ...params, method: 'PUT' });
+	}
+	static doPatch (params = {}) {
+		return this._ajax({ ...params, method: 'PATCH' });
 	}
 }

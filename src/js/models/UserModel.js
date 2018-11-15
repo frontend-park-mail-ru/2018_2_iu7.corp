@@ -43,11 +43,13 @@ export default class UserModel {
 			.then( response => {
 				console.log('Registration response: ', response);
 				if (response.status === 200) {
+					UserModel._data = null;
 					const username = data.username;
 					const password = data.password;
 					Bus.emit('submit-data-signin', { username, password });
 				}
 				if (response.status === 409) {
+					UserModel._data = null;
 					Bus.emit('unsuccess-signup');
 				}
 				if (response.status === 422) { // валидация на стороне сервера TODO сообщение о неправильно вводе данных
@@ -90,13 +92,16 @@ export default class UserModel {
 					return response.json();
 				}
 				if (response.status === 401) {
+					UserModel._data = null;
 					Bus.emit('unsuccess-signin');
 				}
 				if (response.status === 422) {
+					UserModel._data = null;
 					return Promise.reject(response.status);
 				}
 			})
 			.then( (user) => {
+				UserModel._data = null;
 				console.log('SignIN user:', user);
 				UserModel._data = user;
 				UserModel._data.is_authenticated = true;
@@ -121,27 +126,23 @@ export default class UserModel {
 		// 	});
 	}
 
-	static Profile (profile_id) {
-		return fetchModule.doGet()
-	}
-
 	// TODO больше проверок
-	static Change (data) {
-		fetchModule.doPut({ path: '/profiles/current', body: data })
-			.then(response => {
-				if (response.status === 400) {
-					console.log(response.status);
-				}
+	// static Change (data) {
+	// 	fetchModule.doPut({ path: '/profiles/current', body: data })
+	// 		.then(response => {
+	// 			if (response.status === 400) {
+	// 				console.log(response.status);
+	// 			}
 
-				if (response.status === 200) {
-					UserModel._data = null;
-					Router.open('/profile');
-				}
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}
+	// 			if (response.status === 200) {
+	// 				UserModel._data = null;
+	// 				Router.open('/profile');
+	// 			}
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 		});
+	// }
 
 	static Signout () {
 		if (UserModel._data !== null) {

@@ -27,8 +27,29 @@ class Router {
      * @param {string} path - path for the View
      */
 	parsePath (path) {
-		let aPath = path.split('/');
-		return { path: `/${aPath[1]}`, page: aPath[2] };
+		let queryParams = {
+			path: null,
+			profiles_id: null,
+			page_index: null
+		}
+	
+		if (path.includes('page_index')) {
+			const query = path.split('?');
+			queryParams.path = query[0];
+			const params = query[1].split('&');
+			params.forEach( (p) => {
+				let pair = p.split('=');
+				queryParams[pair[0]] = pair[1];
+			});
+			return queryParams;
+		} else {
+			let aPath = path.split('/');
+			queryParams.path = `/${aPath[1]}`;
+			queryParams.profiles_id = aPath[2];
+			return queryParams;
+		}
+		// let aPath = path.split('/');
+		// return { path: `/${aPath[1]}`, page: aPath[2] };
 	}
 
 	/**
@@ -48,7 +69,10 @@ class Router {
      * @param {string} pathname - path for the View
      */
 	_open (pathname) {
-		let { path, page } = this.parsePath(pathname);
+
+		console.log('pathname',pathname);
+		let {path, profiles_id, page_index} = this.parsePath(pathname);
+		console.log(path, profiles_id, page_index);
 		if (!this._routes[path]) {
 			Bus.emit('error', 'no such path is registred');
 			return;
@@ -59,8 +83,12 @@ class Router {
 			viewEntity = new View();
 		}
 
-		if (page) { // для лидерборда
-			Bus.emit('leaderboard-set-page', page);
+		if (page_index) { // для лидерборда
+			Bus.emit('leaderboard-set-page', page_index);
+		}
+
+		if (profiles_id) { // устанавливаем id нужного пользователя через контроллер
+			Bus.emit('profile-set-id', profiles_id);
 		}
 
 		if (viewEntity._isHidden) { // если страница не была показана

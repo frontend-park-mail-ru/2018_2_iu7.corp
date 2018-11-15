@@ -7,7 +7,7 @@ const menu = require('./templates/menu.pug');
 const notAuthLinks = [
 	{
 		label: 'Sign in',
-		href: '/signin'
+		href: `/profile/1`
 	},
 	{
 		label: 'Sign up',
@@ -19,20 +19,7 @@ const notAuthLinks = [
 	}
 ];
 
-const authLinks = [
-	{
-		label: 'Leaderboard',
-		href: '/leaderboard'
-	},
-	{
-		label: 'Profile',
-		href: '/profile'
-	},
-	{
-		label: 'Sign out',
-		href: '/signout'
-	}
-];
+
 
 export default class MenuView extends BaseView {
 	constructor () {
@@ -44,11 +31,25 @@ export default class MenuView extends BaseView {
 	show () {
 		Bus.emit('get-user');
 		super.show();
-		this.registerActions()
+		this.registerActions();
 	}
 
 	render (user) {
 		if (user.is_authenticated) {
+			const authLinks = [
+				{
+					label: 'Leaderboard',
+					href: '/leaderboard'
+				},
+				{
+					label: 'Profile',
+					href: `/profile/${user.profiles_id}`
+				},
+				{
+					label: 'Sign out',
+					href: '/signout'
+				}
+			];
 			super.render({ values: authLinks });
 		} else {
 			super.render({ values: notAuthLinks });

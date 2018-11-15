@@ -10,7 +10,7 @@ export default class LeaderboardModel {
      * Creates the model
      */
     constructor() {
-        Bus.on('leaderboard-fetch', this.loadUsers.bind(this), false);
+        Bus.on('leaderboard-fetch', this.loadUsers.bind(this));
     }
 
     /**

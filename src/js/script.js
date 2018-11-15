@@ -10,6 +10,7 @@ import 'babel-polyfill';
 import ProfileView from './views/ProfileView.js';
 import ChangeView from './views/ChangeView.js';
 import LeaderboardView from './views/LeaderboardView.js';
+import ProfileController from './controllers/ProfileController.js'
 
 UserModel._data = null;
 
@@ -18,7 +19,8 @@ Bus.on('unsuccess-signin', () => { SigninView.showUnsuccessMessage(); });
 Bus.on('get-user', () => { UserModel.Fetch(); });
 Bus.on('submit-data-signup', (data) => { UserModel.Register(data); });
 Bus.on('submit-data-signin', (data) => { UserModel.Signin(data); });
-Bus.on('submit-data-change', (data) => { UserModel.Change(data); });
+// Bus.on('submit-data-change', (data) => { UserModel.Change(data); });
+Bus.on('submit-data-change', (data) => { ProfileController._makeSettingsChanges(data); });
 Bus.on('user-signout', () => { UserModel.Signout(); });
 Bus.on('wipe-views', () => {
 	Router.open('/');
@@ -36,6 +38,7 @@ function main () {
 	['/change', ChangeView],
 	['/leaderboard', LeaderboardView]].forEach((route) => {Router.register(route[0],route[1])})
 
+	console.log(window.location.pathname);
 	Router.open(window.location.pathname);
 }
 

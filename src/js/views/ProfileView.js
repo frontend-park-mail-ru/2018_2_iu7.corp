@@ -1,18 +1,27 @@
 import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
+import ProfileModel from '../models/ProfileModel.js';
+import ProfileController from '../controllers/ProfileController.js';
+
+const preloadTmpl = require('./templates/preload.pug');
 const profileTmpl = require('./templates/profile.pug');
 const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
 
 export default class ProfileView extends BaseView {
 	constructor () {
 		super(profileTmpl);
+		this._profileModel = new ProfileModel(); // handle events
+        this._profileController = new ProfileController();
 		this._navigationController = new NavigationController();
-		Bus.on('done-get-user', this.render.bind(this));
+
+		this.preload();
+		Bus.on('done-profile-fetch', this.render.bind(this));
 	}
 
 	show () {
-		Bus.emit('get-user');
+		// super.show();
+		Bus.emit('profile-load');
 		super.show();
 		this.registerActions();
 	}
@@ -20,6 +29,7 @@ export default class ProfileView extends BaseView {
 	render (user) {
 		const data = {
 			title: 'Profile',
+			changeHref: `/change/${user.profiles_id}`,
 			usr: user
 		};
 
@@ -36,6 +46,14 @@ export default class ProfileView extends BaseView {
 		}
 		Bus.off('done-get-user', this.render.bind(this));
 	}
+
+	preload() {
+        const data = {
+            title: 'Profile'
+        };
+        this.viewDiv.innerHTML = '';
+        this.viewDiv.innerHTML = preloadTmpl(data);
+    }
 
 	registerActions () {
 		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
