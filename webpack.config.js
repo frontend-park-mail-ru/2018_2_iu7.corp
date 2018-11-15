@@ -1,4 +1,3 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
@@ -7,7 +6,7 @@ module.exports = {
 	},
 
 	output: {
-		filename: 'main.js',
+		filename: '[name].bundle.js',
 		path: path.resolve(__dirname, 'dist')
 	},
 
@@ -17,7 +16,6 @@ module.exports = {
 				test: /\.css$/,
 				use: ['style-loader', 'css-loader']
 			},
-
 			{
 				test: /\.pug$/,
 				use: 'pug-loader'
@@ -32,15 +30,6 @@ module.exports = {
 				  }
 				}
 			}
-
 		]
 	},
-
-	plugins: [
-		new HtmlWebpackPlugin({
-			filename: 'index.html',
-			template: './src/index.html'
-		})
-	]
-
 };

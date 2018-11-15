@@ -36,6 +36,8 @@ function main () {
 	['/change', ChangeView],
 	['/leaderboard', LeaderboardView]].forEach((route) => {Router.register(route[0],route[1])})
 
+	console.log('window.location.pathname', window.location.pathname);
+
 	Router.open(window.location.pathname);
 }
 

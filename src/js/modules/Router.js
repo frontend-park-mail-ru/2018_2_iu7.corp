@@ -48,6 +48,7 @@ class Router {
      * @param {string} pathname - path for the View
      */
 	_open (pathname) {
+		console.log('path name', pathname);
 		let { path, page } = this.parsePath(pathname);
 		if (!this._routes[path]) {
 			Bus.emit('error', 'no such path is registred');
