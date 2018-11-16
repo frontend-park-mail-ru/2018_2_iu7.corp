@@ -40,6 +40,7 @@ export default class MenuView extends BaseView {
 	render (user) {
 		console.log(user)
 		console.log('COOOKIEEEEES:', getCookie('id'));
+		console.log('COOOKIEEEEES:', getCookie('auth_token'));
 		console.log('typeof COOOKIEEEEES:', typeof(getCookie('id')));
 		if (user.is_authenticated) {
 			const authLinks = [

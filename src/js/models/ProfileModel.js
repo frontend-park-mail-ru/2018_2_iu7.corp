@@ -11,19 +11,19 @@ export default class ProfileModel {
 	}
 
 	loadCurrentProfile() {
-		if (ProfileModel._currentProfle) {
-			Bus.emit('done-get-user', ProfileModel._currentProfle);
-			return;
-		}
+		console.log('INITIAL CURRENT USER',ProfileModel._currentProfle);
 		const currentUserId = getCookie('id');
+		console.log('CURRENT USER LOAD PATH', '/profiles/' + currentUserId);
 		fetchModule.doGet({ path: '/profiles/' + currentUserId })
 			.then(  response => {
+				console.log('CURRENT USER LOAD RESPONSE',response);
 				if (response.status === 200) {
 					return response.json();
 				}
 				return Promise.reject(new Error('not auth'));
 			})
 			.then( (data) => {
+				console.log('CURRENT USER LOAD DATA', data);
 				ProfileModel._currentProfle = data;
 				ProfileModel._currentProfle.is_authenticated = true;
 				Bus.emit('done-get-user', ProfileModel._currentProfle);	
@@ -50,14 +50,17 @@ export default class ProfileModel {
 	}
 
 	// TODO обработка ошибок
-	loadProfileChanges (userData) {
-		const id = userData.id;
-		const data = userData.newData;
+	loadProfileChanges (data) {
+		const id = getCookie('id');
+		const authToken = getCookie('auth_token');
+		const changeHeaders = {
+			'Authorization': 'Bearer ' + authToken
+		}
 
-		return fetchModule.doPatch({ path: `/profiles/${id}`, body: data })
+		return fetchModule.doPatch({ path: `/profiles/${id}`, body: data, headers: changeHeaders })
 			.then(response => {
 				if (response.status === 200) {
-					Router.open(`/profiles/${id}`);
+					Router.open(`/profile/${id}`);
 				}
 				if (response.status === 401) {
 					console.log('change Not auth:', response.status);

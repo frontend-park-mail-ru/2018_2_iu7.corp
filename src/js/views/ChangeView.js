@@ -36,38 +36,16 @@ export default class ChangeView extends BaseView {
 		this._formController = new FormController('change');
 		this._profileModel = new ProfileModel();
 		this._profileController = new ProfileController();
-		Bus.on('profile-render', this.render.bind(this));
+		console.log('CHANGE ON PROFILE-RENDER: ');
+		Bus.on('done-check-permissions', this.render.bind(this));
 	}
 
 	show () {
+		console.log('CHANGE SHOW');
 		Bus.emit('check-user-permissions'); // говорим profileController проверить может ли пользователь изменять данные
 		super.show();
 		this.registerActions();
 	}
-
-	// render (userData) {
-	// 	if (userData.user.is_authenticated) {
-	// 		if (userData.idMatching) { // если залогининный пользователь пытается изменить свои данные
-	// 			this._template = form;
-	// 			super.render(data);
-	// 		} else { // если не свои
-	// 			const permissionMessageData = {
-	// 				title: 'Change settings',
-	// 				message: 'You can not change someone`s settings'
-	// 			};
-	// 			this._template = permissionMessageTmpl;
-	// 			super.render(permissionMessageData);
-	// 		}
-	// 	} else { // если не залогинен
-	// 		const permissionMessageData = {
-	// 			title: 'Change settings',
-	// 			message: 'You are not singed in to change your settings'
-	// 		};
-	// 		this._template = permissionMessageTmpl;
-	// 		super.render(permissionMessageData);
-	// 	}
-	// 	Bus.off('done-get-user', this.render.bind(this));
-	// }
 
 	render(renderData) {
 		if (renderData.myProfile) { // если пользователь залогинен и хочет посмотреть свой профиль
@@ -81,7 +59,7 @@ export default class ChangeView extends BaseView {
 			this._template = permissionMessageTmpl;
 			super.render(permissionMessageData);
 		}
-		Bus.off('profile-render', this.render.bind(this));
+		Bus.off('done-check-permissions', this.render.bind(this));
 	}
 
 

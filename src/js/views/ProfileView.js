@@ -16,6 +16,7 @@ export default class ProfileView extends BaseView {
 		this._navigationController = new NavigationController();
 
 		this.preload();
+		console.log('PROFILE ON PROFILE-RENDER: ');
 		Bus.on('profile-render', this.render.bind(this));
 	}
 
@@ -44,7 +45,9 @@ export default class ProfileView extends BaseView {
 			this._template = notMyProfileTmpl;
 			super.render(data);
 		}
+		console.log('renderData in PROFILEVIEW BOTTOM: ',renderData);
 		Bus.off('profile-render', this.render.bind(this));
+		console.log('DONE OFFFFFFF');
 	}
 
 	preload () {

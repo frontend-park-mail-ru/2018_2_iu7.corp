@@ -44,4 +44,10 @@ export function getCookie(name) {
 	  "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
 	));
 	return matches ? decodeURIComponent(matches[1]) : undefined;
-  }
+	}
+	
+export function deleteCookie(name) {
+		setCookie(name, "", {
+			expires: -1
+		})
+	}

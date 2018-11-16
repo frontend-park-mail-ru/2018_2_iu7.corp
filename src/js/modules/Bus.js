@@ -14,6 +14,7 @@ export class Bus {
 		this._listeners[event] = this._listeners[event].filter((listener) => {
 			return listener !== callback;
 		});
+		console.log('LISTENERS',this._listeners);
 	}
 
 	emit (event, data) {

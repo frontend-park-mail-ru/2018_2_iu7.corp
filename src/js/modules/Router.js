@@ -48,8 +48,6 @@ class Router {
 			queryParams.id = aPath[2];
 			return queryParams;
 		}
-		// let aPath = path.split('/');
-		// return { path: `/${aPath[1]}`, page: aPath[2] };
 	}
 
 	/**

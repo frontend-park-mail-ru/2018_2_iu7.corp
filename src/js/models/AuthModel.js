@@ -1,5 +1,7 @@
 import { fetchModule } from '../modules/ajax.js';
 import { setCookie } from '../utils.js';
+import { getCookie } from '../utils.js';
+import { deleteCookie } from '../utils.js';
 import Bus from '../modules/Bus.js';
 
 export default class AuthModel {
@@ -47,7 +49,7 @@ export default class AuthModel {
 			.then((user) => {
 				console.log('SIGNED IN USER DATA', user);
 				setCookie('id',user.profile_id.toString());
-				Bus.emit('set-current-user', user);
+				setCookie('auth_token', user.auth_token);
 				Bus.emit('wipe-views');
 			})
 			.catch((err) => {
@@ -56,19 +58,25 @@ export default class AuthModel {
 	}
 
 	static Signout () {
-		if (AuthModel._data !== null) {
-			fetchModule.doPost({ path: '/auth/logout' })
-				.then(response => {
-					if (response.status === 200) {
-						AuthModel._data = null;
-						Bus.emit('wipe-views');
-					} else {
-						return Promise.reject(new Error(response.status));
-					}
-				})
-				.catch((err) => {
-					Bus.emit('wipe-views', err);
-				});
+		const authToken = getCookie('auth_token');
+		const signOutHeaders = {
+			'Authorization': 'Bearer ' + authToken
 		}
+		fetchModule.doDelete({path: '/auth/session', headers: signOutHeaders})
+			.then( response => {
+				console.log('SIGNOUT RESPONSE', response);
+				if (response.status === 200) {
+					deleteCookie('id');
+					deleteCookie('auth_token');
+					Bus.emit('wipe-views');
+				}
+				if (response.status === 401) {
+					console.log('CANNOT SIGNOUT NOT AUTH USER');
+					Bus.emit('wipe-views');
+				}
+			})
+			.catch( (err) =>{
+				console.log('SIGNOUT ERR', err);
+			})
 	}
 }

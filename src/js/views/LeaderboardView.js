@@ -63,7 +63,7 @@ export default class LeaderboardView extends BaseView {
 	render (users) {
 		const data = {
 			title: 'Leaderboard',
-			usrs: users.profiles
+			usrs: users
 		};
 		super.render(data);
 		this.registerActions();
