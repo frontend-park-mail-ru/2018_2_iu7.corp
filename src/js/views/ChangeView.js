@@ -34,21 +34,17 @@ export default class ChangeView extends BaseView {
 		super(form);
 		this._navigationController = new NavigationController();
 		this._formController = new FormController('change');
-		this._profileModel = new ProfileModel();
-		this._profileController = new ProfileController();
-		console.log('CHANGE ON PROFILE-RENDER: ');
-		Bus.on('done-check-permissions', this.render.bind(this));
+		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
-		console.log('CHANGE SHOW');
-		Bus.emit('check-user-permissions'); // говорим profileController проверить может ли пользователь изменять данные
+		Bus.emit('get-user');
 		super.show();
 		this.registerActions();
 	}
 
-	render(renderData) {
-		if (renderData.myProfile) { // если пользователь залогинен и хочет посмотреть свой профиль
+	render(user) {
+		if (user.is_authenticated) { // если пользователь залогинен и хочет посмотреть свой профиль
 			this._template = form;
 			super.render(data);
 		} else { // если не залогинен 
@@ -59,7 +55,7 @@ export default class ChangeView extends BaseView {
 			this._template = permissionMessageTmpl;
 			super.render(permissionMessageData);
 		}
-		Bus.off('done-check-permissions', this.render.bind(this));
+		Bus.off('done-get-user', this.render.bind(this));
 	}
 
 

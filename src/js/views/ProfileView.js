@@ -1,8 +1,6 @@
 import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
-import ProfileModel from '../models/ProfileModel.js';
-import ProfileController from '../controllers/ProfileController.js';
 
 const preloadTmpl = require('./templates/preload.pug');
 const myProfileTmpl = require('./templates/myProfile.pug');
@@ -11,16 +9,14 @@ const notMyProfileTmpl = require('./templates/notMyProfile.pug');
 export default class ProfileView extends BaseView {
 	constructor () {
 		super(myProfileTmpl);
-		this._profileModel = new ProfileModel(); // handle events
-		this._profileController = new ProfileController();
 		this._navigationController = new NavigationController();
 
 		this.preload();
-		console.log('PROFILE ON PROFILE-RENDER: ');
 		Bus.on('profile-render', this.render.bind(this));
 	}
 
 	show () {
+		console.log('PROFILE SHOW');
 		Bus.emit('profile-load'); // идем в profileController и загружаем пользователя 
 		super.show();
 		this.registerActions();
@@ -28,7 +24,6 @@ export default class ProfileView extends BaseView {
 
 
 	render (renderData) {
-		console.log('renderData in PROFILEVIEW: ',renderData);
 		if (renderData.myProfile) { // залогинен и хочет посмотреть свой профиль
 			const data = {
 				title: 'Profile',
@@ -45,9 +40,7 @@ export default class ProfileView extends BaseView {
 			this._template = notMyProfileTmpl;
 			super.render(data);
 		}
-		console.log('renderData in PROFILEVIEW BOTTOM: ',renderData);
 		Bus.off('profile-render', this.render.bind(this));
-		console.log('DONE OFFFFFFF');
 	}
 
 	preload () {

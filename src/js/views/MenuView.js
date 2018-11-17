@@ -3,7 +3,6 @@ import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 import ProfileController from '../controllers/ProfileController.js';
 import ProfileModel from '../models/ProfileModel.js';
-import { getCookie } from '../utils.js'
 
 const menu = require('./templates/menu.pug');
 
@@ -25,9 +24,17 @@ const notAuthLinks = [
 export default class MenuView extends BaseView {
 	constructor () {
 		super(menu);
+
 		this._navigationController = new NavigationController();
+
+		// При создании этих объектов внутри их классов происходит подписка на события,
+		// если их не создать, при вызове события,подписка на которое происходит в классах ProfileController и ProfileModel,
+		// его просто не будет в объекте Bus.
+		// объекты созданы в классе MenuView так как объект этого класса создается первым
+		// при открытии страницы
 		this._profileController = new ProfileController();
 		this._profileModel = new ProfileModel();
+
 		Bus.on('done-get-user', this.render.bind(this));
 	}
 
@@ -38,10 +45,6 @@ export default class MenuView extends BaseView {
 	}
 
 	render (user) {
-		console.log(user)
-		console.log('COOOKIEEEEES:', getCookie('id'));
-		console.log('COOOKIEEEEES:', getCookie('auth_token'));
-		console.log('typeof COOOKIEEEEES:', typeof(getCookie('id')));
 		if (user.is_authenticated) {
 			const authLinks = [
 				{

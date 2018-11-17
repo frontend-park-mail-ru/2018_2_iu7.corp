@@ -10,20 +10,18 @@ export default class ProfileModel {
 		Bus.on('current-profile-fetch', this.loadCurrentProfile.bind(this));
 	}
 
-	loadCurrentProfile() {
-		console.log('INITIAL CURRENT USER',ProfileModel._currentProfle);
+	// используется для проверки на сервере залогинен ли пользователь
+	loadCurrentProfile() { 
 		const currentUserId = getCookie('id');
-		console.log('CURRENT USER LOAD PATH', '/profiles/' + currentUserId);
 		fetchModule.doGet({ path: '/profiles/' + currentUserId })
 			.then(  response => {
-				console.log('CURRENT USER LOAD RESPONSE',response);
+				console.log(response);
 				if (response.status === 200) {
 					return response.json();
 				}
 				return Promise.reject(new Error('not auth'));
 			})
 			.then( (data) => {
-				console.log('CURRENT USER LOAD DATA', data);
 				ProfileModel._currentProfle = data;
 				ProfileModel._currentProfle.is_authenticated = true;
 				Bus.emit('done-get-user', ProfileModel._currentProfle);	
@@ -35,8 +33,8 @@ export default class ProfileModel {
 			});
 	}
 	
-
-	loadProfile (id) { // грузим пользователя
+	// используется для получаения данных профиля любого пользователя
+	loadProfile (id) {
 		return fetchModule.doGet({ path: `/profiles/${id}` })
 			.then(response => {
 				if (response.status === 200) {
@@ -49,7 +47,7 @@ export default class ProfileModel {
 			});
 	}
 
-	// TODO обработка ошибок
+	// используется для передачи измененных данных пользователя на сервер
 	loadProfileChanges (data) {
 		const id = getCookie('id');
 		const authToken = getCookie('auth_token');

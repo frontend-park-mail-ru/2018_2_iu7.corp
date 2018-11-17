@@ -48,8 +48,8 @@ export default class SignUpValidator {
 			return false;
 		}
 		return true;
-		console.log(pass.value);
-		console.log(typeof (pass.value));
+		// console.log(pass.value);
+		// console.log(typeof (pass.value));
 	}
 
 	_isEmptyField (value) { // проверка на пустоту одного конкретного поля

@@ -8,19 +8,19 @@ export default class AuthModel {
 	static Register (data) {
 		return fetchModule.doPost({ path: '/profiles', body: data })
 			.then(response => {
-				console.log('Registration response: ', response);
+				// console.log('Registration response: ', response);
 				if (response.status === 200) {
-					console.log('Registration Done: ', response.status);
+					// console.log('Registration Done: ', response.status);
 					const username = data.username;
 					const password = data.password;
 					Bus.emit('submit-data-signin', { username, password });
 				}
 				if (response.status === 409) {
-					console.log('email duplicate: ', response.status);
+					// console.log('email duplicate: ', response.status);
 					Bus.emit('unsuccess-signup');
 				}
 				if (response.status === 422) { // валидация на стороне сервера TODO сообщение о неправильно вводе данных
-					console.log('registration server validation: ', response.status);
+					// console.log('registration server validation: ', response.status);
 					return Promise.reject(response.status);
 				}
 			})
@@ -32,22 +32,22 @@ export default class AuthModel {
 	static Signin (data) {
 		return fetchModule.doPost({ path: '/auth/session', body: data })
 			.then(response => {
-				console.log('SignIN response: ', response);
+				// console.log('SignIN response: ', response);
 				if (response.status === 200) {
-					console.log('SignIN Done: ', response.status);
+					// console.log('SignIN Done: ', response.status);
 					return response.json();
 				}
 				if (response.status === 401) {
-					console.log('NOT AUTH: ', response.status);
+					// console.log('NOT AUTH: ', response.status);
 					Bus.emit('unsuccess-signin');
 				}
 				if (response.status === 422) {
-					console.log('SignIN validation error: ', response.status);
+					// console.log('SignIN validation error: ', response.status);
 					return Promise.reject(response.status);
 				}
 			})
 			.then((user) => {
-				console.log('SIGNED IN USER DATA', user);
+				// console.log('SIGNED IN USER DATA', user);
 				setCookie('id',user.profile_id.toString());
 				setCookie('auth_token', user.auth_token);
 				Bus.emit('wipe-views');
@@ -64,14 +64,12 @@ export default class AuthModel {
 		}
 		fetchModule.doDelete({path: '/auth/session', headers: signOutHeaders})
 			.then( response => {
-				console.log('SIGNOUT RESPONSE', response);
 				if (response.status === 200) {
 					deleteCookie('id');
 					deleteCookie('auth_token');
 					Bus.emit('wipe-views');
 				}
 				if (response.status === 401) {
-					console.log('CANNOT SIGNOUT NOT AUTH USER');
 					Bus.emit('wipe-views');
 				}
 			})

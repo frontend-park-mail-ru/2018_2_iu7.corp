@@ -3,10 +3,6 @@ import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 import FormController from '../controllers/FormController.js';
 import SignUpValidator from '../validators/SignUpValidator.js';
-import ProfileController from '../controllers/ProfileController.js';
-import ProfileModel from '../models/ProfileModel.js';
-
-
 
 const form = require('./templates/form.pug');
 const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
@@ -52,13 +48,12 @@ export default class SignupView extends BaseView {
 	constructor () {
 		super(form);
 		this._navigationController = new NavigationController();
-		this._profileController = new ProfileController();
-		this._profileModel = new ProfileModel();
 		this._formController = new FormController('signup', SignUpValidator);
 		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
+		console.log('SignUP show');
 		Bus.emit('get-user');
 		super.show();
 		this.registerActions();
