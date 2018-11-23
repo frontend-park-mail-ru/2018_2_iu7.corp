@@ -5,6 +5,7 @@ import AuthModel from './models/AuthModel.js';
 import MenuView from './views/MenuView.js';
 import SignupView from './views/SignupView.js';
 import SigninView from './views/SigninView.js';
+import GameView from './views/GameView.js'
 import 'babel-polyfill';
 
 import ProfileView from './views/ProfileView.js';
@@ -34,8 +35,9 @@ function main () {
 		['/signin', SigninView],
 		['/profile', ProfileView],
 		['/change', ChangeView],
+		['/single', GameView],
 		['/leaderboard', LeaderboardView]].forEach((route) => { Router.register(route[0], route[1]); });
-
+	// console.log('window.location.pathname', window.location.pathname);
 	Router.open(window.location.pathname);
 }
 

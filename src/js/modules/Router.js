@@ -76,6 +76,7 @@ class Router {
 		}
 
 		let { View, viewEntity } = this._routes[path];
+		console.log(viewEntity);
 		if (viewEntity === null) {
 			viewEntity = new View();
 		}

@@ -18,13 +18,16 @@ const notAuthLinks = [
 	{
 		label: 'Leaderboard',
 		href: '/leaderboard'
+	},
+	{
+		label: 'SinglePlayer',
+		href: '/single'
 	}
 ];
 
 export default class MenuView extends BaseView {
 	constructor () {
 		super(menu);
-
 		this._navigationController = new NavigationController();
 
 		// При создании этих объектов внутри их классов происходит подписка на события,
@@ -58,6 +61,10 @@ export default class MenuView extends BaseView {
 				{
 					label: 'Sign out',
 					href: '/signout'
+				},
+				{
+					label: 'SinglePlayer',
+					href: '/single'
 				}
 			];
 			super.render({ values: authLinks });
