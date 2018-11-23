@@ -50,17 +50,16 @@ export default class SignupView extends BaseView {
 		this._navigationController = new NavigationController();
 		this._formController = new FormController('signup', SignUpValidator);
 		Bus.on('done-get-user', this.render.bind(this));
-
 	}
 
 	show () {
+		console.log('SignUP show');
 		Bus.emit('get-user');
 		super.show();
 		this.registerActions();
 	}
 
 	render (user) {
-
 		if (!user.is_authenticated) {
 			this._template = form;
 			super.render(data);
@@ -79,7 +78,6 @@ export default class SignupView extends BaseView {
 		this.viewDiv.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
 		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
-
 
 	static showUnsuccessMessage () {
 		let errorField = document.getElementById('signUpError');

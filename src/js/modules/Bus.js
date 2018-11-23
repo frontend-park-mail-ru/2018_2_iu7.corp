@@ -7,7 +7,7 @@ export class Bus {
 		if (!this._listeners[event]) {
 			this._listeners[event] = [];
 		}
-		this._listeners[event].push({ callback });
+		this._listeners[event].push({ callback });		
 	}
 
 	off (event, callback) {
@@ -20,6 +20,7 @@ export class Bus {
 		this._listeners[event].forEach((listener) => {
 			listener.callback(data);
 		});
+		
 	}
 }
 

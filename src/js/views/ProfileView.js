@@ -1,44 +1,57 @@
 import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
-const profileTmpl = require('./templates/profile.pug');
-const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
+
+const preloadTmpl = require('./templates/preload.pug');
+const myProfileTmpl = require('./templates/myProfile.pug');
+const notMyProfileTmpl = require('./templates/notMyProfile.pug');
 
 export default class ProfileView extends BaseView {
 	constructor () {
-		super(profileTmpl);
+		super(myProfileTmpl);
 		this._navigationController = new NavigationController();
-		Bus.on('done-get-user', this.render.bind(this));
+
+		this.preload();
+		Bus.on('profile-render', this.render.bind(this));
 	}
 
 	show () {
-		Bus.emit('get-user');
+		console.log('PROFILE SHOW');
+		Bus.emit('profile-load'); // идем в profileController и загружаем пользователя 
 		super.show();
 		this.registerActions();
 	}
 
-	render (user) {
-		const data = {
-			title: 'Profile',
-			usr: user
-		};
 
-		if (user.is_authenticated) {
-			this._template = profileTmpl;
-			super.render(data);
-		} else {
-			const permissionMessageData = {
+	render (renderData) {
+		if (renderData.myProfile) { // залогинен и хочет посмотреть свой профиль
+			const data = {
 				title: 'Profile',
-				message: 'You are not singed in to see your profile'
+				changeHref: `/change/${renderData.user.id}`,
+				user: renderData.user
 			};
-			this._template = permissionMessageTmpl;
-			super.render(permissionMessageData);
+			this._template = myProfileTmpl;
+			super.render(data);
+		} else { // если залогинен и хочет посмотреть не свой профиль или не залогинен вовсе
+			const data = {
+				title: 'Profile',
+				user: renderData.user
+			};
+			this._template = notMyProfileTmpl;
+			super.render(data);
 		}
-		Bus.off('done-get-user', this.render.bind(this));
+		Bus.off('profile-render', this.render.bind(this));
+	}
+
+	preload () {
+		const data = {
+			title: 'Profile'
+		};
+		this.viewDiv.innerHTML = '';
+		this.viewDiv.innerHTML = preloadTmpl(data);
 	}
 
 	registerActions () {
 		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
-
 }
