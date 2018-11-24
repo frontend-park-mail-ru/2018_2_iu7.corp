@@ -1,0 +1,39 @@
+.header {grid-area: header;}
+.main { grid-area: main; }
+.left { 
+  grid-area: left;
+  /* background-color: #333; */
+}
+.right { 
+  grid-area: right;
+  /* background-color: #333; */
+}
+.left-inner {
+  margin: 0%;
+  padding: 5%;
+  overflow: hidden;
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+  grid-area: left-inner;
+}
+
+.footer { 
+  margin: 0%;
+  padding: 2%;
+  overflow: hidden;
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+  grid-area: footer;
+  background-color: #333;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'header header header header header header'
+    'left left-inner main main right-inner right'
+    'footer footer footer footer footer footer';
+  
+}
