@@ -8,7 +8,22 @@ import FormController from '../controllers/FormController.js';
 const form = require('./templates/form.pug');
 const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
 
+
 const data = {
+	headerValues: [
+		{
+			label: 'Вход',
+			href: '/signin'
+		},
+		{
+			label: 'Регистрация',
+			href: '/signup'
+		},
+		{
+			label: 'Таблица_лидеров',
+			href: '/leaderboard'
+		}
+	],
 	title: 'Sign in',
 	id: 'signin',
 	actionError: 'signInError',
@@ -52,6 +67,20 @@ export default class SigninView extends BaseView {
 			super.render(data);
 		} else {
 			const permissionMessageData = {
+				headerValues: [
+					{
+						label: 'Вход',
+						href: '/signin'
+					},
+					{
+						label: 'Регистрация',
+						href: '/signup'
+					},
+					{
+						label: 'Таблица лидеров',
+						href: '/leaderboard'
+					}
+				],
 				title: 'Sign in',
 				message: 'You have been already signed in'
 			};
