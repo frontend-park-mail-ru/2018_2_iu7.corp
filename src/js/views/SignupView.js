@@ -8,6 +8,20 @@ const form = require('./templates/form.pug');
 const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
 
 const data = {
+	headerValues: [
+		{
+			label: 'Вход',
+			href: '/signin'
+		},
+		{
+			label: 'Регистрация',
+			href: '/signup'
+		},
+		{
+			label: 'Таблица лидеров',
+			href: '/leaderboard'
+		}
+	],
 	title: 'Registration',
 	id: 'signup',
 	actionError: 'signUpError',
@@ -65,6 +79,20 @@ export default class SignupView extends BaseView {
 			super.render(data);
 		} else {
 			const permissionMessageData = {
+				headerValues:[
+					{
+						label: 'Вход',
+						href: '/signin'
+					},
+					{
+						label: 'Регистрация',
+						href: '/signup'
+					},
+					{
+						label: 'Таблица лидеров',
+						href: '/leaderboard'
+					}
+				],
 				title: 'Registration',
 				message: 'You have been already registered and signed in'
 			};

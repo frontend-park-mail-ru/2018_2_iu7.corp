@@ -1,3 +1,12 @@
+import '../../css/styles/main/main.css';
+import '../../css/styles/header/header.css';
+import '../../css/styles/dropdown/dropdown.css';
+import '../../css/styles/grid/grid.css';
+
+// TODO переименовать, видимо политикой состав так сказано
+import '../../css/styles/menu/menu.css'; 
+
+
 export default class BaseView {
 	constructor (template) {
 		this._template = template;

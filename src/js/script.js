@@ -12,6 +12,8 @@ import ChangeView from './views/ChangeView.js';
 import LeaderboardView from './views/LeaderboardView.js';
 import ProfileController from './controllers/ProfileController.js';
 
+import AboutView from './views/AboutView';
+
 
 Bus.on('unsuccess-signup', () => { SignupView.showUnsuccessMessage(); });
 Bus.on('unsuccess-signin', () => { SigninView.showUnsuccessMessage(); });
@@ -34,7 +36,9 @@ function main () {
 		['/signin', SigninView],
 		['/profile', ProfileView],
 		['/change', ChangeView],
-		['/leaderboard', LeaderboardView]].forEach((route) => { Router.register(route[0], route[1]); });
+		['/leaderboard', LeaderboardView],
+		['/about', AboutView]
+	].forEach((route) => { Router.register(route[0], route[1]); });
 
 	Router.open(window.location.pathname);
 }

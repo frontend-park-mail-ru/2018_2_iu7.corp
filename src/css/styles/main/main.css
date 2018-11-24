@@ -1,0 +1,20 @@
+html {
+    font-family: 'Rubik', sans-serif;
+    /* переделать на шлюзы */
+    font-size: 20px; 
+    color: whitesmoke;
+    margin: 0%;
+    padding: 0%;
+    background-color: #1a613b;
+}
+@media (min-width: 320px) {
+	html { font-size: calc( 3.125vw + 10px ); } 
+}
+@media (min-width: 960px) {
+  html { font-size: 40px; } 
+}
+
+* {
+    margin: 0px;
+    padding: 0px;
+}

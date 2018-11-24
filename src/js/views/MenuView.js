@@ -8,16 +8,31 @@ const menu = require('./templates/menu.pug');
 
 const notAuthLinks = [
 	{
-		label: 'Sign in',
+		label: 'Вход',
 		href: '/signin'
 	},
 	{
-		label: 'Sign up',
+		label: 'Регистрация',
 		href: '/signup'
 	},
 	{
-		label: 'Leaderboard',
+		label: 'Таблица_лидеров',
 		href: '/leaderboard'
+	}
+];
+
+const mainMenu = [
+	{
+		label: '💣 Мультиплеер',
+		href: '/room'
+	},
+	{
+		label: '💣 Одиночная игра',
+		href: '/single'
+	},
+	{
+		label: '💣 Об игре',
+		href: '/about'
 	}
 ];
 
@@ -48,21 +63,21 @@ export default class MenuView extends BaseView {
 		if (user.is_authenticated) {
 			const authLinks = [
 				{
-					label: 'Leaderboard',
-					href: '/leaderboard'
-				},
-				{
-					label: 'Profile',
+					label: 'Профиль',
 					href: `/profile/${user.id}`
 				},
 				{
-					label: 'Sign out',
+					label: 'Таблица лидеров',
+					href: '/leaderboard'
+				},
+				{
+					label: 'Выйти',
 					href: '/signout'
 				}
 			];
-			super.render({ values: authLinks });
+			super.render({ mainMenu: mainMenu, headerValues: authLinks});
 		} else {
-			super.render({ values: notAuthLinks });
+			super.render({ mainMenu: mainMenu, headerValues: notAuthLinks });
 		}
 		Bus.off('done-get-user', this.render.bind(this));
 	}
