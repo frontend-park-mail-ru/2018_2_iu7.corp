@@ -7,20 +7,6 @@ import LeaderboardModel from '../models/LeaderboardModel.js';
 const leaderboardTmpl = require('./templates/leaderboard.pug');
 const preloadTmpl = require('./templates/preload.pug');
 
-const notAuthLinks = [
-	{
-		label: 'Вход',
-		href: '/signin'
-	},
-	{
-		label: 'Регистрация',
-		href: '/signup'
-	},
-	{
-		label: 'Таблица_лидеров',
-		href: '/leaderboard'
-	}
-];
 
 /**
  * View of the "Leaderboard" page
@@ -40,7 +26,7 @@ export default class LeaderboardView extends BaseView {
 		this._currentUser = null;
 
 		this.preload();
-		Bus.on('done-get-user', this._setCurrentUser.bind(this))
+		Bus.on('done-get-user', this._setCurrentUser.bind(this));
 		Bus.on('done-leaderboard-fetch', this.render.bind(this));
 	}
 
@@ -83,7 +69,7 @@ export default class LeaderboardView extends BaseView {
 					href: '/signup'
 				},
 				{
-					label: 'Таблица_лидеров',
+					label: 'Таблица лидеров',
 					href: '/leaderboard'
 				}
 			],
@@ -98,44 +84,48 @@ export default class LeaderboardView extends BaseView {
      * @param {Array} users List of users on this page
      */
 	render (users) {
-		const data = {
-			headerValues: [
-				{
-					label: 'Профиль',
-					href: `/profile/${user.id}`
-				},
-				{
-					label: 'Таблица лидеров',
-					href: '/leaderboard'
-				},
-				{
-					label: 'Выйти',
-					href: '/signout'
-				}
-			],
-			title: 'Leaderboard',
-			usrs: users
-		};
-		if (user.is_authenticated) {
-			const authLinks = [
-				{
-					label: 'Профиль',
-					href: `/profile/${user.id}`
-				},
-				{
-					label: 'Таблица лидеров',
-					href: '/leaderboard'
-				},
-				{
-					label: 'Выйти',
-					href: '/signout'
-				}
-			];
+		if (this._currentUser.is_authenticated) {
+			const data = {
+				headerValues: [
+					{
+						label: 'Профиль',
+						href: `/profile/${this._currentUser.id}`
+					},
+					{
+						label: 'Таблица лидеров',
+						href: '/leaderboard'
+					},
+					{
+						label: 'Выйти',
+						href: '/signout'
+					}
+				],
+				title: 'Leaderboard',
+				usrs: users
+			};
 			super.render(data);
 		} else {
+			const data = {
+				headerValues: [
+					{
+						label: 'Вход',
+						href: '/signin'
+					},
+					{
+						label: 'Регистрация',
+						href: '/signup'
+					},
+					{
+						label: 'Таблица лидеров',
+						href: '/leaderboard'
+					}
+				],
+				title: 'Leaderboard',
+				usrs: users
+			};
 			super.render(data);
 		}
-		super.render(data);
+		Bus.off('done-get-user', this._setCurrentUser.bind(this));
 		this.registerActions();
 	}
 

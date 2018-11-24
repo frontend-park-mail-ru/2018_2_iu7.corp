@@ -16,7 +16,7 @@ const notAuthLinks = [
 		href: '/signup'
 	},
 	{
-		label: 'Таблица_лидеров',
+		label: 'Таблица лидеров',
 		href: '/leaderboard'
 	}
 ];
@@ -30,16 +30,15 @@ const mainMenu = [
 		label: '💣 Одиночная игра',
 		href: '/single'
 	},
-	{
-		label: '💣 Об игре',
-		href: '/about'
-	}
+	// {
+	// 	label: '💣 Об игре',
+	// 	href: '/about'
+	// }
 ];
 
 export default class MenuView extends BaseView {
 	constructor () {
 		super(menu);
-
 		this._navigationController = new NavigationController();
 
 		// При создании этих объектов внутри их классов происходит подписка на события,

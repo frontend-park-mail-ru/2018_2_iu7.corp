@@ -5,6 +5,7 @@ import AuthModel from './models/AuthModel.js';
 import MenuView from './views/MenuView.js';
 import SignupView from './views/SignupView.js';
 import SigninView from './views/SigninView.js';
+import GameView from './views/GameView.js'
 import 'babel-polyfill';
 
 import ProfileView from './views/ProfileView.js';
@@ -12,7 +13,7 @@ import ChangeView from './views/ChangeView.js';
 import LeaderboardView from './views/LeaderboardView.js';
 import ProfileController from './controllers/ProfileController.js';
 
-import AboutView from './views/AboutView';
+// import AboutView from './views/AboutView';
 
 
 Bus.on('unsuccess-signup', () => { SignupView.showUnsuccessMessage(); });
@@ -36,8 +37,9 @@ function main () {
 		['/signin', SigninView],
 		['/profile', ProfileView],
 		['/change', ChangeView],
+		['/single', GameView],
 		['/leaderboard', LeaderboardView],
-		['/about', AboutView]
+		// ['/about', AboutView]
 	].forEach((route) => { Router.register(route[0], route[1]); });
 
 	Router.open(window.location.pathname);

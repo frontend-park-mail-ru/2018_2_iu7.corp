@@ -67,8 +67,21 @@ export default class AboutView extends BaseView {
 	// так же как  в меню 
 	render (user) {
 		if (user.is_authenticated) {
-
-			super.render({aboutMenu: data, headerValues:notAuthLinks})
+			const authLinks = [
+				{
+					label: 'Профиль',
+					href: `/profile/${user.id}`
+				},
+				{
+					label: 'Таблица лидеров',
+					href: '/leaderboard'
+				},
+				{
+					label: 'Выйти',
+					href: '/signout'
+				}
+			];
+			super.render({aboutMenu: data, headerValues:authLinks})
 		} else {
 			super.render({aboutMenu: data, headerValues:notAuthLinks})
 		}

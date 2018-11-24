@@ -2,8 +2,6 @@ import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 import FormController from '../controllers/FormController.js';
-// import ProfileController from '../controllers/ProfileController.js';
-// import ProfileModel from '../models/ProfileModel.js';
 
 const form = require('./templates/form.pug');
 const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
@@ -20,7 +18,7 @@ const data = {
 			href: '/signup'
 		},
 		{
-			label: 'Таблица_лидеров',
+			label: 'Таблица лидеров',
 			href: '/leaderboard'
 		}
 	],
