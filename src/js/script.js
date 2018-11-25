@@ -11,11 +11,23 @@ import ProfileView from './views/ProfileView.js';
 import ChangeView from './views/ChangeView.js';
 import LeaderboardView from './views/LeaderboardView.js';
 import ProfileController from './controllers/ProfileController.js';
+import ProfileModel from './models/ProfileModel.js';
 
+// let profileController = new ProfileController();
+// let profileModel = new ProfileModel();
+
+
+Bus.on('profile-fetch', (id) => { ProfileModel.loadProfile(id); });
+Bus.on('changes-fetch', (data) => { ProfileModel.loadProfileChanges(data); });
+Bus.on('current-profile-fetch', () => { ProfileModel.loadCurrentProfile(); });
+
+Bus.on('set-target-id', (id) => { ProfileController._setTargetId(id); });
+Bus.on('profile-load', () => { ProfileController._loadProfile(); });
+Bus.on('done-profile-fetch', (data) => { ProfileController._checkIdMatching(data); });
+Bus.on('get-user', () => { ProfileController._getCurrentUser(); });
 
 Bus.on('unsuccess-signup', () => { SignupView.showUnsuccessMessage(); });
 Bus.on('unsuccess-signin', () => { SigninView.showUnsuccessMessage(); });
-Bus.on('get-user', () => { ProfileController._getCurrentUser(); });
 Bus.on('submit-data-signup', (data) => { AuthModel.Register(data); });
 Bus.on('submit-data-signin', (data) => { AuthModel.Signin(data); });
 Bus.on('submit-data-change', (data) => { ProfileController._makeSettingsChanges(data); });

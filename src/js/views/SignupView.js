@@ -53,7 +53,6 @@ export default class SignupView extends BaseView {
 	}
 
 	show () {
-		console.log('SignUP show');
 		Bus.emit('get-user');
 		super.show();
 		this.registerActions();
@@ -71,7 +70,6 @@ export default class SignupView extends BaseView {
 			this._template = permissionMessageTmpl;
 			super.render(permissionMessageData);
 		}
-		Bus.off('done-get-user', this.render.bind(this));
 	}
 
 	registerActions () {

@@ -17,6 +17,7 @@ export default class ProfileView extends BaseView {
 
 	show () {
 		console.log('PROFILE SHOW');
+		console.log(Bus._listeners);
 		Bus.emit('profile-load'); // идем в profileController и загружаем пользователя 
 		super.show();
 		this.registerActions();

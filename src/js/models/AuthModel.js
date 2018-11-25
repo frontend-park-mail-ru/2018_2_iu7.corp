@@ -25,14 +25,14 @@ export default class AuthModel {
 				}
 			})
 			.catch((err) => {
-				console.log('Register err: ', err);
+				Bus.emit('unsuccess-signup');
 			});
 	}
 
 	static Signin (data) {
 		return fetchModule.doPost({ path: '/auth/session', body: data })
 			.then(response => {
-				// console.log('SignIN response: ', response);
+				console.log('SignIN response: ', response);
 				if (response.status === 200) {
 					// console.log('SignIN Done: ', response.status);
 					return response.json();
@@ -47,13 +47,12 @@ export default class AuthModel {
 				}
 			})
 			.then((user) => {
-				// console.log('SIGNED IN USER DATA', user);
 				setCookie('id',user.profile_id.toString());
 				setCookie('auth_token', user.auth_token);
 				Bus.emit('wipe-views');
 			})
 			.catch((err) => {
-				console.log('SignIN err: ', err);
+				Bus.emit('unsuccess-signin');
 			});
 	}
 

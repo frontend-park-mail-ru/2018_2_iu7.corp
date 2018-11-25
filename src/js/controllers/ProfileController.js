@@ -1,12 +1,9 @@
 import Bus from '../modules/Bus.js';
 import { getCookie } from '../utils.js';
 
-export default class ProfileController {
+class ProfileController {
 	constructor () {
 		this._targetProfileId = null;
-		Bus.on('set-target-id', this._setTargetId.bind(this));
-		Bus.on('profile-load', this._loadProfile.bind(this));
-		Bus.on('done-profile-fetch', this._checkIdMatching.bind(this));
 	}
 
 	_setTargetId (id) { // TODO перейты на ts
@@ -45,12 +42,14 @@ export default class ProfileController {
 		}
 	}
 
-	static _getCurrentUser () {
+	_getCurrentUser () {
 		Bus.emit('current-profile-fetch');
 	}
 
 	// говорим модели сделать запрос на сервер для изменения данных пользователя
-	static _makeSettingsChanges (data) {
+	_makeSettingsChanges (data) {
 		Bus.emit('changes-fetch', data);
 	}
 }
+
+export default new ProfileController();
