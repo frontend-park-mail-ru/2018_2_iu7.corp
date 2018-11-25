@@ -79,18 +79,18 @@ export default class SignupView extends BaseView {
 			super.render(data);
 		} else {
 			const permissionMessageData = {
-				headerValues:[
+				headerValues: [
 					{
-						label: 'Вход',
-						href: '/signin'
-					},
-					{
-						label: 'Регистрация',
-						href: '/signup'
+						label: 'Профиль',
+						href: `/profile/${user.id}`
 					},
 					{
 						label: 'Таблица лидеров',
 						href: '/leaderboard'
+					},
+					{
+						label: 'Выйти',
+						href: '/signout'
 					}
 				],
 				title: 'Registration',

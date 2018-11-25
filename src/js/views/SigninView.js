@@ -67,16 +67,16 @@ export default class SigninView extends BaseView {
 			const permissionMessageData = {
 				headerValues: [
 					{
-						label: 'Вход',
-						href: '/signin'
-					},
-					{
-						label: 'Регистрация',
-						href: '/signup'
+						label: 'Профиль',
+						href: `/profile/${user.id}`
 					},
 					{
 						label: 'Таблица лидеров',
 						href: '/leaderboard'
+					},
+					{
+						label: 'Выйти',
+						href: '/signout'
 					}
 				],
 				title: 'Sign in',

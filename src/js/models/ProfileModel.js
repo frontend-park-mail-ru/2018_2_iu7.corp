@@ -4,14 +4,8 @@ import { getCookie } from '../utils.js';
 import Router from '../modules/Router.js';
 
 export default class ProfileModel {
-	constructor () {
-		Bus.on('profile-fetch', this.loadProfile.bind(this));
-		Bus.on('changes-fetch', this.loadProfileChanges.bind(this));
-		Bus.on('current-profile-fetch', this.loadCurrentProfile.bind(this));
-	}
-
 	// используется для проверки на сервере залогинен ли пользователь
-	loadCurrentProfile() { 
+	static loadCurrentProfile() { 
 		const currentUserId = getCookie('id');
 		fetchModule.doGet({ path: '/profiles/' + currentUserId })
 			.then(  response => {
@@ -34,7 +28,7 @@ export default class ProfileModel {
 	}
 	
 	// используется для получаения данных профиля любого пользователя
-	loadProfile (id) {
+	static loadProfile (id) {
 		return fetchModule.doGet({ path: `/profiles/${id}` })
 			.then(response => {
 				if (response.status === 200) {
@@ -48,7 +42,7 @@ export default class ProfileModel {
 	}
 
 	// используется для передачи измененных данных пользователя на сервер
-	loadProfileChanges (data) {
+	static loadProfileChanges (data) {
 		const id = getCookie('id');
 		const authToken = getCookie('auth_token');
 		const changeHeaders = {

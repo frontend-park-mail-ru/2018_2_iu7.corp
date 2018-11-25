@@ -12,7 +12,7 @@ export class Bus {
 
 	off (event, callback) {
 		this._listeners[event] = this._listeners[event].filter((listener) => {
-			return listener !== callback;
+			return listener.callback !== callback;
 		});
 	}
 

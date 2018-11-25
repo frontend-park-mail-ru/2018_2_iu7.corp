@@ -40,15 +40,6 @@ export default class MenuView extends BaseView {
 	constructor () {
 		super(menu);
 		this._navigationController = new NavigationController();
-
-		// При создании этих объектов внутри их классов происходит подписка на события,
-		// если их не создать, при вызове события,подписка на которое происходит в классах ProfileController и ProfileModel,
-		// его просто не будет в объекте Bus.
-		// объекты созданы в классе MenuView так как объект этого класса создается первым
-		// при открытии страницы
-		this._profileController = new ProfileController();
-		this._profileModel = new ProfileModel();
-
 		Bus.on('done-get-user', this.render.bind(this));
 	}
 
