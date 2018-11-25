@@ -9,8 +9,13 @@ const notMyProfileTmpl = require('./templates/notMyProfile.pug');
 export default class ProfileView extends BaseView {
 	constructor () {
 		super(myProfileTmpl);
+		this._socket = new WebSocket('ws://80.252.155.65:5000');
+		this._socket.onopen = function() {
+			console.log('connection started');
+		}
 		this._navigationController = new NavigationController();
 		this._currentUser = null;
+		this._chatPerson = null;
 		this.preload();
 		Bus.on('done-get-user', this._setCurrentUser.bind(this));
 		Bus.on('profile-render', this.render.bind(this));
@@ -28,8 +33,8 @@ export default class ProfileView extends BaseView {
 		this.registerActions();
 	}
 
-
 	render (renderData) {
+		this._chatPerson = renderData.user;
 		if (renderData.myProfile) { // залогинен и хочет посмотреть свой профиль
 			const data = {
 				title: 'Profile',
@@ -126,7 +131,37 @@ export default class ProfileView extends BaseView {
 		this.viewDiv.innerHTML = preloadTmpl(data);
 	}
 
+	startChat(event) {
+		// event.preventDefault();
+		// const inf = {
+		// 	type: 'make_private_chat',
+		// 	data: [this._currentUser.id, this._chatPerson.id]
+		// }
+		// this._socket.send(JSON.stringify(inf));
+
+		
+		const frame = document.createElement('iframe');
+		frame.wigth = 900;
+		frame.height = 500;
+		// frame.frameborder='0'
+
+		const framediv = document.getElementById("for-frame");
+		framediv.innerHTML = '';
+		framediv.appendChild(frame);
+
+	}
+
+	// make_private_chat(input){
+	// 	type = 'make_private_chat';
+	// 	data = [input.idfrom, input.idto];
+	// 	return JSON.stringify({type: type, data: data});
+	// };
+	
+
 	registerActions () {
+		this.viewDiv.addEventListener('submit', this.startChat.bind(this));
 		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+		// const startChat = document.getElementById('popupbtn');
+		// this.viewDiv.addEventListener('click', this.startChat().bind(this));
 	}
 }

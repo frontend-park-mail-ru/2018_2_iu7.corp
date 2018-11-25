@@ -5,6 +5,7 @@ import '../../css/styles/grid/grid.css';
 
 // TODO переименовать, видимо политикой состав так сказано
 import '../../css/styles/menu/menu.css'; 
+import '../../css/styles/chat/chat.css';
 
 
 export default class BaseView {
