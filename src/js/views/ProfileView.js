@@ -9,7 +9,7 @@ const notMyProfileTmpl = require('./templates/notMyProfile.pug');
 export default class ProfileView extends BaseView {
 	constructor () {
 		super(myProfileTmpl);
-		this._socket = new WebSocket('ws://80.252.155.65:5000');
+		this._socket = new WebSocket('wss://80.252.155.65:5000');
 		this._socket.onopen = function() {
 			console.log('connection started');
 		}

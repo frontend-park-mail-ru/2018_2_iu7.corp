@@ -98,4 +98,4 @@ class Game{
     
 }
 
-export default new Game("ws://80.252.155.65:8081");
+export default new Game("wss://80.252.155.65:8081");
