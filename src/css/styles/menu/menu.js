@@ -1,3 +1,3 @@
-function explodeMenuBomb(id) {
-    id.innerHTML = "💥💥💥💥💥";
+function explodeMenuBomb (id) {
+	id.innerHTML = '💥💥💥💥💥';
 }

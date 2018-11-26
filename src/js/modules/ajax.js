@@ -1,5 +1,8 @@
-const serverUrl = 'http://176.119.156.66';
+const serverUrl = 'http://80.252.155.65:5002';
 
+
+
+// POST http://80.252.155.65:5002/multiplayer/rooms
 export class fetchModule {
 	static _ajax ({ method = 'GET', path = '/', body, headers } = {}) {
 		const url = serverUrl + path;
@@ -15,7 +18,7 @@ export class fetchModule {
 		}
 
 		if (body) {
-			options.headers['Content-Type'] = 'application/json; charset=utf-8' ;
+			options.headers['Content-Type'] = 'application/json; charset=utf-8';
 			options.body = JSON.stringify(body);
 		}
 		return fetch(url, options);

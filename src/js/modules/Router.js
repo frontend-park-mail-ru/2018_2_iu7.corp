@@ -67,9 +67,9 @@ class Router {
      * @param {string} pathname - path for the View
      */
 	_open (pathname) {
-		// console.log('pathname', pathname);
+		console.log('pathname', pathname);
 		let { path, id, page_index } = this.parsePath(pathname);
-		// console.log(path, id, page_index);
+		console.log(path, id, page_index);
 		if (!this._routes[path]) {
 			Bus.emit('error', 'no such path is registred');
 			return;
@@ -85,7 +85,12 @@ class Router {
 		}
 
 		if (id) { // устанавливаем id нужного пользователя через контроллер
-			Bus.emit('set-target-id', id);
+			if (path === '/profile') {
+				Bus.emit('set-target-id', id);
+			}
+			if (path === '/room') {
+				Bus.emit('set-target-room', id);
+			}
 		}
 
 		if (viewEntity._isHidden) { // если страница не была показана

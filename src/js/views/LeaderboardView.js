@@ -7,7 +7,6 @@ import LeaderboardModel from '../models/LeaderboardModel.js';
 const leaderboardTmpl = require('./templates/leaderboard.pug');
 const preloadTmpl = require('./templates/preload.pug');
 
-
 /**
  * View of the "Leaderboard" page
  * @class LeaderboardView
@@ -30,7 +29,7 @@ export default class LeaderboardView extends BaseView {
 		Bus.on('done-leaderboard-fetch', this.render.bind(this));
 	}
 
-	_setCurrentUser(user) {
+	_setCurrentUser (user) {
 		this._currentUser = user;
 	}
 

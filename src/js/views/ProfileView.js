@@ -10,9 +10,9 @@ export default class ProfileView extends BaseView {
 	constructor () {
 		super(myProfileTmpl);
 		this._socket = new WebSocket('wss://80.252.155.65:5000');
-		this._socket.onopen = function() {
+		this._socket.onopen = function () {
 			console.log('connection started');
-		}
+		};
 		this._navigationController = new NavigationController();
 		this._currentUser = null;
 		this._chatPerson = null;
@@ -21,14 +21,13 @@ export default class ProfileView extends BaseView {
 		Bus.on('profile-render', this.render.bind(this));
 	}
 
-
-	_setCurrentUser(user) {
+	_setCurrentUser (user) {
 		this._currentUser = user;
 	}
 
 	show () {
 		Bus.emit('get-user');
-		Bus.emit('profile-load'); // идем в profileController и загружаем пользователя 
+		Bus.emit('profile-load'); // идем в profileController и загружаем пользователя
 		super.show();
 		this.registerActions();
 	}
@@ -58,8 +57,7 @@ export default class ProfileView extends BaseView {
 			this._template = myProfileTmpl;
 			super.render(data);
 		} else { // если залогинен и хочет посмотреть не свой профиль или не залогинен вовсе
-
-			if (this._currentUser.is_authenticated){
+			if (this._currentUser.is_authenticated) {
 				const data = {
 					title: 'Profile',
 					user: renderData.user,
@@ -80,8 +78,6 @@ export default class ProfileView extends BaseView {
 				};
 				this._template = notMyProfileTmpl;
 				super.render(data);
-
-
 			} else {
 				const data = {
 					title: 'Profile',
@@ -131,7 +127,7 @@ export default class ProfileView extends BaseView {
 		this.viewDiv.innerHTML = preloadTmpl(data);
 	}
 
-	startChat(event) {
+	startChat (event) {
 		// event.preventDefault();
 		// const inf = {
 		// 	type: 'make_private_chat',
@@ -139,16 +135,14 @@ export default class ProfileView extends BaseView {
 		// }
 		// this._socket.send(JSON.stringify(inf));
 
-		
 		const frame = document.createElement('iframe');
 		frame.wigth = 900;
 		frame.height = 500;
 		// frame.frameborder='0'
 
-		const framediv = document.getElementById("for-frame");
+		const framediv = document.getElementById('for-frame');
 		framediv.innerHTML = '';
 		framediv.appendChild(frame);
-
 	}
 
 	// make_private_chat(input){
@@ -156,7 +150,6 @@ export default class ProfileView extends BaseView {
 	// 	data = [input.idfrom, input.idto];
 	// 	return JSON.stringify({type: type, data: data});
 	// };
-	
 
 	registerActions () {
 		this.viewDiv.addEventListener('submit', this.startChat.bind(this));

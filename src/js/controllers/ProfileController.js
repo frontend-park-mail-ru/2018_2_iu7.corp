@@ -11,34 +11,34 @@ class ProfileController {
 			this._targetProfileId = +id;
 		}
 	}
-	
+
 	_loadProfile () { // говорим profileModel загрузить пользователя
 		Bus.emit('profile-fetch', this._targetProfileId);
 	}
 
 	// проверяем свой ли профиль хочет посмотреть пользователь
-	_checkIdMatching (data) { 
+	_checkIdMatching (data) {
 		const currentUserId = parseInt(getCookie('id'));
 		if (currentUserId) { // если залогинен
 			if (currentUserId === this._targetProfileId) { // если хочет что-то сделать со своим профилем
 				const renderData = {
 					user: data,
 					myProfile: true
-				}
+				};
 				Bus.emit('profile-render', renderData);
 			} else { // если хочет что-то сделать не со своим профилем
 				const renderData = {
 					user: data,
 					myProfile: false
-				}
+				};
 				Bus.emit('profile-render', renderData);
 			}
 		} else { // если незалогинен
 			const renderData = {
 				user: data,
 				myProfile: false
-			}
-			Bus.emit('profile-render', renderData);	
+			};
+			Bus.emit('profile-render', renderData);
 		}
 	}
 

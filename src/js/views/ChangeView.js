@@ -6,7 +6,6 @@ import FormController from '../controllers/FormController.js';
 const form = require('./templates/form.pug');
 const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
 
-
 export default class ChangeView extends BaseView {
 	constructor () {
 		super(form);
@@ -21,7 +20,7 @@ export default class ChangeView extends BaseView {
 		this.registerActions();
 	}
 
-	render(user) {
+	render (user) {
 		if (user.is_authenticated) { // если пользователь залогинен и хочет посмотреть свой профиль
 			const data = {
 				title: 'Change Settings',
@@ -57,10 +56,10 @@ export default class ChangeView extends BaseView {
 					}
 				]
 			};
-			
+
 			this._template = form;
 			super.render(data);
-		} else { // если не залогинен 
+		} else { // если не залогинен
 			const permissionMessageData = {
 				title: 'Change settings',
 				message: 'You can not change someone`s settings',
@@ -84,7 +83,6 @@ export default class ChangeView extends BaseView {
 		}
 		Bus.off('done-get-user', this.render.bind(this));
 	}
-
 
 	registerActions () {
 		this.viewDiv.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));

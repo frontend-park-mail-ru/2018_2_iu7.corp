@@ -1,7 +1,5 @@
 import { fetchModule } from '../modules/ajax.js';
-import { setCookie } from '../utils.js';
-import { getCookie } from '../utils.js';
-import { deleteCookie } from '../utils.js';
+import { setCookie, getCookie, deleteCookie } from '../utils.js';
 import Bus from '../modules/Bus.js';
 
 export default class AuthModel {
@@ -47,7 +45,7 @@ export default class AuthModel {
 				}
 			})
 			.then((user) => {
-				setCookie('id',user.profile_id.toString());
+				setCookie('id', user.profile_id.toString());
 				setCookie('auth_token', user.auth_token);
 				Bus.emit('wipe-views');
 			})
@@ -60,9 +58,9 @@ export default class AuthModel {
 		const authToken = getCookie('auth_token');
 		const signOutHeaders = {
 			'Authorization': 'Bearer ' + authToken
-		}
-		fetchModule.doDelete({path: '/auth/session', headers: signOutHeaders})
-			.then( response => {
+		};
+		fetchModule.doDelete({ path: '/auth/session', headers: signOutHeaders })
+			.then(response => {
 				if (response.status === 200) {
 					deleteCookie('id');
 					deleteCookie('auth_token');
@@ -72,8 +70,8 @@ export default class AuthModel {
 					Bus.emit('wipe-views');
 				}
 			})
-			.catch( (err) =>{
+			.catch((err) => {
 				console.log('SIGNOUT ERR', err);
-			})
+			});
 	}
 }

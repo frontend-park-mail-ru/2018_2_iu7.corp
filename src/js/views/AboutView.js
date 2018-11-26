@@ -2,7 +2,6 @@ import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 
-
 const about = require('./templates/about.pug');
 
 const notAuthLinks = [
@@ -22,31 +21,31 @@ const notAuthLinks = [
 
 const data = [
 	{
-		label: "💣БОМБИЧ🔥 - возраждение легендарной NES игры"
+		label: '💣БОМБИЧ🔥 - возраждение легендарной NES игры'
 	},
 	{
-		label: "Цель игры:"
+		label: 'Цель игры:'
 	},
 	{
-		label: "Победить всех противников, подорвав их бомбой."
+		label: 'Победить всех противников, подорвав их бомбой.'
 	},
 	{
-		label: "Управление:"
+		label: 'Управление:'
 	},
 	{
-		label: "w (⬆️) - перейти на клетку вверх"
+		label: 'w (⬆️) - перейти на клетку вверх'
 	},
 	{
-		label: "s (⬇️) - перейти на клетку вниз"
+		label: 's (⬇️) - перейти на клетку вниз'
 	},
 	{
-		label: "a (⬅️) - перейти на клетку влево"
+		label: 'a (⬅️) - перейти на клетку влево'
 	},
 	{
-		label: "d (➡️) - перейти на клетку вправо"
+		label: 'd (➡️) - перейти на клетку вправо'
 	},
 	{
-		label: "пробел - заложить бомбу"
+		label: 'пробел - заложить бомбу'
 	}
 ];
 
@@ -64,7 +63,7 @@ export default class AboutView extends BaseView {
 		this.registerActions();
 	}
 
-	// так же как  в меню 
+	// так же как  в меню
 	render (user) {
 		if (user.is_authenticated) {
 			const authLinks = [
@@ -81,9 +80,9 @@ export default class AboutView extends BaseView {
 					href: '/signout'
 				}
 			];
-			super.render({aboutMenu: data, headerValues:authLinks})
+			super.render({ aboutMenu: data, headerValues: authLinks });
 		} else {
-			super.render({aboutMenu: data, headerValues:notAuthLinks})
+			super.render({ aboutMenu: data, headerValues: notAuthLinks });
 		}
 		Bus.off('done-get-user', this._setCurrentUser.bind(this));
 	}

@@ -5,28 +5,28 @@ import Router from '../modules/Router.js';
 
 export default class ProfileModel {
 	// используется для проверки на сервере залогинен ли пользователь
-	static loadCurrentProfile() { 
+	static loadCurrentProfile () {
 		const currentUserId = getCookie('id');
 		fetchModule.doGet({ path: '/profiles/' + currentUserId })
-			.then(  response => {
+			.then(response => {
 				console.log(response);
 				if (response.status === 200) {
 					return response.json();
 				}
 				return Promise.reject(new Error('not auth'));
 			})
-			.then( (data) => {
+			.then((data) => {
 				ProfileModel._currentProfle = data;
 				ProfileModel._currentProfle.is_authenticated = true;
-				Bus.emit('done-get-user', ProfileModel._currentProfle);	
+				Bus.emit('done-get-user', ProfileModel._currentProfle);
 			})
-			.catch( (err) => {
+			.catch((err) => {
 				console.log(err);
 				ProfileModel._currentProfle = { is_authenticated: false };
 				Bus.emit('done-get-user', ProfileModel._currentProfle);
 			});
 	}
-	
+
 	// используется для получаения данных профиля любого пользователя
 	static loadProfile (id) {
 		return fetchModule.doGet({ path: `/profiles/${id}` })
@@ -47,7 +47,7 @@ export default class ProfileModel {
 		const authToken = getCookie('auth_token');
 		const changeHeaders = {
 			'Authorization': 'Bearer ' + authToken
-		}
+		};
 
 		return fetchModule.doPatch({ path: `/profiles/${id}`, body: data, headers: changeHeaders })
 			.then(response => {

@@ -6,7 +6,6 @@ import FormController from '../controllers/FormController.js';
 const form = require('./templates/form.pug');
 const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
 
-
 const data = {
 	headerValues: [
 		{

@@ -27,7 +27,7 @@ const mainMenu = [
 	{
 		label: '💣 Одиночная игра',
 		href: '/single'
-	},
+	}
 	// {
 	// 	label: '💣 Об игре',
 	// 	href: '/about'
@@ -63,7 +63,7 @@ export default class MenuView extends BaseView {
 					href: '/signout'
 				}
 			];
-			super.render({ mainMenu: mainMenu, headerValues: authLinks});
+			super.render({ mainMenu: mainMenu, headerValues: authLinks });
 		} else {
 			super.render({ mainMenu: mainMenu, headerValues: notAuthLinks });
 		}

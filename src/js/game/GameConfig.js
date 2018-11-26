@@ -1,5 +1,5 @@
 const config = {
-    initialField: [[1]]
-}
+	initialField: [[1]]
+};
 
-export default config
+export default config;
