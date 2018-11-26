@@ -2,6 +2,8 @@ import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 
+import {openNav} from '../../css/styles/header/header.js';
+
 const menu = require('./templates/menu.pug');
 
 const notAuthLinks = [
@@ -63,9 +65,9 @@ export default class MenuView extends BaseView {
 					href: '/signout'
 				}
 			];
-			super.render({ mainMenu: mainMenu, headerValues: authLinks});
+			super.render({ mainMenu: mainMenu, headerValues: authLinks, openNav:openNav});
 		} else {
-			super.render({ mainMenu: mainMenu, headerValues: notAuthLinks });
+			super.render({ mainMenu: mainMenu, headerValues: notAuthLinks, openNav:openNav });
 		}
 		Bus.off('done-get-user', this.render.bind(this));
 	}

@@ -7,6 +7,8 @@ import '../../css/styles/grid/grid.css';
 import '../../css/styles/menu/menu.css'; 
 import '../../css/styles/chat/chat.css';
 
+import '../../css/styles/leaderboard/leaderboard.css';
+
 
 export default class BaseView {
 	constructor (template) {

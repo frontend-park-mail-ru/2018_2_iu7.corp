@@ -5,8 +5,8 @@ block content
         table 
             thead
                 tr
-                    th Username
-                    th Score
+                    th(class="leaderboard__header-left") Имя пользователя
+                    th(class="leaderboard__header-right") Счёт
             tbody
                 each user in usrs
                     tr
@@ -14,7 +14,7 @@ block content
                         td= user.score
     div
         p
-            a(href="#" id="prev_page_link") Туда
-            a(href="#" id="next_page_link") Сюда
+            a(href="#" id="prev_page_link" class="leaderboard__link-left") Сюда
+            a(href="#" id="next_page_link" class="leaderboard__link-right") Туда
             
             
