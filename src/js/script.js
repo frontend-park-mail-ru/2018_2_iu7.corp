@@ -12,6 +12,9 @@ import ProfileView from './views/ProfileView.js';
 import ChangeView from './views/ChangeView.js';
 import LeaderboardView from './views/LeaderboardView.js';
 
+import MultiplayerMenuView from './views/gameViews/MultiplayerMenuView.js';
+import CreateRoomView from './views/gameViews/CreateRoomView.js';
+
 import ProfileController from './controllers/ProfileController.js';
 import ProfileModel from './models/ProfileModel.js';
 
@@ -45,6 +48,8 @@ function main () {
 		['/profile', ProfileView],
 		['/change', ChangeView],
 		['/single', GameView],
+		['/multiplayerMenu', MultiplayerMenuView],
+		['/createroom', CreateRoomView],
 		['/leaderboard', LeaderboardView],
 	].forEach((route) => { Router.register(route[0], route[1]); });
 

@@ -1,8 +1,6 @@
 import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
-import ProfileController from '../controllers/ProfileController.js';
-import ProfileModel from '../models/ProfileModel.js';
 
 const menu = require('./templates/menu.pug');
 
@@ -24,7 +22,7 @@ const notAuthLinks = [
 const mainMenu = [
 	{
 		label: '💣 Мультиплеер',
-		href: '/room'
+		href: '/multiplayerMenu'
 	},
 	{
 		label: '💣 Одиночная игра',

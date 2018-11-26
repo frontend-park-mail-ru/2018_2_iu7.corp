@@ -17,8 +17,8 @@ export default class Scene {
         this._ctx = ctx;
         this._field = new Field(config.initialField, this._ctx);
         this._player = new Player(1,1,1,this._ctx); // TODO подумать как сделать для нескольких игроков
-        Bus.on('field', this.updateGameField.bind(this));
-        Bus.on('user', this.updateUsers.bind(this));
+        Bus.on('field', this.updateGameField.bind(this)); // target of proxy
+        Bus.on('user', this.updateUsers.bind(this)); // target d proxy
         Bus.on('scene-start', this.startLoop.bind(this));
     }
 
