@@ -26,8 +26,6 @@ export default class LeaderboardModel {
 				Bus.emit('error'); // TODO errors
 			})
 			.then((data) => {
-				// console.log(data);
-				// console.log('TYPEOF', typeof(data));
 				Bus.emit('done-leaderboard-fetch', data);
 			});
 	}

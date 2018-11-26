@@ -104,6 +104,7 @@ export default class ProfileView extends BaseView {
 				this._template = notMyProfileTmpl;
 				super.render(data);
 			}
+
 		}
 		Bus.off('profile-render', this.render.bind(this));
 		Bus.off('done-get-user', this._setCurrentUser.bind(this));
