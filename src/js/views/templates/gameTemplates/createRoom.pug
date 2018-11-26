@@ -1,0 +1,15 @@
+extends ../base.pug
+
+block content
+    div(class="main__menu")
+        div(class="menu__links")
+            div
+                p Номер игры
+                input(name="room-number", type="text", placeholder="номер игры", id="room-number-id")
+            div
+                for player in players
+                    p= player.username
+            
+            div
+                p Начать игру
+

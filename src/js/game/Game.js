@@ -33,31 +33,8 @@ class Game{
         }
     }
 
-    // proxy(message){
-    //     console.log('Game Proxy');
-    //     switch (message.type){
-    //         case "user":
-    //             this.emitUpdateUsers(message.data);
-    //             break;
-    //         case "field":
-    //             this.emitUpdateGameField(message.data);
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    // }
 
-    // emitUpdateGameField(data){
-    //     console.log('Game emitUpdateGameField', 'field Data', data);
-    //     Bus.emit('updateGameField', data);
-    // }
-
-    // emitUpdateUsers(data){
-    //     console.log('Game emitUpdateUsers');
-    //     Bus.emit('updateUser', data);    
-    // }
-
-    proxy(message) {
+    proxy(message) { // proxy to Scene.js
         Bus.emit(message.type,message.data);
     }
 
@@ -98,4 +75,4 @@ class Game{
     
 }
 
-export default new Game("ws://80.252.155.65:8081");
+export default new Game("wss://80.252.155.65:8081");
