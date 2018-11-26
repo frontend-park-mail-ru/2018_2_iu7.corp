@@ -1,7 +1,9 @@
 .block#header
     a(class="header__title" href="/" data-href="/") 💣БОМБИЧ💥
     div(class="header__dropdown")
-        a(class="dropdown__toggler") Меню
-        div(class="dropdown__content")
-            for val in headerValues
-                a(href=val.href data-href=val.href class="dropdown__content")= val.label
+        p(class="dropdown__toggler" id="kek" onclick="openNav()") Меню
+        div(id="myNav" class="dropdown__overlay")
+            p(class="dropdown__closebtn" onclick="closeNav()") &times;
+            div(class="dropdown__overlay-content")
+                for val in headerValues
+                    a(href=val.href data-href=val.href)= val.label

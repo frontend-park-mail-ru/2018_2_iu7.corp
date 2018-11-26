@@ -1,0 +1,33 @@
+.leaderboard__link-right{
+    color: orange;
+    padding-top: 12px;
+    padding-left: 12px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: left;
+}
+
+.leaderboard__link-left{
+    color: orange;
+    padding-right: 12px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: left;
+}
+
+.leaderboard__header-right{
+    color: white;
+    padding-left: 12px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: left;
+}
+
+.leaderboard__header-left{
+    color: white;
+    padding-bottom: 12px 0px;
+    padding-right: 12px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: left;
+}
