@@ -1,7 +1,7 @@
 import BaseView from '../BaseView.js';
 import Bus from '../../modules/Bus.js';
 import NavigationController from '../../controllers/NavigationController.js';
-
+import CreateRoomValidator from '../../validators/CreateRoomValidator.js';
 import FormController from '../../controllers/FormController.js';
 
 import { authMenuHeader, notAuthMenuHeader } from '../dataTemplates/headerMenuData.js';
@@ -25,16 +25,30 @@ const userData = {
 		{
 			id: 'max_num_players_input',
 			name: 'max_num_players',
-			type: 'text',
+			type: 'number',
 			placeholder: 'Максмальное количество игроков',
 			errorId: 'max_num_players_error'
 		},
 		{
-			id: 'time_input',
-			name: 'time',
-			type: 'text',
+			id: 'time_limit_input',
+			name: 'time_limit',
+			type: 'number',
 			placeholder: 'Длительность игры (минуты)',
-			errorId: 'time_error'
+			errorId: 'time_limit_error'
+		},
+		{
+			id: 'width_input',
+			name: 'width',
+			type: 'number',
+			placeholder: 'ширина поля',
+			errorId: 'width_error'
+		},
+		{
+			id: 'height_input',
+			name: 'height',
+			type: 'number',
+			placeholder: 'высота поля',
+			errorId: 'height_error'
 		}
 	]
 };
@@ -44,7 +58,7 @@ export default class CreateRoomView extends BaseView {
 		super(createRoomTmpl);
 		this._currentUser = null;
 		this._navigationController = new NavigationController();
-		this._formController = new FormController('createroom');
+		this._formController = new FormController('createroom', CreateRoomValidator);
 		Bus.on('done-get-user', this.render.bind(this));
 		Bus.on('done-create-room', this.showLink.bind(this));
 	}
@@ -88,7 +102,7 @@ export default class CreateRoomView extends BaseView {
 
 
 	registerActions () {
-		this.viewDiv.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
+		this.viewDiv.addEventListener('submit', this._formController.createRoomCallbackSubmit.bind(this._formController));
 		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
 }

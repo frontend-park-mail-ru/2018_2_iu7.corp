@@ -25,7 +25,7 @@ export default class FormController {
 	callbackSubmit (event) {
 		event.preventDefault();
 
-		if (this._validator && !this._validator.validate(event.target)) {
+		if (this._validator && !this._validator.validate()) {
 			return;
 		}
 
@@ -37,6 +37,24 @@ export default class FormController {
 				return acc;
 			}, {});
 
+		Bus.emit('submit-data-' + this._formName, data);
+	}
+
+
+	createRoomCallbackSubmit (event) {
+		event.preventDefault();
+
+		if (this._validator && !this._validator.validate(event.target)) {
+			return;
+		}
+
+		let data = Array.from(event.target.elements)
+			.reduce((acc, val) => {
+				if (val.value !== '') {
+					acc[val.name] = val.value;
+				}
+				return acc;
+			}, {});
 		Bus.emit('submit-data-' + this._formName, data);
 	}
 }

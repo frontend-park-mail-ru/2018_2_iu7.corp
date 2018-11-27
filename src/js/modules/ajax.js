@@ -1,8 +1,6 @@
-const serverUrl = 'http://80.252.155.65:5002';
+// const serverUrl = 'http://80.252.155.65:5002';
+const serverUrl = 'http://176.119.156.66';
 
-
-
-// POST http://80.252.155.65:5002/multiplayer/rooms
 export class fetchModule {
 	static _ajax ({ method = 'GET', path = '/', body, headers } = {}) {
 		const url = serverUrl + path;
