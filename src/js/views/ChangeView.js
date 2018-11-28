@@ -39,6 +39,13 @@ export default class ChangeView extends BaseView {
 						type: 'email',
 						placeholder: 'New email',
 						errorId: 'email_error'
+					},
+					{
+						id: 'password_input',
+						name: 'password',
+						type: 'email',
+						placeholder: 'New password',
+						errorId: 'password_error'
 					}
 				],
 				headerValues: [

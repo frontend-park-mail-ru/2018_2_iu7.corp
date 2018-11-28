@@ -24,7 +24,7 @@ const data = {
 	title: 'Sign in',
 	id: 'signin',
 	actionError: 'signInError',
-	actionErrorMessage: 'Incorrect login or password',
+	actionErrorMessage: 'Неверные логин или пароль',
 	fields: [
 		{
 			id: 'username_input',
@@ -79,7 +79,7 @@ export default class SigninView extends BaseView {
 					}
 				],
 				title: 'Sign in',
-				message: 'You have been already signed in'
+				message: 'Вы уже вошли в свой профиль'
 			};
 			this._template = permissionMessageTmpl;
 			super.render(permissionMessageData);

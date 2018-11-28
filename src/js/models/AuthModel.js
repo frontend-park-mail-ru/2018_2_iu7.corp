@@ -4,17 +4,17 @@ import Bus from '../modules/Bus.js';
 
 export default class AuthModel {
 	static Register (data) {
+		console.log('NEW MAAAAAN')
 		return fetchModule.doPost({ path: '/profiles', body: data })
 			.then(response => {
+				// console.log(response);
 				// console.log('Registration response: ', response);
 				if (response.status === 200) {
-					// console.log('Registration Done: ', response.status);
 					const username = data.username;
 					const password = data.password;
 					Bus.emit('submit-data-signin', { username, password });
 				}
 				if (response.status === 409) {
-					// console.log('email duplicate: ', response.status);
 					Bus.emit('unsuccess-signup');
 				}
 				if (response.status === 422) { // валидация на стороне сервера TODO сообщение о неправильно вводе данных
@@ -23,34 +23,33 @@ export default class AuthModel {
 				}
 			})
 			.catch((err) => {
+				console.log(err)
 				Bus.emit('unsuccess-signup');
 			});
 	}
 
 	static Signin (data) {
 		return fetchModule.doPost({ path: '/auth/session', body: data })
-			.then(response => {
+			.then((response) => {
 				console.log('SignIN response: ', response);
 				if (response.status === 200) {
-					// console.log('SignIN Done: ', response.status);
 					return response.json();
 				}
 				if (response.status === 401) {
-					// console.log('NOT AUTH: ', response.status);
 					Bus.emit('unsuccess-signin');
 				}
 				if (response.status === 422) {
-					// console.log('SignIN validation error: ', response.status);
-					return Promise.reject(response.status);
+					Bus.emit('unsuccess-signin');
 				}
 			})
 			.then((user) => {
 				setCookie('id', user.profile_id.toString());
 				setCookie('auth_token', user.auth_token);
+				// setCookie('refresh_token', user.refresh_token);
 				Bus.emit('wipe-views');
 			})
 			.catch((err) => {
-				Bus.emit('unsuccess-signin');
+				console.log(err);
 			});
 	}
 
@@ -64,6 +63,7 @@ export default class AuthModel {
 				if (response.status === 200) {
 					deleteCookie('id');
 					deleteCookie('auth_token');
+					// deleteCookie('refresh_token');
 					Bus.emit('wipe-views');
 				}
 				if (response.status === 401) {

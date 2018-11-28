@@ -1,5 +1,5 @@
-// const serverUrl = 'http://80.252.155.65:5002';
-const serverUrl = 'http://176.119.156.66';
+const serverUrl = 'http://80.252.155.65:3000';
+// const serverUrl = 'http://176.119.156.66';
 
 export class fetchModule {
 	static _ajax ({ method = 'GET', path = '/', body, headers } = {}) {

@@ -1,6 +1,6 @@
 import Bus from '../modules/Bus.js';
 import { fetchModule } from '../modules/ajax.js';
-import { getCookie } from '../utils.js';
+import { setCookie, getCookie, deleteCookie } from '../utils.js';
 import Router from '../modules/Router.js';
 
 export default class ProfileModel {
@@ -9,11 +9,14 @@ export default class ProfileModel {
 		const currentUserId = getCookie('id');
 		fetchModule.doGet({ path: '/profiles/' + currentUserId })
 			.then(response => {
-				console.log(response);
+				// console.log(response);
 				if (response.status === 200) {
 					return response.json();
 				}
-				return Promise.reject(new Error('not auth'));
+				if (response.status === 404) {
+					ProfileModel._currentProfle = { is_authenticated: false };
+					Bus.emit('done-get-user', ProfileModel._currentProfle);
+				}
 			})
 			.then((data) => {
 				ProfileModel._currentProfle = data;
@@ -22,8 +25,6 @@ export default class ProfileModel {
 			})
 			.catch((err) => {
 				console.log(err);
-				ProfileModel._currentProfle = { is_authenticated: false };
-				Bus.emit('done-get-user', ProfileModel._currentProfle);
 			});
 	}
 
@@ -44,8 +45,8 @@ export default class ProfileModel {
 	// используется для передачи измененных данных пользователя на сервер
 	static loadProfileChanges (data) {
 		const id = getCookie('id');
-		const authToken = getCookie('auth_token');
-		const changeHeaders = {
+		let authToken = getCookie('auth_token');
+		let changeHeaders = {
 			'Authorization': 'Bearer ' + authToken
 		};
 
@@ -55,7 +56,38 @@ export default class ProfileModel {
 					Router.open(`/profile/${id}`);
 				}
 				if (response.status === 401) {
-					console.log('change Not auth:', response.status);
+					// console.log('not auth')
+					const token = getCookie('refresh_token');
+					if (token) {
+						fetchModule.doPatch({ path : '/auth/session', body: {token} })
+							.then( response => {
+								if (response.status === 200) {
+									return response.json();
+								} else {
+									return Promise.reject(new Error('uncorrect refresh token'));
+								}
+							})
+							.then( (user) => {
+								deleteCookie('auth_token');
+								setCookie('auth_token', user.auth_token);
+								authToken = getCookie('auth_token');
+								changeHeaders = {
+									'Authorization': 'Bearer ' + authToken
+								};
+								fetchModule.doPatch({ path: `/profiles/${id}`, body: data, headers: changeHeaders })
+									.then( response => {
+										if (response.status === 200) {
+											Router.open(`/profile/${id}`);
+										}
+									})
+							})
+							.catch( (err) => {
+								console.log(err);
+							})
+
+					} else {
+						return Promise.reject(new Error('not auth'));
+					}
 				}
 				if (response.status === 403) {
 					console.log('change Forbidden:', response.status);

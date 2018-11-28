@@ -25,7 +25,7 @@ const data = {
 	title: 'Registration',
 	id: 'signup',
 	actionError: 'signUpError',
-	actionErrorMessage: 'Such user has already been created',
+	actionErrorMessage: 'Такой пользователь уже существует',
 	fields: [
 		{
 			id: 'username_input',
@@ -103,12 +103,14 @@ export default class SignupView extends BaseView {
 	}
 
 	registerActions () {
+		this.viewDiv.removeEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
 		this.viewDiv.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
 		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
 
 	static showUnsuccessMessage () {
-		let errorField = document.getElementById('signUpError');
+		const errorField = document.getElementById('signUpError');
+		// errorField.innerText = message 
 		errorField.removeAttribute('hidden');
 	}
 }

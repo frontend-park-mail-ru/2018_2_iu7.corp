@@ -24,7 +24,7 @@ export default class FormController {
      */
 	callbackSubmit (event) {
 		event.preventDefault();
-
+		console.log('SIGNUP SUBMIT');
 		if (this._validator && !this._validator.validate()) {
 			return;
 		}
@@ -51,7 +51,11 @@ export default class FormController {
 		let data = Array.from(event.target.elements)
 			.reduce((acc, val) => {
 				if (val.value !== '') {
-					acc[val.name] = val.value;
+					if (val.name !== 'title'){
+						acc[val.name] = parseInt(val.value);
+					} else {
+						acc[val.name] = val.value;
+					}
 				}
 				return acc;
 			}, {});
