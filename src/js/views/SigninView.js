@@ -48,6 +48,7 @@ export default class SigninView extends BaseView {
 		super(form);
 		this._navigationController = new NavigationController();
 		this._formController = new FormController('signin');
+		this._registeredActions = false;
 		Bus.on('done-get-user', this.render.bind(this));
 	}
 
@@ -88,8 +89,11 @@ export default class SigninView extends BaseView {
 	}
 
 	registerActions () {
-		this.viewDiv.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
-		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+		if (!this._registeredActions) {
+			this.viewDiv.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
+			this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+			this._registeredActions = true;
+		}
 	}
 
 	static showUnsuccessMessage () {

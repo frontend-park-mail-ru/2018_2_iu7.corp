@@ -13,10 +13,7 @@ export default class ProfileModel {
 				if (response.status === 200) {
 					return response.json();
 				}
-				if (response.status === 404) {
-					ProfileModel._currentProfle = { is_authenticated: false };
-					Bus.emit('done-get-user', ProfileModel._currentProfle);
-				}
+				return Promise.reject(new Error('not auth'));
 			})
 			.then((data) => {
 				ProfileModel._currentProfle = data;
@@ -25,6 +22,8 @@ export default class ProfileModel {
 			})
 			.catch((err) => {
 				console.log(err);
+				ProfileModel._currentProfle = { is_authenticated: false };
+				Bus.emit('done-get-user', ProfileModel._currentProfle);
 			});
 	}
 
@@ -56,38 +55,38 @@ export default class ProfileModel {
 					Router.open(`/profile/${id}`);
 				}
 				if (response.status === 401) {
-					// console.log('not auth')
-					const token = getCookie('refresh_token');
-					if (token) {
-						fetchModule.doPatch({ path : '/auth/session', body: {token} })
-							.then( response => {
-								if (response.status === 200) {
-									return response.json();
-								} else {
-									return Promise.reject(new Error('uncorrect refresh token'));
-								}
-							})
-							.then( (user) => {
-								deleteCookie('auth_token');
-								setCookie('auth_token', user.auth_token);
-								authToken = getCookie('auth_token');
-								changeHeaders = {
-									'Authorization': 'Bearer ' + authToken
-								};
-								fetchModule.doPatch({ path: `/profiles/${id}`, body: data, headers: changeHeaders })
-									.then( response => {
-										if (response.status === 200) {
-											Router.open(`/profile/${id}`);
-										}
-									})
-							})
-							.catch( (err) => {
-								console.log(err);
-							})
+					console.log('not auth')
+					// const token = getCookie('refresh_token');
+					// if (token) {
+					// 	fetchModule.doPatch({ path : '/auth/session', body: {token} })
+					// 		.then( response => {
+					// 			if (response.status === 200) {
+					// 				return response.json();
+					// 			} else {
+					// 				return Promise.reject(new Error('uncorrect refresh token'));
+					// 			}
+					// 		})
+					// 		.then( (user) => {
+					// 			deleteCookie('auth_token');
+					// 			setCookie('auth_token', user.auth_token);
+					// 			authToken = getCookie('auth_token');
+					// 			changeHeaders = {
+					// 				'Authorization': 'Bearer ' + authToken
+					// 			};
+					// 			fetchModule.doPatch({ path: `/profiles/${id}`, body: data, headers: changeHeaders })
+					// 				.then( response => {
+					// 					if (response.status === 200) {
+					// 						Router.open(`/profile/${id}`);
+					// 					}
+					// 				})
+					// 		})
+					// 		.catch( (err) => {
+					// 			console.log(err);
+					// 		})
 
-					} else {
-						return Promise.reject(new Error('not auth'));
-					}
+					// } else {
+					// 	return Promise.reject(new Error('not auth'));
+					// }
 				}
 				if (response.status === 403) {
 					console.log('change Forbidden:', response.status);
