@@ -47,7 +47,10 @@ export default class AuthModel {
 			.then((user) => {
 				setCookie('id', user.profile_id.toString());
 				setCookie('auth_token', user.auth_token);
-				// setCookie('refresh_token', user.refresh_token);
+				setCookie('refresh_token', user.refresh_token);
+				// console.log(getCookie('id'))
+				// console.log(getCookie('auth_token'))
+				// console.log(getCookie('refresh_token'))
 				Bus.emit('wipe-views');
 			})
 			.catch((err) => {
@@ -66,7 +69,10 @@ export default class AuthModel {
 				if (response.status === 200) {
 					deleteCookie('id');
 					deleteCookie('auth_token');
-					// deleteCookie('refresh_token');
+					deleteCookie('refresh_token');
+					// console.log(getCookie('id'))
+					// console.log(getCookie('auth_token'))
+					// console.log(getCookie('refresh_token'))
 					Bus.emit('wipe-views');
 				}
 				if (response.status === 401) {

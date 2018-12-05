@@ -43,22 +43,29 @@ export default class FormController {
 
 	createRoomCallbackSubmit (event) {
 		event.preventDefault();
-
 		if (this._validator && !this._validator.validate(event.target)) {
 			return;
 		}
+		const size = {}
 
 		let data = Array.from(event.target.elements)
 			.reduce((acc, val) => {
 				if (val.value !== '') {
 					if (val.name !== 'title'){
-						acc[val.name] = parseInt(val.value);
+						if(val.name === 'height' || val.name === 'width') {
+							console.log(val.name, val.value);
+							size[val.name] = parseInt(val.value);
+						} else {
+							acc[val.name] = parseInt(val.value);
+						}
 					} else {
 						acc[val.name] = val.value;
 					}
 				}
 				return acc;
 			}, {});
+		data['field_size'] = size;
+		console.log('submit game data', data);
 		Bus.emit('submit-data-' + this._formName, data);
 	}
 }

@@ -43,7 +43,7 @@ export default class ChangeView extends BaseView {
 					{
 						id: 'password_input',
 						name: 'password',
-						type: 'email',
+						type: 'password',
 						placeholder: 'New password',
 						errorId: 'password_error'
 					}

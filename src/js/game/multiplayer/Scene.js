@@ -1,7 +1,7 @@
-import config from './GameConfig.js';
+import config from '../GameConfig.js';
 import Field from './components/field/field.ts';
 import Player from './components/player/player.ts';
-import Bus from '../modules/Bus.js';
+import Bus from '../../modules/Bus.js';
 
 export default class Scene {
 	constructor () {
@@ -30,7 +30,7 @@ export default class Scene {
 
 	updateUsers (data) {
 		console.log('Scene updateUsers');
-		this._player.update(data.position.x, data.position.y, this._field.bricksInField);
+		this._player.update(data.x, data.y, this._field.bricksInField);
 	}
 
 	clear () {

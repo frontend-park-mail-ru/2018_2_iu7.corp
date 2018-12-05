@@ -1,4 +1,4 @@
-import Bus from '../modules/Bus.js';
+import Bus from '../../modules/Bus.js';
 import Scene from './Scene.js';
 
 class Game {
@@ -6,7 +6,6 @@ class Game {
 		this._socketUrl = socketUrl;
 		this._socket = new WebSocket(this._socketUrl);
 		this._scene = new Scene();
-		// this.send.bind(this);
 	}
 
 	init () {
@@ -34,10 +33,6 @@ class Game {
 
 	proxy (message) { // proxy to Scene.js
 		Bus.emit(message.type, message.data);
-	}
-
-	emitUpdateBomb () {
-
 	}
 
 	send (message) {

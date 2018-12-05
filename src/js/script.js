@@ -9,14 +9,14 @@ import GameModel from './models/GameModel.js';
 import MenuView from './views/MenuView.js';
 import SignupView from './views/SignupView.js';
 import SigninView from './views/SigninView.js';
-import GameView from './views/GameView.js';
+// import GameView from './views/GameView.js';
 import ProfileView from './views/ProfileView.js';
 import ChangeView from './views/ChangeView.js';
 import LeaderboardView from './views/LeaderboardView.js';
 
-import MultiplayerMenuView from './views/gameViews/MultiplayerMenuView.js';
-import CreateRoomView from './views/gameViews/CreateRoomView.js';
-import RoomView from './views/gameViews/RoomView.js';
+import MultiplayerMenuView from './views/gameViews/multiplayer/MultiplayerMenuView.js';
+import CreateRoomView from './views/gameViews/multiplayer/CreateRoomView.js';
+import RoomView from './views/gameViews/multiplayer/RoomView.js';
 
 import ProfileController from './controllers/ProfileController.js';
 import GameController from './controllers/GameController.js';
@@ -55,7 +55,7 @@ function main () {
 		['/signin', SigninView],
 		['/profile', ProfileView],
 		['/change', ChangeView],
-		['/single', GameView],
+		// ['/single', GameView],
 		['/multiplayerMenu', MultiplayerMenuView],
 		['/createroom', CreateRoomView],
 		['/room', RoomView],

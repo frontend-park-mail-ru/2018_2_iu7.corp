@@ -1,12 +1,13 @@
-import BaseView from '../BaseView.js';
-import Bus from '../../modules/Bus.js';
-import NavigationController from '../../controllers/NavigationController.js';
-import CreateRoomValidator from '../../validators/CreateRoomValidator.js';
-import FormController from '../../controllers/FormController.js';
+import BaseView from '../../BaseView.js';
+import Bus from '../../../modules/Bus.js';
+import NavigationController from '../../../controllers/NavigationController.js';
+import CreateRoomValidator from '../../../validators/CreateRoomValidator.js';
+import FormController from '../../../controllers/FormController.js';
 
-import { authMenuHeader, notAuthMenuHeader } from '../dataTemplates/headerMenuData.js';
-const createRoomTmpl = require('../templates/form.pug');
-const showRoomLinkTmpl = require('../templates/gameTemplates/showRoomLink.pug');
+import { authMenuHeader, notAuthMenuHeader } from '../../dataTemplates/headerMenuData.js';
+const createRoomTmpl = require('../../templates/form.pug');
+const showRoomLinkTmpl = require('../../templates/gameTemplates/showRoomLink.pug');
+
 
 
 const userData = {
@@ -57,6 +58,7 @@ export default class CreateRoomView extends BaseView {
 	constructor () {
 		super(createRoomTmpl);
 		this._currentUser = null;
+		this._registeredActions = false;
 		this._navigationController = new NavigationController();
 		this._formController = new FormController('createroom', CreateRoomValidator);
 		Bus.on('done-get-user', this.render.bind(this));
@@ -64,12 +66,15 @@ export default class CreateRoomView extends BaseView {
 	}
 
 	show () {
+		console.log('create room show');
 		Bus.emit('get-user');
 		super.show();
 		this.registerActions();
 	}
 
 	render (user) {
+		console.log('render create room');
+		this._template = createRoomTmpl;
 		this._currentUser = user;
 		if (!user.is_authenticated) {
 			userData.headerValues = notAuthMenuHeader();
@@ -80,29 +85,11 @@ export default class CreateRoomView extends BaseView {
 		}
 	}
 
-	showLink(roomData) {
-		console.log('im working', roomData.id);
-		this._template = showRoomLinkTmpl;
-		// super.hide();
-		const data = {
-			linkHref: `/room/${roomData.id}`
-		};
-		if (!this._currentUser.is_authenticated) {
-			console.log('im working 1', roomData.id);
-			data.headerValues = notAuthMenuHeader();
-			super.render(data);
-		} else {
-			console.log('im working 2', roomData.id);
-			data.headerValues = authMenuHeader(this._currentUser.id);
-			super.render(data);
-		}
-	} 
-
-
-
-
 	registerActions () {
-		this.viewDiv.addEventListener('submit', this._formController.createRoomCallbackSubmit.bind(this._formController));
-		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+		if (!this._registeredActions) {
+			this.viewDiv.addEventListener('submit', this._formController.createRoomCallbackSubmit.bind(this._formController));
+			this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+			this._registeredActions = true;
+		}
 	}
 }

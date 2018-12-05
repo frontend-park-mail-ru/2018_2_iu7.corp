@@ -115,14 +115,9 @@ export default class Field {
     }
 
     public resetField(data: number[][]): void {
-        // console.log('field.ts', data);
-        // console.log('field.ts obj', this.bricksInField);
         this._size = data.length;
-        // console.log('field.ts new size', this._size);
         this.bricksInField = new Array();
-        // console.log('field.ts obj', this.bricksInField);
         this._data = data;
         this.setField();
-        // console.log('field.ts obj', this.bricksInField);
     }
 }

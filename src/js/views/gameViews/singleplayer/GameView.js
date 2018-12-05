@@ -21,3 +21,5 @@ export default class GameView extends BaseView {
 		super.render(data);
 	}
 }
+
+// вьюха для сингла

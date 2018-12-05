@@ -1,8 +1,8 @@
-import BaseView from '../BaseView.js';
-import Bus from '../../modules/Bus.js';
-import NavigationController from '../../controllers/NavigationController.js';
-import { authMenuHeader, notAuthMenuHeader } from '../dataTemplates/headerMenuData.js';
-const multiplayerMenuTmpl = require('../templates/gameTemplates/multiplayerMenu.pug');
+import BaseView from '../../BaseView.js';
+import Bus from '../../../modules/Bus.js';
+import NavigationController from '../../../controllers/NavigationController.js';
+import { authMenuHeader, notAuthMenuHeader } from '../../dataTemplates/headerMenuData.js';
+const multiplayerMenuTmpl = require('../../templates/gameTemplates/multiplayerMenu.pug');
 
 const data = {};
 
