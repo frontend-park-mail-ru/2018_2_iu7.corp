@@ -1,4 +1,4 @@
-export default class Scene {
+export default class BaseScene {
 	constructor () {
 		this._canvas = null;
 		this._ctx = null;
