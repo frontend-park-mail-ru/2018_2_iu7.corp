@@ -29,6 +29,9 @@ export default class BaseScene {
 		// console.log('Scene render');
 		this._field.drawField();
 		this._player.drawPlayer();
+		this._player.plantedBombs.forEach(bomb => {
+			bomb.draw();
+		});
 	}
 
 	loopCallback () {

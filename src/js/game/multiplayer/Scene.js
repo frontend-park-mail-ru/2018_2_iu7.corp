@@ -1,4 +1,4 @@
-import config from '../GameConfig.js';
+import { config } from '../GameConfig.js';
 import Field from './components/field/field.ts';
 import Player from './components/player/player.ts';
 import Bus from '../../modules/Bus.js';

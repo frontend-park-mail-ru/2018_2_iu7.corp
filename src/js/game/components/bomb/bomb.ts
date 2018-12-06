@@ -1,18 +1,45 @@
-export default class Bomb {
-    // public id:number;
-    public playerId:number;
-    public radius:number;
-    public xPos:number;
-    public yPos:number;
-    public plantTime: number;
-    private _ctx: any;
+import Player from '../player/player';
 
-    constructor (playerId:number, x:number,y:number,time:number, ctx:any) {
-        this.playerId = playerId;
+export default class Bomb {
+
+    constructor (pl : Player, id : number, x : number, y : number, ctx : any) {
+        this.planter = pl;
+        this._id = id;
         this.xPos = x;
         this.yPos = y;
-        this.plantTime = time;
+        this.color = '#F9D71C';
         this._ctx = ctx;
-        this.radius = 2; // TODO добавить возможность изменять 
+        this.size = 45;
+
+    }
+
+    public _id:number;
+    public xPos:number;
+    public yPos:number;
+    public size:number;
+    public color: string;
+    public planter: Player;
+    private _ctx: any; 
+    // private radius: number;
+
+    public startTimer () : void {
+        setTimeout(this.explode.bind(this), 3000)
+    }
+
+    // TODO делать событие bomb-explode, тем самым оповещая все разрушаемые объекты о взрыве бомбы
+    // и уже в методах этих объектов делать все необходимые действия
+    public explode () : void {
+        console.log(this);
+        this.planter.currentbombsAmount += 1;
+        this.planter.plantedBombs = this.planter.plantedBombs.filter( b => {
+           return b._id != this._id;
+        })
+    }
+
+    public draw () : void {
+        const xPos : number = this.xPos * this.size;
+        const yPos : number = this.yPos * this.size;
+        this._ctx.fillStyle = this.color;
+        this._ctx.fillRect(xPos, yPos, this.size, this.size);  
     }
 }
