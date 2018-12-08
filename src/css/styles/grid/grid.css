@@ -1,5 +1,8 @@
 .header {grid-area: header;}
-.main { grid-area: main; }
+.main { 
+  grid-area: main;
+  margin: 5%; 
+}
 .left { 
   grid-area: left;
   /* background-color: #333; */
@@ -10,7 +13,7 @@
 }
 .left-inner {
   margin: 0%;
-  padding: 5%;
+  padding: 0%;
   overflow: hidden;
   position: -webkit-sticky; /* Safari */
   position: sticky;
@@ -33,7 +36,7 @@
   display: grid;
   grid-template-areas:
     'header header header header header header'
-    'left left-inner main main right-inner right'
+    'left main main main main right'
     'footer footer footer footer footer footer';
   
 }
