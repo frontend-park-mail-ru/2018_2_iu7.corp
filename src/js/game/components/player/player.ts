@@ -1,5 +1,6 @@
 import { IBrick } from '../field/field';
-import Bomb from '../bomb/bomb';
+import Bomb, { IExplodeBombData, IPlantedBombData } from '../bomb/bomb';
+import GameBus from '../../GameBus';
 import { file } from 'babel-types';
 
 
@@ -9,7 +10,7 @@ export default class Player {
         this.xPos = x;
         this.yPos = y;
         this.size = 45;
-        this.status = 1;
+        this.isAlive = true;
 
         this.maxBombsAmount = 1;
         this.currentbombsAmount = this.maxBombsAmount;
@@ -20,13 +21,15 @@ export default class Player {
         this.color = '#FF0000';
 
         this._ctx = ctx;
+
+        GameBus.on('single-bomb-explode', this.onExplodeBomb.bind(this));
     }
 
     public _id : number;
     public xPos : number;
     public yPos : number;
     public size : number;
-    public status : number;
+    public isAlive : boolean;
     
     // public velocity : number;
     public color : string;
@@ -75,14 +78,48 @@ export default class Player {
 
     public plantBomb () : void {
         if (this.currentbombsAmount) {
-            console.log('bomb planted');
             const bombId : number = this.maxBombsAmount - this.currentbombsAmount;
-            console.log('player ctx', this._ctx);
-            const newBomb : Bomb = new Bomb(this, bombId, this.xPos, this.yPos, this._ctx);
+            const newBomb : Bomb = new Bomb(bombId, this.xPos, this.yPos, this._ctx);
             this.plantedBombs.push(newBomb);
             newBomb.startTimer();
             this.currentbombsAmount -= 1;
+            let data : IPlantedBombData = {
+                xPos : newBomb.xPos,
+                yPos : newBomb.yPos
+            };
+            GameBus.emit('single-bomb-plant', data);
+        }
+    }
 
+    public aliveStatus () : void {  
+        console.log('my',this.isAlive);
+    }
+
+    public onExplodeBomb (data : IExplodeBombData) : void {
+
+        const iAmDead = data.explodedArea.some( vec => {
+            return vec.some( position => {
+                return this.explodePlayer(position.xPos, position.yPos)
+            });
+        })
+
+        if (iAmDead) {
+            // this.isAlive = false;
+            // alert('you are dead(')
+            GameBus.emit('single-player-death');
+        } else {
+            this.currentbombsAmount += 1;
+            this.plantedBombs = this.plantedBombs.filter( b => {
+                return b._id !== data.bombId;
+            })
+        }
+    }
+
+    private explodePlayer (x : number, y : number) : boolean {
+        if (this.xPos === x && this.yPos === y) { // если игрок оказался в зоне поражения
+            return true;
+        } else {
+            return false;
         }
     }
 }

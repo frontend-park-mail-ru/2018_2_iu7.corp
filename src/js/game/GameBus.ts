@@ -22,7 +22,8 @@ class GameBus {
         });
     }
 
-    public emit (event : string, data : Object) : void { 
+    public emit (event : string, data? : Object | undefined) : void { 
+        // console.log(data);
         this._listeners[event].forEach( clb => {
             clb(data);
         });
