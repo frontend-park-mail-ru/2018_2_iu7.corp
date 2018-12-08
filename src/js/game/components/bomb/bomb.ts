@@ -1,4 +1,3 @@
-// import Player from '../player/player';
 import GameBus from '../../GameBus';
 import { isEmptyStatement } from 'babel-types';
 

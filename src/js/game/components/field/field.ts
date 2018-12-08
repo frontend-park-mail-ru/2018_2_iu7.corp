@@ -32,7 +32,7 @@ abstract class AbstractBrick implements IBrick{
     };
 }
 
-class GrassBrick extends AbstractBrick {
+export class GrassBrick extends AbstractBrick {
     constructor (x : number, y : number) {
         super()
         this.xPos = x * this.width;
@@ -45,7 +45,7 @@ class GrassBrick extends AbstractBrick {
     public destructible : boolean = false;
 }
 
-class FragileBrick extends AbstractBrick {
+export class FragileBrick extends AbstractBrick {
     constructor (x : number, y : number) {
         super()
         this.xPos = x * this.width;
@@ -58,7 +58,7 @@ class FragileBrick extends AbstractBrick {
     public destructible : boolean = true;
 }
 
-class SteelBrick extends AbstractBrick {
+export class SteelBrick extends AbstractBrick {
     constructor (x : number, y : number) {
         super()
         this.xPos = x * this.width;
@@ -140,7 +140,7 @@ export default class Field {
             vec.some( brick => {
                 // console.log('brick', brick, 'in vec', vec); 
                 return this.explodeBrick(brick.xPos, brick.yPos)
-            })
+            });
             // vec.some( function(brick) : boolean {
             //     this.bricksInField[data.xPos][data.yPos].passable = true; // ругается на неявный тип any у this
 

@@ -1,17 +1,16 @@
-import Field, { IBrick } from '../field/field';
+import Field, { IBrick , GrassBrick} from '../field/field';
 import Bomb, { IExplodeBombData, IPlantedBombData } from '../bomb/bomb';
 import GameBus from '../../GameBus';
 import { file } from 'babel-types';
 
 
 export default class Player {
-    constructor(id : number,x : number,y : number, field : IBrick[][], ctx : any) {
+    constructor(id : number, x : number, y : number, ctx : any) {
         this._id = id;
         this.xPos = x;
         this.yPos = y;
         this.size = 45;
         this.alive = true;
-        this.gameField = field;
 
         this.maxBombsAmount = 1;
         this.currentbombsAmount = this.maxBombsAmount;
@@ -78,6 +77,10 @@ export default class Player {
         }
     }
 
+    public setField(field : IBrick[][]) : void {
+        this.gameField = field;
+    }
+
     public plantBomb () : void {
         if (this.currentbombsAmount) {
             const bombId : number = this.maxBombsAmount - this.currentbombsAmount;
@@ -94,15 +97,13 @@ export default class Player {
     }
 
     public onExplodeBomb (data : IExplodeBombData) : void {
-
-        data.explodedArea.some( vec => {
-            return vec.some( position => {
+        data.explodedArea.forEach( vec => {
+            vec.some( position => {
                 return this.explodePlayer(position.xPos, position.yPos)
             });
         })
 
         if (!this.alive) {
-            console.log('game',GameBus._listeners);
             GameBus.emit('single-player-death');
         } else {
             this.currentbombsAmount += 1;
@@ -112,11 +113,21 @@ export default class Player {
         }
     }
 
+    /*
+    в данном методе используется instanceof вместо атрибутов класса passable, dectructible,
+    так как при вызове события 'single-bomb-plant', у ячейки, на которую ставится бомба
+    атрибут passable меняется с true на false, таким образом объект класса GrassBrick
+    становится неотличим от объекта класса SteelBrick. Это значит, что ячейка, куда была
+    поставлена бомба, будет считаться объектом класса SteelBrick, на котором и после которого
+    область поражения уже отсутствует, таким образом игрок никак не может быть убить потому что
+    не может попасть в область поражения
+    */
+
     private explodePlayer (x : number, y : number) : boolean {
-        if (!this.gameField[x][y].destructible && !this.gameField[x][y].passable) {
+        // раньше тут была проверка !this.gameField[x][y].passable
+        if (!(this.gameField[x][y] instanceof GrassBrick)) {
             return true;
-        }
-        if (this.xPos === x && this.yPos === y) { // если игрок оказался в зоне поражения
+        } else if (this.xPos === x && this.yPos === y) {
             this.alive = false;
             return true;
         } else {
