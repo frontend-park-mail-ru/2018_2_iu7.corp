@@ -132,6 +132,7 @@ export default class Field {
         this.bricksInField[data.xPos][data.yPos].passable = false;
     }
 
+    // TODO бомба пробивает деревяшки находящиеся за непробиваемой стеной
     public onExplodeBomb (data : IExplodeBombData) : void {
         this.bricksInField[data.xPos][data.yPos].passable = true;
         // console.log('area ', data.explodedArea);
@@ -149,9 +150,13 @@ export default class Field {
     }
 
     private explodeBrick (x : number, y : number) : boolean {
-        if (this.bricksInField[x][y].destructible) {
-            this.bricksInField[x][y] = new GrassBrick(x,y);
-            return true
+        if (!this.bricksInField[x][y].passable) {
+            if (this.bricksInField[x][y].destructible) {
+                this.bricksInField[x][y] = new GrassBrick(x,y);
+                return true
+            }
+            return true;
+
         } else {
             return false
         }

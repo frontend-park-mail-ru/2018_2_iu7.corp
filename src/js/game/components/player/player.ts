@@ -1,16 +1,17 @@
-import { IBrick } from '../field/field';
+import Field, { IBrick } from '../field/field';
 import Bomb, { IExplodeBombData, IPlantedBombData } from '../bomb/bomb';
 import GameBus from '../../GameBus';
 import { file } from 'babel-types';
 
 
 export default class Player {
-    constructor(id : number,x : number,y : number, ctx : any) {
+    constructor(id : number,x : number,y : number, field : IBrick[][], ctx : any) {
         this._id = id;
         this.xPos = x;
         this.yPos = y;
         this.size = 45;
-        this.isAlive = true;
+        this.alive = true;
+        this.gameField = field;
 
         this.maxBombsAmount = 1;
         this.currentbombsAmount = this.maxBombsAmount;
@@ -29,7 +30,7 @@ export default class Player {
     public xPos : number;
     public yPos : number;
     public size : number;
-    public isAlive : boolean;
+    public alive : boolean;
     
     // public velocity : number;
     public color : string;
@@ -41,6 +42,7 @@ export default class Player {
 
     private prevX : number;
     private prevY : number;
+    private gameField : IBrick[][]
     public _ctx : any;
 
 
@@ -91,21 +93,15 @@ export default class Player {
         }
     }
 
-    public aliveStatus () : void {  
-        console.log('my',this.isAlive);
-    }
-
     public onExplodeBomb (data : IExplodeBombData) : void {
 
-        const iAmDead = data.explodedArea.some( vec => {
+        data.explodedArea.some( vec => {
             return vec.some( position => {
                 return this.explodePlayer(position.xPos, position.yPos)
             });
         })
 
-        if (iAmDead) {
-            // this.isAlive = false;
-            // alert('you are dead(')
+        if (!this.alive) {
             console.log('game',GameBus._listeners);
             GameBus.emit('single-player-death');
         } else {
@@ -117,7 +113,11 @@ export default class Player {
     }
 
     private explodePlayer (x : number, y : number) : boolean {
+        if (!this.gameField[x][y].destructible && !this.gameField[x][y].passable) {
+            return true;
+        }
         if (this.xPos === x && this.yPos === y) { // если игрок оказался в зоне поражения
+            this.alive = false;
             return true;
         } else {
             return false;

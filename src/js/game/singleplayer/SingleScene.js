@@ -17,7 +17,7 @@ export default class SingleScene extends BaseScene {
         super.init(canvas, ctx);
         console.log(Bus._listeners);
         this._field = new Field(matr, this._ctx);
-		this._player = new Player(1, 1, 1, this._ctx); 
+		this._player = new Player(1, 1, 1, this._field.bricksInField, this._ctx); 
 		Bus.on('single-field', this.updateGameField.bind(this));
         Bus.on('single-user', this.updateUsers.bind(this));
         Bus.on('single-setBomb', this.updateBombs.bind(this));
