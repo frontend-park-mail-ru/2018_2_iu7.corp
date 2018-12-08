@@ -4,17 +4,24 @@ block content
     form(id= id)
         for field in fields
             p= field.placeholder + " "
-                span(id= field.id+'_show')= field.value
-            input(name= field.name, 
-                type= field.type, 
-                placeholder= field.placeholder, 
-                id= field.id, 
-                class= field.class, 
-                min= field.min, 
-                max= field.max, 
-                value= field.value
-                oninput=`slide('${field.id}', '${field.id+'_show'}')`)
-            
+                if field.min
+                    span(id= field.id+'_show')= field.value
+            if field.min            
+                input(name= field.name, 
+                    type= field.type, 
+                    placeholder= field.placeholder, 
+                    id= field.id, 
+                    class= field.class, 
+                    min= field.min, 
+                    max= field.max, 
+                    value= field.value
+                    oninput=`slide('${field.id}', '${field.id+'_show'}')`)
+            else 
+                input(name= field.name, 
+                    type= field.type, 
+                    placeholder= field.placeholder, 
+                    id= field.id, 
+                    class= field.class)
             span(hidden, id= field.errorId)
         input(name="submit", type="submit")
     div
