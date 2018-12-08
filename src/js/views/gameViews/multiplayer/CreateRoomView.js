@@ -14,41 +14,57 @@ const userData = {
 	title: 'createroom',
 	id: 'createroom',
 	actionError: 'createroomError',
-	actionErrorMessage: 'неудалось создать игру(',
+	actionErrorMessage: 'Неудалось создать игру(',
 	fields: [
 		{
 			id: 'title_input',
 			name: 'title',
 			type: 'text',
-			placeholder: 'название комнаты',
+			placeholder: 'Название комнаты',
 			errorId: 'title_error'
 		},
 		{
 			id: 'max_num_players_input',
 			name: 'max_num_players',
-			type: 'number',
+			type: 'range',
+			min: '2',
+			max: '4',
+			value: '4',
+			class: 'slider',
 			placeholder: 'Максмальное количество игроков',
 			errorId: 'max_num_players_error'
 		},
 		{
 			id: 'time_limit_input',
 			name: 'time_limit',
-			type: 'number',
+			type: 'range',
+			min: '5',
+			max: '10',
+			value: '5',
+			class: 'slider',
 			placeholder: 'Длительность игры (минуты)',
 			errorId: 'time_limit_error'
 		},
 		{
 			id: 'width_input',
 			name: 'width',
-			type: 'number',
-			placeholder: 'ширина поля',
+			type: 'range',
+			min: '20',
+			max: '100',
+			value: '20',
+			class: 'slider',
+			placeholder: 'Ширина поля',
 			errorId: 'width_error'
 		},
 		{
 			id: 'height_input',
 			name: 'height',
-			type: 'number',
-			placeholder: 'высота поля',
+			type: 'range',
+			min: '20',
+			max: '100',
+			value: '20',
+			class: 'slider',
+			placeholder: 'Высота поля',
 			errorId: 'height_error'
 		}
 	]
