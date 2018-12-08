@@ -6,7 +6,7 @@ class GameBus {
     constructor () {
         this._listeners = {};
     }
-    private _listeners : IListener;
+    public _listeners : IListener;
 
 
     public on (event : string, callback: Function) : void {
@@ -20,6 +20,10 @@ class GameBus {
         this._listeners[event] = this._listeners[event].filter( clb => {
             return clb !== callback;
         });
+    }
+
+    public totalOff (event : string) {
+        this._listeners[event] = [];
     }
 
     public emit (event : string, data? : Object | undefined) : void { 

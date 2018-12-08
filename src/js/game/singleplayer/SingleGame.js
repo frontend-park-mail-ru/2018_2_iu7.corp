@@ -3,7 +3,8 @@ import SingleScene from './SingleScene.js';
 
 class SingleGame {
 	constructor () {
-        this._scene = new SingleScene();
+		this._scene = new SingleScene();
+		this._registeredActions = false;
         
 	}
 
@@ -12,8 +13,11 @@ class SingleGame {
 		const canvas = document.getElementById('canvas');
 		const ctx = canvas.getContext('2d');
 		this._scene.init(canvas, ctx);
-		document.addEventListener('keydown', this.onKeyDown.bind(this));
-    	}
+		if (!this._registeredActions) {
+			document.addEventListener('keydown', this.onKeyDown.bind(this));
+			this._registeredActions = true;
+		}
+    }
 
     	start () {
 		console.log('Game start');

@@ -16,6 +16,10 @@ export class Bus {
 		});
 	}
 
+	totalOff (event) {
+		this._listeners[event] = [];
+	}
+
 	emit (event, data) {
 		// console.log('emitted event', event);
 		this._listeners[event].forEach((listener) => {

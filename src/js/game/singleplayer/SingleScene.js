@@ -33,15 +33,19 @@ export default class SingleScene extends BaseScene {
 
     updateBombs () {
         this._player.plantBomb();
-        console.log('in scene', this._player.isAlive);
     }
 
-    updateGame () {
-        Bus.off('single-field', this.updateGameField.bind(this));
-        Bus.off('single-user', this.updateUsers.bind(this));
-        Bus.off('single-setBomb', this.updateBombs.bind(this));
-        Bus.off('single-bomb-explosion', this.updateBombs.bind(this))
-        Bus.off('single-scene-start', this.startLoop.bind(this));
+    updateGame () { // TODO до перезагрузки страницы эти события накапливаются и вызываются по несколько раз
+        Bus.totalOff('single-field');
+        Bus.totalOff('single-user');
+        Bus.totalOff('single-setBomb');
+        Bus.totalOff('single-bomb-explosion')
+        Bus.totalOff('single-scene-start');
+
+        GameBus.totalOff('single-bomb-plant');
+        GameBus.totalOff('single-player-death');
+        GameBus.totalOff('single-bomb-explode');
+
         Router.open('/');
     }
 }

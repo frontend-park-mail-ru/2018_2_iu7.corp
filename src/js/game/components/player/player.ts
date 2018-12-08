@@ -106,6 +106,7 @@ export default class Player {
         if (iAmDead) {
             // this.isAlive = false;
             // alert('you are dead(')
+            console.log('game',GameBus._listeners);
             GameBus.emit('single-player-death');
         } else {
             this.currentbombsAmount += 1;
