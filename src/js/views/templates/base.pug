@@ -14,4 +14,9 @@ html
             div(class="main")
                 block content
             div(class="right")
-    
+        
+        div(id="dropdown" class="dropdown__overlay")
+            p(class="dropdown__closebtn" onclick="closeDropdown()") &times;
+            div(class="dropdown__overlay-content")
+                for val in headerValues
+                    a(href=val.href data-href=val.href class="dropdown__content")= val.label
