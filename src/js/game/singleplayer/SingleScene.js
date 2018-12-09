@@ -13,8 +13,8 @@ export default class SingleScene extends BaseScene {
         this._player = null;
     }
 
-    init(canvas, ctx) {
-        super.init(canvas, ctx);
+    init(firstLayer, firstLayerContext, secondLayer, secondLayerContext) {
+        super.init(firstLayer, firstLayerContext, secondLayer, secondLayerContext);
 
         /*
         здесь важен порядок создания объектов Player и Field, т.к. в таком
@@ -29,8 +29,8 @@ export default class SingleScene extends BaseScene {
         значит он попадает в область поражения
         */
         
-        this._player = new Player(1, 1, 1, this._ctx); 
-        this._field = new Field(matr, this._ctx);
+        this._player = new Player(1, 1, 1, this._secondLayerContext); 
+        this._field = new Field(matr, this._firstLayerContext);
         // вместо передачи поля через конструктор
         this._player.setField(this._field.bricksInField);
 

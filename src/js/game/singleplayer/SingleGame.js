@@ -10,9 +10,14 @@ class SingleGame {
 
 	init () {
 		console.log('Game init');
-		const canvas = document.getElementById('canvas');
-		const ctx = canvas.getContext('2d');
-		this._scene.init(canvas, ctx);
+		const firstLayer = document.getElementById('canvas1');
+		const firstLayerContext = firstLayer.getContext('2d');
+
+		const secondLayer = document.getElementById('canvas2');
+		const secondLayerContext = secondLayer.getContext('2d');
+		
+
+		this._scene.init(firstLayer, firstLayerContext, secondLayer, secondLayerContext);
 		if (!this._registeredActions) {
 			document.addEventListener('keydown', this.onKeyDown.bind(this));
 			this._registeredActions = true;
@@ -21,7 +26,7 @@ class SingleGame {
 
     	start () {
 		console.log('Game start');
-		Bus.emit('single-scene-start'); // TODO заменить все события на single-событие
+		Bus.emit('single-scene-start');
 	}
     
     	onKeyDown (e) {

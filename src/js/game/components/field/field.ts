@@ -109,6 +109,7 @@ export default class Field {
     }
 
     public drawField (): void {
+        console.log('hi');
         for (const row of this.bricksInField) {
             for (const brick of row) {
                 brick.drawBrick(this._ctx);
@@ -153,6 +154,7 @@ export default class Field {
         if (!this.bricksInField[x][y].passable) {
             if (this.bricksInField[x][y].destructible) {
                 this.bricksInField[x][y] = new GrassBrick(x,y);
+                this.bricksInField[x][y].drawBrick(this._ctx);
                 return true
             }
             return true;

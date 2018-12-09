@@ -71,10 +71,11 @@ export default class Player {
         const xPosPrev = this.prevX * this.size;
         const yPosPrev = this.prevY * this.size;
 
-        if ((xPosPrev != xPos) && (yPosPrev != yPos)){
-            this._ctx.fillStyle = "#365730";
-            this._ctx.fillRect(xPosPrev, yPosPrev, this.size, this.size);
-        }
+        this._ctx.clearRect(xPosPrev, yPosPrev, this.size, this.size);
+        // if ((xPosPrev != xPos) && (yPosPrev != yPos)){
+        //     this._ctx.fillStyle = "#365730";
+        //     this._ctx.fillRect(xPosPrev, yPosPrev, this.size, this.size);
+        // }
     }
 
     public setField(field : IBrick[][]) : void {
