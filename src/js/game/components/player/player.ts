@@ -1,27 +1,30 @@
-import { IBrick } from '../field/field';
+import Field, { IBrick , GrassBrick} from '../field/field';
 import Bomb, { IExplodeBombData, IPlantedBombData } from '../bomb/bomb';
 import GameBus from '../../GameBus';
+// import g from '../../../../../images/bomber1.png'
+
 import { file } from 'babel-types';
 
 
 export default class Player {
-    constructor(id : number,x : number,y : number, ctx : any) {
+    constructor(id : number, x : number, y : number, playerSprites : any, bombSprites : any, ctx : any) {
         this._id = id;
         this.xPos = x;
         this.yPos = y;
         this.size = 45;
-        this.isAlive = true;
+        this.alive = true;
 
         this.maxBombsAmount = 1;
         this.currentbombsAmount = this.maxBombsAmount;
         this.bombRadius = 1;
         this.plantedBombs = [];
+        this._playerSprites = playerSprites;
+        this._bombSprites = bombSprites;
+        this._sprite = new Image;
 
         // this.velocity = 1;
-        this.color = '#FF0000';
 
         this._ctx = ctx;
-
         GameBus.on('single-bomb-explode', this.onExplodeBomb.bind(this));
     }
 
@@ -29,7 +32,7 @@ export default class Player {
     public xPos : number;
     public yPos : number;
     public size : number;
-    public isAlive : boolean;
+    public alive : boolean;
     
     // public velocity : number;
     public color : string;
@@ -41,7 +44,11 @@ export default class Player {
 
     private prevX : number;
     private prevY : number;
+    private gameField : IBrick[][]
+    private _playerSprites : any;
+    private _bombSprites : any;
     public _ctx : any;
+    public _sprite : HTMLImageElement;
 
 
     public update (x:number,y:number, field: IBrick[][]): void {
@@ -50,6 +57,7 @@ export default class Player {
             this.prevY = this.yPos;
             this.xPos = x;
             this.yPos = y;
+            this._sprite
         }
     }
 
@@ -64,16 +72,24 @@ export default class Player {
         const xPos = this.xPos * this.size;
         const yPos = this.yPos * this.size;
 
-        this._ctx.fillStyle = this.color;
-        this._ctx.fillRect(xPos,yPos, this.size,this.size);
+        // this._ctx.fillStyle = this.color;
+        // this._ctx.fillRect(xPos,yPos, this.size,this.size);
+        // console.log(this._sprite);
+        this._sprite.src = this._playerSprites.front[0];
+        this._ctx.drawImage(this._sprite,xPos, yPos, this.size, this.size);
 
         const xPosPrev = this.prevX * this.size;
         const yPosPrev = this.prevY * this.size;
 
-        if ((xPosPrev != xPos) && (yPosPrev != yPos)){
-            this._ctx.fillStyle = "#365730";
-            this._ctx.fillRect(xPosPrev, yPosPrev, this.size, this.size);
-        }
+        this._ctx.clearRect(xPosPrev, yPosPrev, this.size, this.size);
+        // if ((xPosPrev != xPos) && (yPosPrev != yPos)){
+        //     this._ctx.fillStyle = "#365730";
+        //     this._ctx.fillRect(xPosPrev, yPosPrev, this.size, this.size);
+        // }
+    }
+
+    public setField(field : IBrick[][]) : void {
+        this.gameField = field;
     }
 
     public plantBomb () : void {
@@ -91,22 +107,14 @@ export default class Player {
         }
     }
 
-    public aliveStatus () : void {  
-        console.log('my',this.isAlive);
-    }
-
     public onExplodeBomb (data : IExplodeBombData) : void {
-
-        const iAmDead = data.explodedArea.some( vec => {
-            return vec.some( position => {
+        data.explodedArea.forEach( vec => {
+            vec.some( position => {
                 return this.explodePlayer(position.xPos, position.yPos)
             });
         })
 
-        if (iAmDead) {
-            // this.isAlive = false;
-            // alert('you are dead(')
-            console.log('game',GameBus._listeners);
+        if (!this.alive) {
             GameBus.emit('single-player-death');
         } else {
             this.currentbombsAmount += 1;
@@ -116,8 +124,22 @@ export default class Player {
         }
     }
 
+    /*
+    в данном методе используется instanceof вместо атрибутов класса passable, dectructible,
+    так как при вызове события 'single-bomb-plant', у ячейки, на которую ставится бомба
+    атрибут passable меняется с true на false, таким образом объект класса GrassBrick
+    становится неотличим от объекта класса SteelBrick. Это значит, что ячейка, куда была
+    поставлена бомба, будет считаться объектом класса SteelBrick, на котором и после которого
+    область поражения уже отсутствует, таким образом игрок никак не может быть убить потому что
+    не может попасть в область поражения
+    */
+
     private explodePlayer (x : number, y : number) : boolean {
-        if (this.xPos === x && this.yPos === y) { // если игрок оказался в зоне поражения
+        // раньше тут была проверка !this.gameField[x][y].passable
+        if (!(this.gameField[x][y] instanceof GrassBrick)) {
+            return true;
+        } else if (this.xPos === x && this.yPos === y) {
+            this.alive = false;
             return true;
         } else {
             return false;

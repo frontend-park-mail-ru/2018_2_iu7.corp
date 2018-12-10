@@ -1,4 +1,3 @@
-// import Player from '../player/player';
 import GameBus from '../../GameBus';
 import { isEmptyStatement } from 'babel-types';
 
@@ -84,6 +83,7 @@ export default class Bomb {
             area.push(bombedWay);
         })
 
+        this._ctx.clearRect(this.xPos, this.yPos, this.size, this.size);
         // данные бомбы (координаты, область поражения) на момент взрыва
         let data : IExplodeBombData = {
             bombId : this._id,

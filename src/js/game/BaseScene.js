@@ -1,12 +1,16 @@
 export default class BaseScene {
 	constructor () {
-		this._canvas = null;
-		this._ctx = null;
+		this._firstLayer = null;
+		this._firstLayerContext = null;
 	}
-	init (canvas, ctx) {
+	init (firstLayer, firstLayerContext, secondLayer, secondLayerContext) {
 		// console.log('Scene init');
-		this._canvas = canvas;
-		this._ctx = ctx;
+		this._firstLayer = firstLayer;
+		this._firstLayerContext = firstLayerContext;
+
+		this._secondLayer = secondLayer;
+		this._secondLayerContext = secondLayerContext;
+
 	}
 
 	updateGameField (data) {
@@ -21,13 +25,19 @@ export default class BaseScene {
 		this._player.update(data.x, data.y, this._field.bricksInField);
 	}
 
-	clear () {
-		this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+	clearFirstLayer () {
+		this._firstLayerContext.clearRect(0, 0, this._firstLayer.width, this._firstLayer.height);
 	}
+
+	clearSecondLayer () {
+		this._secondLayerContext.clearRect(0, 0, this._secondLayer.width, this._secondLayer.height);
+	}
+
+
 
 	render () {
 		// console.log('Scene render');
-		this._field.drawField();
+		// this._field.drawField();
 		this._player.drawPlayer();
 		this._player.plantedBombs.forEach(bomb => {
 			bomb.draw();
@@ -35,12 +45,13 @@ export default class BaseScene {
 	}
 
 	loopCallback () {
-		this.clear(); // TODO убрать
+		this.clearSecondLayer(); 
 		this.render();
 		window.requestAnimationFrame(this.loopCallback.bind(this));
 	}
 
 	startLoop () {
+		// this._field.drawField();
 		window.requestAnimationFrame(this.loopCallback.bind(this));
 	}
 }

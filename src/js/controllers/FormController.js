@@ -24,7 +24,7 @@ export default class FormController {
      */
 	callbackSubmit (event) {
 		event.preventDefault();
-		console.log('SIGNUP SUBMIT');
+		// console.log('SIGNUP SUBMIT');
 		if (this._validator && !this._validator.validate()) {
 			return;
 		}
@@ -65,7 +65,7 @@ export default class FormController {
 				return acc;
 			}, {});
 		data['field_size'] = size;
-		console.log('submit game data', data);
+		// console.log('submit game data', data);
 		Bus.emit('submit-data-' + this._formName, data);
 	}
 }

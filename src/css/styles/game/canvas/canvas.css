@@ -1,0 +1,11 @@
+#canvas1 {
+    position: absolute;
+    z-index: 100;
+    background-color: transparent;
+}
+
+#canvas2 {
+    position: absolute;
+    z-index: 101;
+    background-color: transparent;
+}
