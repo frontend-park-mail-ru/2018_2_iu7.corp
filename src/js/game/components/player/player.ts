@@ -1,11 +1,13 @@
 import Field, { IBrick , GrassBrick} from '../field/field';
 import Bomb, { IExplodeBombData, IPlantedBombData } from '../bomb/bomb';
 import GameBus from '../../GameBus';
+// import g from '../../../../../images/bomber1.png'
+
 import { file } from 'babel-types';
 
 
 export default class Player {
-    constructor(id : number, x : number, y : number, ctx : any) {
+    constructor(id : number, x : number, y : number, playerSprites : any, bombSprites : any, ctx : any) {
         this._id = id;
         this.xPos = x;
         this.yPos = y;
@@ -16,12 +18,13 @@ export default class Player {
         this.currentbombsAmount = this.maxBombsAmount;
         this.bombRadius = 1;
         this.plantedBombs = [];
+        this._playerSprites = playerSprites;
+        this._bombSprites = bombSprites;
+        this._sprite = new Image;
 
         // this.velocity = 1;
-        this.color = '#FF0000';
 
         this._ctx = ctx;
-
         GameBus.on('single-bomb-explode', this.onExplodeBomb.bind(this));
     }
 
@@ -42,7 +45,10 @@ export default class Player {
     private prevX : number;
     private prevY : number;
     private gameField : IBrick[][]
+    private _playerSprites : any;
+    private _bombSprites : any;
     public _ctx : any;
+    public _sprite : HTMLImageElement;
 
 
     public update (x:number,y:number, field: IBrick[][]): void {
@@ -51,6 +57,7 @@ export default class Player {
             this.prevY = this.yPos;
             this.xPos = x;
             this.yPos = y;
+            this._sprite
         }
     }
 
@@ -65,8 +72,11 @@ export default class Player {
         const xPos = this.xPos * this.size;
         const yPos = this.yPos * this.size;
 
-        this._ctx.fillStyle = this.color;
-        this._ctx.fillRect(xPos,yPos, this.size,this.size);
+        // this._ctx.fillStyle = this.color;
+        // this._ctx.fillRect(xPos,yPos, this.size,this.size);
+        // console.log(this._sprite);
+        this._sprite.src = this._playerSprites.front[0];
+        this._ctx.drawImage(this._sprite,xPos, yPos, this.size, this.size);
 
         const xPosPrev = this.prevX * this.size;
         const yPosPrev = this.prevY * this.size;

@@ -51,7 +51,7 @@ export default class BaseScene {
 	}
 
 	startLoop () {
-		this._field.drawField();
+		// this._field.drawField();
 		window.requestAnimationFrame(this.loopCallback.bind(this));
 	}
 }

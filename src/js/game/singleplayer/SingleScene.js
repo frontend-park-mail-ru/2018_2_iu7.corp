@@ -6,6 +6,8 @@ import Field from '../components/field/field.ts';
 import Player from '../components/player/player.ts'
 import { matr } from '../GameConfig.js';
 
+import *  as sprites from '../SpriteImports.js';
+
 export default class SingleScene extends BaseScene {
     constructor () {
         super();
@@ -29,8 +31,8 @@ export default class SingleScene extends BaseScene {
         значит он попадает в область поражения
         */
         
-        this._player = new Player(1, 1, 1, this._secondLayerContext); 
-        this._field = new Field(matr, this._firstLayerContext);
+        this._player = new Player(1, 1, 1, sprites.playerSprites, sprites.bombSprites, this._secondLayerContext); 
+        this._field = new Field(matr, sprites.fieldSprites, this._firstLayerContext);
         // вместо передачи поля через конструктор
         this._player.setField(this._field.bricksInField);
 
