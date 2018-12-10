@@ -2,6 +2,7 @@ import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 import FormController from '../controllers/FormController.js';
+import { authMenuHeader, notAuthMenuHeader } from '../views/dataTemplates/headerMenuData.js';
 
 const form = require('./templates/form.pug');
 const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
@@ -23,67 +24,41 @@ export default class ChangeView extends BaseView {
 	render (user) {
 		if (user.is_authenticated) { // если пользователь залогинен и хочет посмотреть свой профиль
 			const data = {
-				title: 'Change Settings',
+				title: 'Настройки',
 				id: 'change',
 				fields: [
 					{
 						id: 'username_input',
 						name: 'username',
 						type: 'text',
-						placeholder: 'New username',
+						placeholder: 'Новое имя пользователя',
 						errorId: 'username_error'
 					},
 					{
 						id: 'email_input',
 						name: 'email',
 						type: 'email',
-						placeholder: 'New email',
+						placeholder: 'Новый email',
 						errorId: 'email_error'
 					},
 					{
 						id: 'password_input',
 						name: 'password',
 						type: 'password',
-						placeholder: 'New password',
+						placeholder: 'Новый пароль',
 						errorId: 'password_error'
 					}
 				],
-				headerValues: [
-					{
-						label: 'Профиль',
-						href: `/profile/${user.id}`
-					},
-					{
-						label: 'Таблица лидеров',
-						href: '/leaderboard'
-					},
-					{
-						label: 'Выйти',
-						href: '/signout'
-					}
-				]
+				headerValues: notAuthMenuHeader()
 			};
 
 			this._template = form;
 			super.render(data);
 		} else { // если не залогинен
 			const permissionMessageData = {
-				title: 'Change settings',
-				message: 'You can not change someone`s settings',
-				headerValues: [
-					{
-						label: 'Вход',
-						href: '/signin'
-					},
-					{
-						label: 'Регистрация',
-						href: '/signup'
-					},
-					{
-						label: 'Таблица лидеров',
-						href: '/leaderboard'
-					}
-				]
+				title: 'Настройки',
+				message: 'Ошибка доступа, вам нельзя изменять чужие настройки',
+				headerValues: authMenuHeader(this._currentUser.id)
 			};
 			this._template = permissionMessageTmpl;
 			super.render(permissionMessageData);

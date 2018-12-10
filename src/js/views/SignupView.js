@@ -31,7 +31,7 @@ const data = {
 			id: 'username_input',
 			name: 'username',
 			type: 'text',
-			placeholder: 'Username',
+			placeholder: 'Имя пользователя',
 			errorId: 'username_error'
 		},
 		{
@@ -45,14 +45,14 @@ const data = {
 			id: 'password_input',
 			name: 'password',
 			type: 'password',
-			placeholder: 'Password',
+			placeholder: 'Пароль',
 			errorId: 'password_error'
 		},
 		{
 			id: 'password_repeat_input',
 			name: 'password_repeat',
 			type: 'password',
-			placeholder: 'Confirm password',
+			placeholder: 'Подтвердите пароль',
 			errorId: 'password_repeat_error'
 		}
 	]
@@ -94,8 +94,8 @@ export default class SignupView extends BaseView {
 						href: '/signout'
 					}
 				],
-				title: 'Registration',
-				message: 'You have been already registered and signed in'
+				title: 'Регистрация',
+				message: 'Вы уже зарегистрированны и вошли в систему'
 			};
 			this._template = permissionMessageTmpl;
 			super.render(permissionMessageData);

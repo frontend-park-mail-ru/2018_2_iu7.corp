@@ -5,6 +5,7 @@
     background-color: #333;
     position: -webkit-sticky; /* Safari */
     position: sticky;
+    z-index: 3;
     top: 0;
 }
 
@@ -21,38 +22,26 @@
     background-color: #111;
 }
 
-.header__login {
-    float: left;
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 14px;
-    text-decoration: none;
-}
-.header__login:hover {
-    background-color: #111;
-}
-
-.header__sign-up{
-    float: left;
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 14px;
-    text-decoration: none;
-}
-.header__sign-up:hover {
-    background-color: #111;
-}
-
-.header__leaderboard{
-    float: left;
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 14px;
-    text-decoration: none;
-}
 .header__leaderboard:hover {
     background-color: #111;
+}
+
+.header__title-label{
+    color: orange;
+    float: left;
+    display: block;
+    text-align: center;
+    padding: 14px 14px;
+    text-decoration: none;
+    /* font-size: 14px + 5vw; */
+}
+
+.header__title-data{
+    color: white;
+    float: left;
+    display: block;
+    text-align: center;
+    padding: 14px 14px;
+    text-decoration: none;
+    /* font-size: 14px + 5vw; */
 }

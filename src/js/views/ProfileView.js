@@ -1,6 +1,7 @@
 import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
+import { authMenuHeader, notAuthMenuHeader } from '../views/dataTemplates/headerMenuData.js';
 
 const preloadTmpl = require('./templates/preload.pug');
 const myProfileTmpl = require('./templates/myProfile.pug');
@@ -39,20 +40,7 @@ export default class ProfileView extends BaseView {
 				title: 'Profile',
 				changeHref: `/change/${renderData.user.id}`,
 				user: renderData.user,
-				headerValues: [
-					{
-						label: 'Профиль',
-						href: `/profile/${renderData.user.id}`
-					},
-					{
-						label: 'Таблица лидеров',
-						href: '/leaderboard'
-					},
-					{
-						label: 'Выйти',
-						href: '/signout'
-					}
-				]
+				headerValues: authMenuHeader(renderData.user.id)
 			};
 			this._template = myProfileTmpl;
 			super.render(data);
@@ -61,20 +49,7 @@ export default class ProfileView extends BaseView {
 				const data = {
 					title: 'Profile',
 					user: renderData.user,
-					headerValues: [
-						{
-							label: 'Профиль',
-							href: `/profile/${this._currentUser.id}`
-						},
-						{
-							label: 'Таблица лидеров',
-							href: '/leaderboard'
-						},
-						{
-							label: 'Выйти',
-							href: '/signout'
-						}
-					]
+					headerValues: authMenuHeader(this._currentUser.id)
 				};
 				this._template = notMyProfileTmpl;
 				super.render(data);
@@ -82,20 +57,7 @@ export default class ProfileView extends BaseView {
 				const data = {
 					title: 'Profile',
 					user: renderData.user,
-					headerValues: [
-						{
-							label: 'Вход',
-							href: '/signin'
-						},
-						{
-							label: 'Регистрация',
-							href: '/signup'
-						},
-						{
-							label: 'Таблица лидеров',
-							href: '/leaderboard'
-						}
-					]
+					headerValues: notAuthMenuHeader()
 				};
 				this._template = notMyProfileTmpl;
 				super.render(data);
@@ -108,20 +70,7 @@ export default class ProfileView extends BaseView {
 	preload () {
 		const data = {
 			title: 'Profile',
-			headerValues: [
-				{
-					label: 'Вход',
-					href: '/signin'
-				},
-				{
-					label: 'Регистрация',
-					href: '/signup'
-				},
-				{
-					label: 'Таблица_лидеров',
-					href: '/leaderboard'
-				}
-			]
+			headerValues: notAuthMenuHeader()
 		};
 		this.viewDiv.innerHTML = '';
 		this.viewDiv.innerHTML = preloadTmpl(data);

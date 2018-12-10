@@ -1,5 +1,6 @@
 import '../../css/styles/main/main.css';
 import '../../css/styles/header/header.css';
+import '../../css/styles/header/game-menu/game-menu.css';
 import '../../css/styles/dropdown/dropdown.css';
 import '../../css/styles/grid/grid.css';
 import '../../css/styles/menu/menu.css';

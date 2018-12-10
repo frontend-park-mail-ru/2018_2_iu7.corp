@@ -5,7 +5,13 @@ html {
     color: whitesmoke;
     margin: 0%;
     padding: 0%;
-    background-color: #1a613b;
+    background-color: #350656;
+    background-image: url("title_background.jpg");
+    background-repeat: no-repeat;
+    background-size:100%;
+    background-position: center;
+    background-attachment: scroll;
+    background-size:cover;
 }
 @media (min-width: 320px) {
 	html { font-size: calc( 3.125vw + 10px ); } 

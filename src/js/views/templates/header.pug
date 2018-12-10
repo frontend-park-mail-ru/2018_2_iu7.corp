@@ -1,4 +1,9 @@
 .block#header
     a(class="header__title" href="/" data-href="/") 💣БОМБИЧ💥
+    div(class="header__game-menu")
+        if headerMenu
+            for val in headerMenu
+                a(class='header__title-label')= val.label + ":"
+                a(class='header__title-data')= val.data + " "
     div(class="header__dropdown")
         p(class="dropdown__toggler" onclick="openDropdown()") Меню
