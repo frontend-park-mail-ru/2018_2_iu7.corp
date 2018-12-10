@@ -3,6 +3,7 @@ import LeaderboardController from '../controllers/LeaderboardController.js';
 import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import LeaderboardModel from '../models/LeaderboardModel.js';
+import { authMenuHeader, notAuthMenuHeader } from '../views/dataTemplates/headerMenuData.js';
 
 const leaderboardTmpl = require('./templates/leaderboard.pug');
 const preloadTmpl = require('./templates/preload.pug');
@@ -58,21 +59,8 @@ export default class LeaderboardView extends BaseView {
      */
 	preload () {
 		const data = {
-			headerValues: [
-				{
-					label: 'Вход',
-					href: '/signin'
-				},
-				{
-					label: 'Регистрация',
-					href: '/signup'
-				},
-				{
-					label: 'Таблица лидеров',
-					href: '/leaderboard'
-				}
-			],
-			title: 'Leaderboard'
+			headerValues: notAuthMenuHeader(),
+			title: 'Таблица лидеров'
 		};
 		this.viewDiv.innerHTML = '';
 		this.viewDiv.innerHTML = preloadTmpl(data);
@@ -85,41 +73,15 @@ export default class LeaderboardView extends BaseView {
 	render (users) {
 		if (this._currentUser.is_authenticated) {
 			const data = {
-				headerValues: [
-					{
-						label: 'Профиль',
-						href: `/profile/${this._currentUser.id}`
-					},
-					{
-						label: 'Таблица лидеров',
-						href: '/leaderboard'
-					},
-					{
-						label: 'Выйти',
-						href: '/signout'
-					}
-				],
-				title: 'Leaderboard',
+				headerValues: authMenuHeader(this._currentUser.id),
+				title: 'Таблица лидеров',
 				usrs: users
 			};
 			super.render(data);
 		} else {
 			const data = {
-				headerValues: [
-					{
-						label: 'Вход',
-						href: '/signin'
-					},
-					{
-						label: 'Регистрация',
-						href: '/signup'
-					},
-					{
-						label: 'Таблица лидеров',
-						href: '/leaderboard'
-					}
-				],
-				title: 'Leaderboard',
+				headerValues: notAuthMenuHeader(),
+				title: 'Таблица лидеров',
 				usrs: users
 			};
 			super.render(data);

@@ -2,26 +2,15 @@ import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 import FormController from '../controllers/FormController.js';
+import { authMenuHeader, notAuthMenuHeader } from '../views/dataTemplates/headerMenuData.js';
+
 
 const form = require('./templates/form.pug');
 const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
 
 const data = {
-	headerValues: [
-		{
-			label: 'Вход',
-			href: '/signin'
-		},
-		{
-			label: 'Регистрация',
-			href: '/signup'
-		},
-		{
-			label: 'Таблица лидеров',
-			href: '/leaderboard'
-		}
-	],
-	title: 'Sign in',
+	headerValues: notAuthMenuHeader(),
+	title: 'Вход',
 	id: 'signin',
 	actionError: 'signInError',
 	actionErrorMessage: 'Неверные логин или пароль',
@@ -30,14 +19,14 @@ const data = {
 			id: 'username_input',
 			name: 'username',
 			type: 'text',
-			placeholder: 'Username',
+			placeholder: 'Имя пользователя',
 			errorId: 'username_error'
 		},
 		{
 			id: 'password_input',
 			name: 'password',
 			type: 'password',
-			placeholder: 'Password',
+			placeholder: 'Пароль',
 			errorId: 'password_error'
 		}
 	]
@@ -65,21 +54,8 @@ export default class SigninView extends BaseView {
 			super.render(data);
 		} else {
 			const permissionMessageData = {
-				headerValues: [
-					{
-						label: 'Профиль',
-						href: `/profile/${user.id}`
-					},
-					{
-						label: 'Таблица лидеров',
-						href: '/leaderboard'
-					},
-					{
-						label: 'Выйти',
-						href: '/signout'
-					}
-				],
-				title: 'Sign in',
+				headerValues: authMenuHeader(user.id),
+				title: 'Вход',
 				message: 'Вы уже вошли в свой профиль'
 			};
 			this._template = permissionMessageTmpl;

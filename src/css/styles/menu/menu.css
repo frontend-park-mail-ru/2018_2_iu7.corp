@@ -16,7 +16,8 @@
 }
 
 .menu__links a:hover {
-    background-color: #14492d
+    background-color: #50137c;
+    opacity: 0.9;
 }
 
 .menu__links {
@@ -32,5 +33,10 @@
 .left-inner__separator {
     display: block;
     padding: 5%;
-    background-color: #1a613b;
+    background-color: #350656;
+}
+
+.nav_link{
+    color: orange;
+    margin: 5%;
 }

@@ -19,7 +19,7 @@
     overflow-y: hidden;
     -webkit-transition: 0.3s;
     transition: 0.3s;
-    z-index: 2;
+    z-index: 4;
 }
 
 .dropdown__overlay-content {

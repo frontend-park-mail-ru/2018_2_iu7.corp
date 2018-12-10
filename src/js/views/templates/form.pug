@@ -5,7 +5,7 @@ block content
         for field in fields
             p= field.placeholder + " "
                 if field.min
-                    span(id= field.id+'_show')= field.value
+                    span(id= field.id+'_show' class="show-input")= field.value
             if field.min            
                 input(name= field.name, 
                     type= field.type, 
