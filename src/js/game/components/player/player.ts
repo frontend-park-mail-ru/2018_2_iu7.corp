@@ -1,7 +1,6 @@
-import Field, { IBrick , GrassBrick} from '../field/field';
+import { IBrick , GrassBrick} from '../field/field';
 import Bomb, { IExplodeBombData, IPlantedBombData } from '../bomb/bomb';
 import GameBus from '../../GameBus';
-// import g from '../../../../../images/bomber1.png'
 
 import { file, continueStatement } from 'babel-types';
 
@@ -41,7 +40,6 @@ export default class Player {
     public size : number;
     public alive : boolean;
     
-    // public velocity : number;
     public color : string;
 
     public currentbombsAmount : number;
@@ -51,10 +49,6 @@ export default class Player {
 
     private prevX : number;
     private prevY : number;
-    private animationPrevX : number;
-    private animationPrevY : number;
-    private animationxPos : number;
-    private animationyPos : number;
     private gameField : IBrick[][]
     private _playerSprites : any;
     private _bombSprites : any;
@@ -70,11 +64,10 @@ export default class Player {
     // индекс указывающий какую анимацию нужно отобразить, меняется по нажатию клавиши, по умолчанию 0 - стоит на месте
     private _animationPointer : number;
     public _ctx : any;
-    // public _sprite : HTMLImageElement;
 
     // чтобы при каждой смене кадра не указывать новый src, можно загрузить их сразу
     public loadingSpritesSrc () : void { 
-        this._playerSprites.front.forEach( (s : string) => {
+        this._playerSprites.down.forEach( (s : string) => {
             const sprite : HTMLImageElement = new Image;
             sprite.onload = () => { // TODO убрать onload
                 this._endAnimationSprite = this._downSpritesSrc[0];
@@ -82,7 +75,7 @@ export default class Player {
             sprite.src = s;
             this._downSpritesSrc.push(sprite);
         })
-        this._playerSprites.back.forEach( (s : string) => {
+        this._playerSprites.up.forEach( (s : string) => {
             const sprite : HTMLImageElement = new Image;
             sprite.src = s;
             this._upSpritesSrc.push(sprite);
@@ -94,11 +87,11 @@ export default class Player {
             this._rightSpritesSrc.push(sprite);
         })
 
-        // this._playerSprites.left.forEach( (s : string) => {
-        //     const sprite : HTMLImageElement = new Image;
-        //     sprite.src = s;
-        //     this._leftSpritesSrc.push(sprite);
-        // })
+        this._playerSprites.left.forEach( (s : string) => {
+            const sprite : HTMLImageElement = new Image;
+            sprite.src = s;
+            this._leftSpritesSrc.push(sprite);
+        })
     }
 
     private makePlayerAnimationArray() {
@@ -112,12 +105,9 @@ export default class Player {
 
     public update (x:number,y:number, field: IBrick[][], pointer : number): void {
         if (this.checkNewPos(x,y, field)) {
-            this.animationPrevX = this.xPos * this.size;
-            this.animationPrevY = this.yPos * this.size;
+
             this.prevX = this.xPos;
             this.prevY = this.yPos;
-            this.animationxPos = x * this.size;
-            this.animationyPos = y * this.size;
             this.xPos = x;
             this.yPos = y;
             this._currentFrame = 0;
@@ -140,9 +130,7 @@ export default class Player {
         const newY : number = this.prevY * this.size + this.size * currentAnimationtime;
         
         if (currentAnimationtime < 1) {     
-            this._ctx.clearRect(this.xPos * this.size, this.animationPrevY, this.size, this.size);
             this._ctx.drawImage(this._downSpritesSrc[this._currentFrame], this.xPos * this.size, newY, this.size, this.size);
-            this.animationPrevY = newY;
             this._currentFrame = ++this._currentFrame % 3 // 3 - количество спрайтов
             
             requestAnimationFrame(() => this.downAnimate());
@@ -157,12 +145,11 @@ export default class Player {
         const time : number = performance.now();
         const shiftTime : number = time - this._startAnimationTime;
         const currentAnimationtime : number =  shiftTime / this._animationTime;
-        const newY : number = this.yPos * this.size - this.size * currentAnimationtime;   
+        const newY : number = this.prevY * this.size - this.size * currentAnimationtime;
+        console.log(newY);
              
         if (currentAnimationtime < 1) {
-            this._ctx.clearRect(this.xPos * this.size, this.animationyPos, this.size, this.size);         
             this._ctx.drawImage(this._upSpritesSrc[this._currentFrame], this.xPos * this.size, newY, this.size, this.size);
-            this.animationyPos = newY;
             this._currentFrame = ++this._currentFrame % 3 // 3 - количество спрайтов
             requestAnimationFrame(() => this.upAnimate());
         } else {
@@ -176,17 +163,17 @@ export default class Player {
         const time : number = performance.now();
         const shiftTime : number = time - this._startAnimationTime;
         const currentAnimationtime : number =  shiftTime / this._animationTime;
-        const newY : number = this.prevY * this.size + this.size * currentAnimationtime;
+        const newX : number = this.prevX * this.size + this.size * currentAnimationtime;
         
-
-        this._ctx.clearRect(this.xPos * this.size, this.animationPrevY, this.size, this.size);
-        this._ctx.drawImage(this._downSpritesSrc[this._currentFrame], this.xPos * this.size, newY, this.size, this.size);
-        this.animationPrevY = newY;
-        this._currentFrame = ++this._currentFrame % 3 // 3 - количество спрайтов
-
-        if (currentAnimationtime < 1) {
-            requestAnimationFrame(() => this.downAnimate());
-        }
+        if (currentAnimationtime < 1) {     
+            this._ctx.drawImage(this._rightSpritesSrc[this._currentFrame], newX, this.yPos * this.size, this.size, this.size);
+            this._currentFrame = ++this._currentFrame % 3 // 3 - количество спрайтов
+            
+            requestAnimationFrame(() => this.rightAnimate());
+        } else { 
+            this._animationPointer = 0;
+            this._endAnimationSprite = this._rightSpritesSrc[0];
+        } 
     }
 
     private leftAnimate () : void {
@@ -194,17 +181,17 @@ export default class Player {
         const time : number = performance.now();
         const shiftTime : number = time - this._startAnimationTime;
         const currentAnimationtime : number =  shiftTime / this._animationTime;
-        const newY : number = this.prevY * this.size + this.size * currentAnimationtime;
+        const newX : number = this.prevX * this.size - this.size * currentAnimationtime;
         
-
-        this._ctx.clearRect(this.xPos * this.size, this.animationPrevY, this.size, this.size);
-        this._ctx.drawImage(this._downSpritesSrc[this._currentFrame], this.xPos * this.size, newY, this.size, this.size);
-        this.animationPrevY = newY;
-        this._currentFrame = ++this._currentFrame % 3 // 3 - количество спрайтов
-
-        if (currentAnimationtime < 1) {
-            requestAnimationFrame(() => this.downAnimate());
-        }  
+        if (currentAnimationtime < 1) {     
+            this._ctx.drawImage(this._leftSpritesSrc[this._currentFrame], newX, this.yPos * this.size, this.size, this.size);
+            this._currentFrame = ++this._currentFrame % 3 // 3 - количество спрайтов
+            
+            requestAnimationFrame(() => this.leftAnimate());
+        } else { 
+            this._animationPointer = 0;
+            this._endAnimationSprite = this._leftSpritesSrc[0];
+        } 
     }
 
     private stayAnimate () : void {
