@@ -46,7 +46,7 @@ export default class SingleScene extends BaseScene {
 
     updateUsers (data) {
         // console.log(data);
-        this._player.update(this._player.xPos + data.dx, this._player.yPos + data.dy, this._field.bricksInField, data.animateWay);
+        this._player.update(this._player.xPos + data.dx, this._player.yPos + data.dy, this._field.bricksInField, data.pointer);
     }
 
     updateBombs () {

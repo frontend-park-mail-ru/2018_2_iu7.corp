@@ -32,16 +32,16 @@ class SingleGame {
     	onKeyDown (e) {
 		// console.log('keycode', e.keyCode);
 		if (e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */ || e.keyCode === 90 /* z */) {
-			Bus.emit('single-user', {dx:0, dy:-1, animateWay:'up'});
+			Bus.emit('single-user', {dx:0, dy:-1, pointer : 1});
 		}
 		if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-           		Bus.emit('single-user', {dx:1, dy:0});
+           		Bus.emit('single-user', {dx:1, dy:0, pointer : 2});
 		}
 		if (e.keyCode === 40 /* down */ || e.keyCode === 83 /* s */) {
-            	Bus.emit('single-user', {dx:0, dy:1, animateWay:'down'});
+            	Bus.emit('single-user', {dx:0, dy:1, pointer : 3});
 		}
 		if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */ || e.keyCode === 81 /* q */) {
-            	Bus.emit('single-user', {dx:-1, dy:0});
+            	Bus.emit('single-user', {dx:-1, dy:0, pointer : 4});
 		}
 		if (e.keyCode === 70) {
             	Bus.emit('single-setBomb');
