@@ -38,20 +38,21 @@ export default class BaseScene {
 	render () {
 		// console.log('Scene render');
 		// this._field.drawField();
-		this._player.drawPlayer();
+		// this._player.drawPlayer();
 		this._player.plantedBombs.forEach(bomb => {
 			bomb.draw();
 		});
 	}
 
 	loopCallback () {
-		this.clearSecondLayer(); 
-		this.render();
+		// this.clearSecondLayser(); 
+		// this.render();
 		window.requestAnimationFrame(this.loopCallback.bind(this));
 	}
 
 	startLoop () {
 		// this._field.drawField();
+		this._player.drawPlayer();
 		window.requestAnimationFrame(this.loopCallback.bind(this));
 	}
 }

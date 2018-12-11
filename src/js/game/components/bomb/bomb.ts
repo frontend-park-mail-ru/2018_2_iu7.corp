@@ -15,14 +15,16 @@ export interface IPlantedBombData {
 
 export default class Bomb {
 
-    constructor (id : number, x : number, y : number, ctx : any) {
+    constructor (id : number, x : number, y : number, sprites : any, ctx : any) {
         this._id = id;
         this.xPos = x;
         this.yPos = y;
         this.color = '#F9D71C';
         this._ctx = ctx;
+        this._sprites = sprites;
         this.size = 45;
         this.radius = 3; // радиус поражение 3 клетки, включая текущую позицию бомбы
+        this._sprite = new Image;
     }
 
     public _id:number;
@@ -33,9 +35,11 @@ export default class Bomb {
     public radius: number;
 
     private _ctx: any; 
+    private _sprites : any;
+    private _sprite : any;
 
     public startTimer () : void {
-        setTimeout(this.explode.bind(this), 1000)
+        setTimeout(this.explode.bind(this), 1500)
     }
 
     public explode () : void {
@@ -97,7 +101,10 @@ export default class Bomb {
     public draw () : void {
         const xPos : number = this.xPos * this.size;
         const yPos : number = this.yPos * this.size;
-        this._ctx.fillStyle = this.color;
-        this._ctx.fillRect(xPos, yPos, this.size, this.size);  
+
+        this._sprite.src = this._sprites[0];
+        this._ctx.drawImage(this._sprite,xPos, yPos, this.size, this.size);
+        // this._ctx.fillStyle = this.color;
+        // this._ctx.fillRect(xPos, yPos, this.size, this.size);  
     }
 }
