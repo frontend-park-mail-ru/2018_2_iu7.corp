@@ -31,7 +31,7 @@ export default class SingleScene extends BaseScene {
         значит он попадает в область поражения
         */
         
-        this._player = new Player(1, 1, 1, sprites.playerSprites, sprites.bombSprites, this._secondLayerContext); 
+        this._player = new Player(1, 1, 1, sprites.playerSprites, sprites.bombSprites, sprites.flameSprites, this._secondLayerContext); 
         this._field = new Field(matr, sprites.fieldSprites, this._firstLayerContext);
         // вместо передачи поля через конструктор
         this._player.setField(this._field.bricksInField);
