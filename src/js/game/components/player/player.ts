@@ -5,7 +5,7 @@ import GameBus from '../../GameBus';
 import { file, continueStatement } from 'babel-types';
 
 export default class Player {
-    constructor(id : number, x : number, y : number, playerSprites : any, bombSprites : any, ctx : any) {
+    constructor(id : number, x : number, y : number, playerSprites : any, bombSprites : any, flameSprites : any, ctx : any) {
         this._id = id;
         this._ctx = ctx;
         this.xPos = x;
@@ -15,7 +15,6 @@ export default class Player {
 
         this.maxBombsAmount = 1;
         this.currentbombsAmount = this.maxBombsAmount;
-        this.bombRadius = 1;
         this.plantedBombs = [];
         this._downSpritesSrc = [];
         this._upSpritesSrc = [];
@@ -23,14 +22,14 @@ export default class Player {
         this._leftSpritesSrc = [];
         this._playerSprites = playerSprites; // имена файлов
         this._bombSprites = bombSprites;
+        this._flameSprites = flameSprites;
         this._endAnimationSprite = new Image;
         this._animationPointer = 0;
         this.loadingSpritesSrc(); // загрузка спрайтов
         this.makePlayerAnimationArray();
 
-        this._animationTime = 80;
+        this._animationTime = 120;
 
-        // this.velocity = 1;
         GameBus.on('single-bomb-explode', this.onExplodeBomb.bind(this));
     }
 
@@ -44,7 +43,6 @@ export default class Player {
 
     public currentbombsAmount : number;
     public maxBombsAmount : number;
-    public bombRadius : number;
     public plantedBombs : Array<Bomb>;
 
     private prevX : number;
@@ -52,6 +50,7 @@ export default class Player {
     private gameField : IBrick[][]
     private _playerSprites : any;
     private _bombSprites : any;
+    private _flameSprites : any;
     private _animationTime : number; 
     private _startAnimationTime : number;
     private _currentFrame : number;
@@ -94,15 +93,46 @@ export default class Player {
         })
     }
 
-    private makePlayerAnimationArray() {
-        this._playerAnimationArray = [];
-        this._playerAnimationArray.push(this.stayAnimate.bind(this));
-        this._playerAnimationArray.push(this.upAnimate.bind(this));
-        this._playerAnimationArray.push(this.rightAnimate.bind(this));
-        this._playerAnimationArray.push(this.downAnimate.bind(this));
-        this._playerAnimationArray.push(this.leftAnimate.bind(this));
+    public draw (): void {
+        this._playerAnimationArray[this._animationPointer]();
     }
 
+    public setField(field : IBrick[][]) : void {
+        this.gameField = field;
+    }
+
+    public plantBomb () : void {
+        if (this.currentbombsAmount) {
+            const bombId : number = this.maxBombsAmount - this.currentbombsAmount;
+            const newBomb : Bomb = new Bomb(bombId, this.xPos, this.yPos, this._bombSprites, this._flameSprites, this._ctx);
+            this.plantedBombs.push(newBomb);
+            newBomb.startTimer();
+            this.currentbombsAmount -= 1;
+            let data : IPlantedBombData = {
+                xPos : newBomb.xPos,
+                yPos : newBomb.yPos
+            };
+            GameBus.emit('single-bomb-plant', data);
+        }
+    }
+
+    public onExplodeBomb (data : IExplodeBombData) : void {
+        data.explodedArea.forEach( vec => {
+            vec.some( position => {
+                return this.explodePlayer(position.xPos, position.yPos)
+            });
+        })
+
+        if (!this.alive) {
+            GameBus.emit('single-player-death');
+        } else {
+            this.currentbombsAmount += 1;
+            this.plantedBombs = this.plantedBombs.filter( b => { // удаляем бомбу, которая только что взорвалась
+                return b._id !== data.bombId; // TODO посмотреть как удалять объект из памяти
+            })
+        }
+    }
+    
     public update (x:number,y:number, field: IBrick[][], pointer : number): void {
         if (this.checkNewPos(x,y, field)) {
 
@@ -122,6 +152,16 @@ export default class Player {
         }
         return false;
     }
+
+    private makePlayerAnimationArray() {
+        this._playerAnimationArray = [];
+        this._playerAnimationArray.push(this.stayAnimate.bind(this));
+        this._playerAnimationArray.push(this.upAnimate.bind(this));
+        this._playerAnimationArray.push(this.rightAnimate.bind(this));
+        this._playerAnimationArray.push(this.downAnimate.bind(this));
+        this._playerAnimationArray.push(this.leftAnimate.bind(this));
+    }
+
 
     private downAnimate () : void {
         const time : number = performance.now();
@@ -200,46 +240,6 @@ export default class Player {
         this._ctx.drawImage(this._endAnimationSprite,xPos, yPos, this.size, this.size);
     }
 
-    public draw (): void {
-        this._playerAnimationArray[this._animationPointer]();
-    }
-
-    public setField(field : IBrick[][]) : void {
-        this.gameField = field;
-    }
-
-    public plantBomb () : void {
-        if (this.currentbombsAmount) {
-            const bombId : number = this.maxBombsAmount - this.currentbombsAmount;
-            const newBomb : Bomb = new Bomb(bombId, this.xPos, this.yPos, this._bombSprites,this._ctx);
-            this.plantedBombs.push(newBomb);
-            newBomb.startTimer();
-            this.currentbombsAmount -= 1;
-            let data : IPlantedBombData = {
-                xPos : newBomb.xPos,
-                yPos : newBomb.yPos
-            };
-            GameBus.emit('single-bomb-plant', data);
-        }
-    }
-
-    public onExplodeBomb (data : IExplodeBombData) : void {
-        data.explodedArea.forEach( vec => {
-            vec.some( position => {
-                return this.explodePlayer(position.xPos, position.yPos)
-            });
-        })
-
-        if (!this.alive) {
-            GameBus.emit('single-player-death');
-        } else {
-            this.currentbombsAmount += 1;
-            this.plantedBombs = this.plantedBombs.filter( b => {
-                return b._id !== data.bombId;
-            })
-        }
-    }
-
     /*
     в данном методе используется instanceof вместо атрибутов класса passable, dectructible,
     так как при вызове события 'single-bomb-plant', у ячейки, на которую ставится бомба
@@ -262,3 +262,10 @@ export default class Player {
         }
     }
 }
+
+/**
+ * как исправить огонь
+ * 1) создать класс flame с методом анимации
+ * 2) по завершению анимации бомбы сделать GameBus.emit('single-flame-animate')
+ * 3)
+ */
