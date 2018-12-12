@@ -1,5 +1,6 @@
 import BaseView from '../../BaseView.js';
 import Bus from '../../../modules/Bus.js';
+import Socket from '../../../modules/Socket.js';
 import NavigationController from '../../../controllers/NavigationController.js';
 import { authMenuHeader, notAuthMenuHeader } from '../../dataTemplates/headerMenuData.js';
 
@@ -12,16 +13,17 @@ export default class RoomView extends BaseView {
         super(roomTmpl);
         this._currentUser = null;
 		this._currentRoomId = null;
-		this._socket = null;
-		this._incomingData = null;
+		this._connection = new Socket();
 		this._navigationController = new NavigationController();
-        // Bus.on('done-get-user', this._setCurrentUser.bind(this));
+        Bus.on('done-get-user', this._setCurrentUser.bind(this));
 		Bus.on('done-get-target-room', this._setCurrentRoomId.bind(this));
-		Bus.on('done-get-user', this.render.bind(this));
+		Bus.on('multiplayer-room', this.render.bind(this));
     }
     
 
     _setCurrentUser (user) {
+		this._currentUser = user;
+    }    _setCurrentUser (user) {
 		this._currentUser = user;
     }
     
@@ -30,47 +32,15 @@ export default class RoomView extends BaseView {
 	}
 
 	show () {
-		console.log('roomView show');
+		// console.log('roomView show');
         Bus.emit('get-user');
-        Bus.emit('get-target-room');
-		console.log('rooom',this._currentRoomId);
-		// ws://80.252.155.65:8100/multiplayer/rooms/${this._currentRoomId}/ws
-		this._socket = new WebSocket(`ws://80.252.155.65:8100/multiplayer/rooms/${this._currentRoomId}/ws`);
-		// this.update();
-        this._socket.onopen = function (event) {
-			
-			console.log('connection started');
-			console.log(event);
-
-			let tmpMsq = {
-				type: 'auth',
-				data: {
-					auth_token: "kek",
-					user_agent: "lol"
-				} 
-			}
-			
-			this.send(JSON.stringify(tmpMsq));
-			console.log("Msg been sent")
-			
-		};
+		Bus.emit('get-target-room');
+		Bus.emit('start-connection');
+		this._connection.connectionOpen();
 		
 		this.update();
 		super.show();
 		this.registerActions();
-    }
-
-
-    update () {
-        this._socket.onmessage = function (event) {
-			console.log('privet');
-            console.log(event.data);
-			this._incomingData = JSON.parse(event.data);
-			console.log('income: ', this._incomingData)
-            
-            
-		};
-		// this.render(incomingData);
     }
 
 	render (user) {
@@ -79,7 +49,6 @@ export default class RoomView extends BaseView {
 		if (!user.is_authenticated) {
 			
 			data.headerValues = notAuthMenuHeader();
-			data.roomData = this._incomingData;
 			console.log('common', data)
 			super.render(data);
 		} else {
@@ -89,7 +58,7 @@ export default class RoomView extends BaseView {
 	}
 	hide () {
 		super.hide();
-		this._socket.close();
+		this._connection.connectionClosed();
 		console.log('connection closed')
 	}
 

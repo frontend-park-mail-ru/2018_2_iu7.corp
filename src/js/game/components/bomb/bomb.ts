@@ -1,4 +1,6 @@
 import GameBus from '../../GameBus';
+import { IBrick , SteelBrick} from '../field/field';
+
 import { isEmptyStatement } from 'babel-types';
 
 export interface IExplodeBombData {
@@ -15,10 +17,11 @@ export interface IPlantedBombData {
 
 export default class Bomb {
 
-    constructor (id : number, x : number, y : number, bombSprites : any, flameSprites : any, ctx : any) {
+    constructor (id : number, x : number, y : number, bombSprites : any, flameSprites : any, gameField : IBrick[][], ctx : any) { 
         this._id = id;
         this.xPos = x;
         this.yPos = y;
+        this.gameField = gameField;
         this._ctx = ctx;
         this._bombSprites = bombSprites;
         this._flameSprites = flameSprites;
@@ -54,6 +57,7 @@ export default class Bomb {
     private _flameAnimationTime : number;
     private _animationPointer : number;
     private _currentFrame : number;
+    private gameField : IBrick[][];
 
     public startTimer () : void {
         this._startAnimationTime = performance.now();
@@ -185,9 +189,10 @@ export default class Bomb {
                 for (let i = 0; i < this.radius; i++) { // взрываем область соответствующую длине радиуса
                     const expXPos =  this.xPos + vec.dx * i;
                     const expYPos =  this.yPos + vec.dy * i;
-                    // чтобы область поражения бомбы не выходила за размер матрицы поля
-                    if ((expXPos > 0 && expYPos > 0) && (expXPos < 19 && expYPos < 19)) {
+                    if (!(this.gameField[expXPos][expYPos] instanceof SteelBrick)) {
                         this._ctx.drawImage(this._flameSpritesSrc[this._currentFrame], expXPos * this.size, expYPos * this.size, this.size, this.size);
+                    } else {
+                        break;
                     }
                     if (~~shiftTime % 60 === 0) {
                         this._currentFrame = ++this._currentFrame % 3;

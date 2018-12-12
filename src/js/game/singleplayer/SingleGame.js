@@ -31,7 +31,7 @@ class SingleGame {
 		}
     }
 
-    	start () {
+    start () {
 		console.log('Game start');
 		Bus.emit('single-scene-start');
 	}

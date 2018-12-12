@@ -104,7 +104,7 @@ export default class Player {
     public plantBomb () : void {
         if (this.currentbombsAmount) {
             const bombId : number = this.maxBombsAmount - this.currentbombsAmount;
-            const newBomb : Bomb = new Bomb(bombId, this.xPos, this.yPos, this._bombSprites, this._flameSprites, this._ctx);
+            const newBomb : Bomb = new Bomb(bombId, this.xPos, this.yPos, this._bombSprites, this._flameSprites, this.gameField, this._ctx);
             this.plantedBombs.push(newBomb);
             newBomb.startTimer();
             this.currentbombsAmount -= 1;
@@ -185,9 +185,7 @@ export default class Player {
         const time : number = performance.now();
         const shiftTime : number = time - this._startAnimationTime;
         const currentAnimationtime : number =  shiftTime / this._animationTime;
-        const newY : number = this.prevY * this.size - this.size * currentAnimationtime;
-        console.log(newY);
-             
+        const newY : number = this.prevY * this.size - this.size * currentAnimationtime;             
         if (currentAnimationtime < 1) {
             this._ctx.drawImage(this._upSpritesSrc[this._currentFrame], this.xPos * this.size, newY, this.size, this.size);
             this._currentFrame = ++this._currentFrame % 3 // 3 - количество спрайтов

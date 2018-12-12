@@ -7,38 +7,41 @@ const enum BricksTypes {
     GRASS = 3
 };
 
-const dx = -0;
-const dy = -0;
-
 export interface IBrick {
-    width: number; // размеры кубика на карте
-    height: number;
+    // width: number; // размеры кубика на карте
+    // height: number;
+    size : number;
     xPos: number; // координаты кубика на карте
     yPos: number;
     _sprite: any; // можно в будущем заменить на текстуру
     passable: boolean; // можно ли пройти по кубику
     destructible: boolean; // можно ли разрушить кубик
     drawBrick(ctx: any): void; // нарисовать кубик 
+    resize(size : number) : void;
 }
 
 abstract class AbstractBrick implements IBrick{
-    public width: number = 45;
-    public height: number = 45;
+    // public width: number = 45;
+    // public height: number = 45;
+    public size = 45;
     public abstract xPos: number;
     public abstract yPos: number;
     public abstract _sprite: any;
     public abstract passable: boolean;
     public abstract destructible: boolean;
+    public resize (size : number ) {
+        this.size = size;
+    };
     public drawBrick (ctx: any): void {
-        ctx.drawImage(this._sprite, this.xPos, this.yPos, this.width, this.height);
+        ctx.drawImage(this._sprite, this.xPos, this.yPos, this.size, this.size);
     };
 }
 
 export class GrassBrick extends AbstractBrick {
     constructor (x : number, y : number, sprite : any) {
         super()
-        this.xPos = x * this.width;
-        this.yPos = y * this.height;
+        this.xPos = x * this.size;
+        this.yPos = y * this.size;
         this._sprite = new Image;
         this._sprite.onload = () => {
             GameBus.emit('single-draw-field');   
@@ -55,8 +58,8 @@ export class GrassBrick extends AbstractBrick {
 export class FragileBrick extends AbstractBrick {
     constructor (x : number, y : number, sprite : any) {
         super()
-        this.xPos = x * this.width;
-        this.yPos = y * this.height;
+        this.xPos = x * this.size;
+        this.yPos = y * this.size;
         this._sprite = new Image;
         this._sprite.src = sprite;
     }
@@ -70,8 +73,8 @@ export class FragileBrick extends AbstractBrick {
 export class SteelBrick extends AbstractBrick {
     constructor (x : number, y : number, sprite : any) {
         super()
-        this.xPos = x * this.width;
-        this.yPos = y * this.height;
+        this.xPos = x * this.size;
+        this.yPos = y * this.size;
         this._sprite = new Image;
         this._sprite.src = sprite;
     }
@@ -91,8 +94,8 @@ export default class Field {
 
     constructor (bricksMatrix : number[][], sprites: any, ctx: any) {
         this._data = bricksMatrix;
+        this.transpose(this._data);
         this._size = bricksMatrix.length;
-        console.log(sprites);
         this._sprites = sprites;
         this._ctx = ctx;
         this.setField();
@@ -100,23 +103,35 @@ export default class Field {
         GameBus.on('single-bomb-plant', this.onPlantBomb.bind(this));
         GameBus.on('single-bomb-explode', this.onExplodeBomb.bind(this));
     }
-
-    public setField (): void {
-        for (let i = 0; i < this._size; i++) {
-            const row = new Array();
-            this.bricksInField.push(row);
-            for (let j = 0; j < this._size; j++) {
-                if (this._data[i][j] === BricksTypes.STEEL) {
-                    this.bricksInField[i].push(new SteelBrick(i, j, this._sprites.steelBrick));
-                }
-                if (this._data[i][j] === BricksTypes.FRAGILE) {
-                    this.bricksInField[i].push(new FragileBrick(i, j, this._sprites.fragileBrick));
-                }
-                if (this._data[i][j] === BricksTypes.GRASS) {
-                    this.bricksInField[i].push(new GrassBrick(i, j, this._sprites.grassBrick));
-                }
+    transpose(matrix : number[][]) {
+        for (var i = 0; i < matrix.length; i++) {
+            for (var j = 0; j < i; j++) {
+                [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]];
             }
         }
+    }
+
+    public setField (): void {
+        console.log(this._data);
+        for (let i = 0; i < this._size; i++) {
+            console.log(this._data[i]);
+            const row = new Array();
+            // this.bricksInField.push(row);
+            for (let j = 0; j < this._size; j++) {
+
+                if (this._data[i][j] === BricksTypes.STEEL) {
+                    row.push(new SteelBrick(i, j, this._sprites.steelBrick));
+                }
+                if (this._data[i][j] === BricksTypes.FRAGILE) {
+                    row.push(new FragileBrick(i, j, this._sprites.fragileBrick));
+                }
+                if (this._data[i][j] === BricksTypes.GRASS) {
+                    row.push(new GrassBrick(i, j, this._sprites.grassBrick));
+                }
+            }
+            this.bricksInField.push(row)
+        }
+        console.log(this.bricksInField)
     }
 
     public getField (): IBrick[][] {

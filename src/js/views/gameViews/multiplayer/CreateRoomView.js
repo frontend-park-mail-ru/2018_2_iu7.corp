@@ -116,9 +116,6 @@ export default class CreateRoomView extends BaseView {
 		}
 	} 
 
-
-
-
 	registerActions () {
 		if (!this._registeredActions) {
 			this.viewDiv.addEventListener('submit', this._formController.createRoomCallbackSubmit.bind(this._formController));
