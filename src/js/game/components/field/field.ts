@@ -27,9 +27,6 @@ abstract class AbstractBrick implements IBrick{
     public abstract passable: boolean;
     public abstract destructible: boolean;
     public drawBrick (ctx: any): void {
-        // console.log('sprite', this._sprite);
-        // ctx.fillStyle = '#755839';
-        // ctx.fillRect(this.xPos, this.yPos, this.width, this.height);
         ctx.drawImage(this._sprite, this.xPos, this.yPos, this.width, this.height);
     };
 }
@@ -44,7 +41,6 @@ export class GrassBrick extends AbstractBrick {
             GameBus.emit('single-draw-field');   
         }
         this._sprite.src = sprite;
-        // console.log('onload: ',this._sprite)
     }
     public xPos : number;
     public yPos : number;
@@ -125,7 +121,6 @@ export default class Field {
     }
 
     public drawField (): void {
-        // console.log('hi');
         for (const row of this.bricksInField) {
             for (const brick of row) {
                 brick.drawBrick(this._ctx);
@@ -152,10 +147,8 @@ export default class Field {
     // TODO бомба пробивает деревяшки находящиеся за непробиваемой стеной
     public onExplodeBomb (data : IExplodeBombData) : void {
         this.bricksInField[data.xPos][data.yPos].passable = true;
-        // console.log('area ', data.explodedArea);
         data.explodedArea.forEach( vec => {
             vec.some( brick => {
-                // console.log('brick', brick, 'in vec', vec); 
                 return this.explodeBrick(brick.xPos, brick.yPos)
             });
             // vec.some( function(brick) : boolean {

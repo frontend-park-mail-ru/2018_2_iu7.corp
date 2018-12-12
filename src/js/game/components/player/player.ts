@@ -262,10 +262,3 @@ export default class Player {
         }
     }
 }
-
-/**
- * как исправить огонь
- * 1) создать класс flame с методом анимации
- * 2) по завершению анимации бомбы сделать GameBus.emit('single-flame-animate')
- * 3)
- */

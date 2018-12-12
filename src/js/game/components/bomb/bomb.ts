@@ -156,7 +156,6 @@ export default class Bomb {
     }
 
     private flameAnimate () : void {
-        console.log('hi');
         const time : number = performance.now();
         const shiftTime : number = time - this._startAnimationTime;
         const currentAnimationtime : number =  shiftTime / this._flameAnimationTime;
