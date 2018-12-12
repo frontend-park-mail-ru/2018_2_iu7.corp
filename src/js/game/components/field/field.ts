@@ -7,6 +7,9 @@ const enum BricksTypes {
     GRASS = 3
 };
 
+const dx = -0;
+const dy = -0;
+
 export interface IBrick {
     width: number; // размеры кубика на карте
     height: number;
@@ -30,7 +33,7 @@ abstract class AbstractBrick implements IBrick{
         // console.log('sprite', this._sprite);
         // ctx.fillStyle = '#755839';
         // ctx.fillRect(this.xPos, this.yPos, this.width, this.height);
-        ctx.drawImage(this._sprite, this.xPos, this.yPos, this.width, this.height);
+        ctx.drawImage(this._sprite, this.xPos + dx, this.yPos + dy, this.width, this.height);
     };
 }
 

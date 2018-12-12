@@ -35,8 +35,8 @@
 .grid-container {
   display: grid;
   grid-template-areas:
-    'header header header header header header'
-    'left main main main main right'
-    'footer footer footer footer footer footer';
+    'header header header'
+    'game-field game-field game-field'
+    'left main right';
   
 }

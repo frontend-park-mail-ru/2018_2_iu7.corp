@@ -9,17 +9,31 @@ const data = {};
 
 data.headerMenu = [
 	{
-		label: 'Время',
+		label: '⏱',
 		data: '00'
 	},
 	{
-		label: 'Очки',
-		data: '00'
-	},
-	{
-		label: 'Мобы',
+		label: '👾',
 		data: '4'
 	}
+];
+data.helpValues = [
+	{
+		label: 'Цель игры',
+		data: 'Уничтожить всех врагов'
+	},
+	{
+		label: 'Перемещение персонажа',
+		data: '"wasd" или стрелочки'
+	},
+	{
+		label: 'Поставить бомбу',
+		data: '"f"'
+	},
+	{
+		label: 'Радиус бомбы',
+		data: '2 клетки'
+	},
 ];
 
 export default class SingleGameView extends BaseView {
@@ -38,6 +52,7 @@ export default class SingleGameView extends BaseView {
 	}
 
 	render (user) {
+		
 		if (!user.is_authenticated) {
 			data.headerValues = notAuthMenuHeader();
 			super.render(data);
@@ -45,11 +60,23 @@ export default class SingleGameView extends BaseView {
 			data.headerValues = authMenuHeader(user.id);
 			super.render(data);
 		}
+		this.showInfo();
+		
 		SingleGame.init();
 		SingleGame.start();
+		// resize();
 	}
 
+	showInfo() {
+		document.getElementById("dropdown-game-info").style.height = "100%";
+	};
+
+	hideInfo() {
+		document.getElementById("dropdown-game-info").style.height = "0%";
+	};
+
 	registerActions () {
+		// this.viewDiv.onload(this.showInfo());
 		// this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
 }

@@ -15,7 +15,14 @@ class SingleGame {
 
 		const secondLayer = document.getElementById('canvas2');
 		const secondLayerContext = secondLayer.getContext('2d');
-		
+
+		console.log("w: ", window.innerWidth, "h: ", window.innerHeight)
+		firstLayer.width = window.innerWidth;
+		firstLayer.height = window.innerHeight * 0.7;
+
+		secondLayer.width = window.innerWidth;
+		secondLayer.height = window.innerHeight * 0.7;
+
 
 		this._scene.init(firstLayer, firstLayerContext, secondLayer, secondLayerContext);
 		if (!this._registeredActions) {
