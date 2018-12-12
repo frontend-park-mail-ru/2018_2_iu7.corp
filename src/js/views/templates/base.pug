@@ -8,6 +8,9 @@ html
 
             div(class="header")
                 include header.pug 
+            
+            div(class="game-field")
+                block game-content
 
             div(class="left")
             
@@ -16,7 +19,9 @@ html
             div(class="right")
         
         div(id="dropdown" class="dropdown__overlay")
-            p(class="dropdown__closebtn" onclick="closeDropdown()") &times;
+            p(class="dropdown__closebtn" onclick="closeDropdown('dropdown')") &times;
             div(class="dropdown__overlay-content")
                 for val in headerValues
                     a(href=val.href data-href=val.href class="dropdown__content")= val.label
+        
+
