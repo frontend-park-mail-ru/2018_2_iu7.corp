@@ -38,7 +38,7 @@ export default class BaseScene {
 	render () {
 		// console.log('Scene render');
 		// this._field.drawField();
-		this._player.drawPlayer();
+		this._player.draw();
 		this._player.plantedBombs.forEach(bomb => {
 			bomb.draw();
 		});
@@ -52,6 +52,7 @@ export default class BaseScene {
 
 	startLoop () {
 		// this._field.drawField();
+		this._player.draw();
 		window.requestAnimationFrame(this.loopCallback.bind(this));
 	}
 }

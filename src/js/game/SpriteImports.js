@@ -17,9 +17,13 @@ import back1 from '../../../sprites/Sprites/Bomberman/Back/Bman_B_f00.png';
 import back2 from '../../../sprites/Sprites/Bomberman/Back/Bman_B_f02.png';
 import back3 from '../../../sprites/Sprites/Bomberman/Back/Bman_B_f06.png';
 
-import right1 from '../../../sprites/Sprites/Bomberman/Side/Bman_F_f00.png';
-import right2 from '../../../sprites/Sprites/Bomberman/Side/Bman_F_f03.png';
-import right3 from '../../../sprites/Sprites/Bomberman/Side/Bman_F_f06.png';
+import right1 from '../../../sprites/Sprites/Bomberman/Right/Bman_F_f00.png';
+import right2 from '../../../sprites/Sprites/Bomberman/Right/Bman_F_f03.png';
+import right3 from '../../../sprites/Sprites/Bomberman/Right/Bman_F_f06.png';
+
+import left1 from '../../../sprites/Sprites/Bomberman/Left/Bman_F_f00.png';
+import left2 from '../../../sprites/Sprites/Bomberman/Left/Bman_F_f03.png';
+import left3 from '../../../sprites/Sprites/Bomberman/Left/Bman_F_f06.png';
 
 
 // creep
@@ -49,13 +53,13 @@ export const fieldSprites = {
 
 
 export const playerSprites = {
-    front : [
+    down : [
         front1,
         front2,
         front3
     ],
 
-    back : [
+    up : [
         back1,
         back2,
         back3
@@ -65,18 +69,24 @@ export const playerSprites = {
         right1,
         right2,
         right3
+    ],
+
+    left : [
+        left1,
+        left2,
+        left3
     ]
 }
 
 
 export const creepSprites = {
-    front : [
+    down : [
         frontC1,
         frontC2,
         frontC3
     ],
 
-    back : [
+    up : [
         backC1,
         backC2,
         backC3
