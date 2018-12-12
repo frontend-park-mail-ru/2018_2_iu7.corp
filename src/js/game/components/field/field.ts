@@ -7,6 +7,9 @@ const enum BricksTypes {
     GRASS = 3
 };
 
+const dx = -0;
+const dy = -0;
+
 export interface IBrick {
     width: number; // размеры кубика на карте
     height: number;

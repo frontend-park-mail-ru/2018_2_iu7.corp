@@ -1,8 +1,7 @@
-window.openDropdown = function() {
-    document.getElementById("dropdown").style.height = "100%";
-    console.log(document.getElementById("dropdown"))
+window.openDropdown = function(ID) {
+    document.getElementById(ID).style.height = "100%";
 };
 
-window.closeDropdown = function() {
-    document.getElementById("dropdown").style.height = "0%";
+window.closeDropdown = function(ID) {
+    document.getElementById(ID).style.height = "0%";
 }

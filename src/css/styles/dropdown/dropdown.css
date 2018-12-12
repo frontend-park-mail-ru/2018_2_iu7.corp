@@ -24,7 +24,7 @@
 
 .dropdown__overlay-content {
     position: relative;
-    top: 25%;
+    top: 15%;
     width: 100%;
     text-align: center;
     margin-top: 30px;
@@ -58,4 +58,12 @@
     top: 15px;
     right: 35px;
   }
+}
+
+.dropdown__content{
+    color: white;
+}
+
+.dropdown__overlay .dropdown__content-highlight{
+    color: orange;
 }

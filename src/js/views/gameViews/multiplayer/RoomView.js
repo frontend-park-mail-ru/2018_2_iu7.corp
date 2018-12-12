@@ -11,10 +11,13 @@ export default class RoomView extends BaseView {
 	constructor () {
         super(roomTmpl);
         this._currentUser = null;
-        this._currentRoomId = null;
+		this._currentRoomId = null;
+		this._socket = null;
+		this._incomingData = null;
 		this._navigationController = new NavigationController();
-        Bus.on('done-get-user', this._setCurrentUser.bind(this));
-        Bus.on('done-get-target-room', this._setCurrentRoomId.bind(this));
+        // Bus.on('done-get-user', this._setCurrentUser.bind(this));
+		Bus.on('done-get-target-room', this._setCurrentRoomId.bind(this));
+		Bus.on('done-get-user', this.render.bind(this));
     }
     
 
@@ -30,15 +33,29 @@ export default class RoomView extends BaseView {
 		console.log('roomView show');
         Bus.emit('get-user');
         Bus.emit('get-target-room');
-        console.log('rooom',this._currentRoomId);
+		console.log('rooom',this._currentRoomId);
+		// ws://80.252.155.65:8100/multiplayer/rooms/${this._currentRoomId}/ws
 		this._socket = new WebSocket(`ws://80.252.155.65:8100/multiplayer/rooms/${this._currentRoomId}/ws`);
-		this.update();
+		// this.update();
         this._socket.onopen = function (event) {
 			
 			console.log('connection started');
 			console.log(event);
+
+			let tmpMsq = {
+				type: 'auth',
+				data: {
+					auth_token: "kek",
+					user_agent: "lol"
+				} 
+			}
+			
+			this.send(JSON.stringify(tmpMsq));
+			console.log("Msg been sent")
+			
 		};
-		// this.update();
+		
+		this.update();
 		super.show();
 		this.registerActions();
     }
@@ -48,18 +65,25 @@ export default class RoomView extends BaseView {
         this._socket.onmessage = function (event) {
 			console.log('privet');
             console.log(event.data);
-            // let incomingData = JSON.parse(event.data);
+			this._incomingData = JSON.parse(event.data);
+			console.log('income: ', this._incomingData)
             
-            // this.render(incomingData);
+            
 		};
+		// this.render(incomingData);
     }
 
-	render (data) {
-		if (!this._currentUser.is_authenticated) {
+	render (user) {
+		console.log("LOG user in render: ", user)
+		const data = {};
+		if (!user.is_authenticated) {
+			
 			data.headerValues = notAuthMenuHeader();
+			data.roomData = this._incomingData;
+			console.log('common', data)
 			super.render(data);
 		} else {
-			data.headerValues = authMenuHeader(this._currentUser.id);
+			user.headerValues = authMenuHeader(user.id);
 			super.render(data);
 		}
 	}
