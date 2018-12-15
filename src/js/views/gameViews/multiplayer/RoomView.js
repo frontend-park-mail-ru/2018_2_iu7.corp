@@ -2,67 +2,148 @@ import BaseView from '../../BaseView.js';
 import Bus from '../../../modules/Bus.js';
 import Socket from '../../../modules/Socket.js';
 import NavigationController from '../../../controllers/NavigationController.js';
+import MultiPlayerScene from '../../../game/multiplayer/MultiPlayerScene.js';
+import { makeNumberMatrix } from '../../../game/GameUtils.ts';
 import { authMenuHeader, notAuthMenuHeader } from '../../dataTemplates/headerMenuData.js';
 
 const roomTmpl = require('../../templates/gameTemplates/room.pug');
+const canvasTmpl = require('../../templates/gameTemplates/canvas.pug');
 
-// const data = {};
+const inGameRenderData = {};
+
+inGameRenderData.headerMenu = [
+	{
+		label: '⏱',
+		data: '00'
+	},
+	{
+		label: '👾',
+		data: '4'
+	}
+];
+inGameRenderData.helpValues = [
+	{
+		label: 'Цель игры',
+		data: 'Уничтожить всех врагов'
+	},
+	{
+		label: 'Перемещение персонажа',
+		data: '"wasd" или стрелочки'
+	},
+	{
+		label: 'Поставить бомбу',
+		data: '"f"'
+	},
+	{
+		label: 'Радиус бомбы',
+		data: '2 клетки'
+	}
+];
 
 export default class RoomView extends BaseView {
 	constructor () {
-        super(roomTmpl);
-        this._currentUser = null;
+		super(roomTmpl);
+		this._currentUser = null;
 		this._currentRoomId = null;
 		this._connection = new Socket();
 		this._navigationController = new NavigationController();
-        Bus.on('done-get-user', this._setCurrentUser.bind(this));
+		Bus.on('done-get-user', this._setCurrentUser.bind(this));
 		Bus.on('done-get-target-room', this._setCurrentRoomId.bind(this));
-		Bus.on('multiplayer-room', this.render.bind(this));
-    }
-    
+		Bus.on('multiplayer-room-pending', this.render.bind(this)); // отрисовываем новых людей
+		Bus.on('multiplayer-room-pending', this._setInitialFieldMatrix.bind(this)); // предварительно перед началом игры создаем карту нужного размера из блоков grass
+		Bus.on('multiplayer-room-pending', this._setPlayersId.bind(this));
+		Bus.on('multiplayer-room-on', this.renderGame.bind(this))
+	}
 
-    _setCurrentUser (user) {
+	_setCurrentUser (user) {
 		this._currentUser = user;
-    }    _setCurrentUser (user) {
-		this._currentUser = user;
-    }
-    
-    _setCurrentRoomId (id) {
+	}
+
+	_setCurrentRoomId (id) {
 		this._currentRoomId = id;
 	}
 
-	show () {
-		// console.log('roomView show');
-        Bus.emit('get-user');
-		Bus.emit('get-target-room');
-		Bus.emit('start-connection');
-		this._connection.connectionOpen();
-		
-		this.update();
-		super.show();
-		this.registerActions();
-    }
-
-	render (user) {
-		console.log("LOG user in render: ", user)
-		const data = {};
-		if (!user.is_authenticated) {
-			
-			data.headerValues = notAuthMenuHeader();
-			console.log('common', data)
-			super.render(data);
-		} else {
-			user.headerValues = authMenuHeader(user.id);
-			super.render(data);
-		}
+	// инициализируем матрицу заданного размера кубиками grassBrick до начала игры
+	_setInitialFieldMatrix (data) {
+		const matrix = makeNumberMatrix(data.field_size.height, data.field_size.width)
+		MultiPlayerScene.initNumberMatrix(matrix)
 	}
+
+	// каждый раз когда в комнату заходит игрок, обновляем массив игроков для будущей сцены
+	// массив игроков да начала игры является массивом id каждого игрока
+	_setPlayersId (data) {
+		MultiPlayerScene.setPlayersId(data.players);
+	}
+
+	show () {
+		Bus.emit('get-user');
+		Bus.emit('get-target-room');
+		this._connection.setRoomId(this._currentRoomId);
+		this._connection.connectionOpen();
+
+		super.show();
+	}
+
+	render (data) {
+		const renderData = {
+			players : data.players
+		};
+
+		if (!this._currentUser.is_authenticated) {
+			renderData.headerValues = notAuthMenuHeader();
+			super.render(renderData);
+		} else {
+			renderData.headerValues = authMenuHeader(this._currentUser.id);
+			super.render(renderData);
+		}
+		this.registerActions();
+	}
+
+	renderGame () { 
+		this._template = canvasTmpl;
+		if (!this._currentUser.is_authenticated) {
+			inGameRenderData.headerValues = notAuthMenuHeader();
+			super.render(inGameRenderData);
+		} else {
+			inGameRenderData.headerValues = authMenuHeader(this._currentUser.id);
+			super.render(inGameRenderData);
+		}
+		this.showInfo();
+		MultiPlayerScene.init();
+		MultiPlayerScene.startLoop();
+	}
+
+
 	hide () {
 		super.hide();
+		Bus.totalOff('multiplayer-room-pending');
+		Bus.totalOff('multiplayer-room-on');
+		Bus.totalOff('multiplayer-object-player');
+		Bus.totalOff('multiplayer-object-wall.solid');
+		Bus.totalOff('multiplayer-object-wall.weak');
+
 		this._connection.connectionClosed();
-		console.log('connection closed')
+		console.log('connection closed');
 	}
 
+	showInfo () {
+		document.getElementById('dropdown-game-info').style.height = '100%';
+	};
+
+	hideInfo () {
+		document.getElementById('dropdown-game-info').style.height = '0%';
+	};
+
 	registerActions () {
-		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+		const startButton = document.getElementById('start-game');
+		startButton.addEventListener('click', () => {
+			this._connection.startGame();
+		})
+
+		const stopButton = document.getElementById('stop-game');
+		stopButton.addEventListener('click', () => {
+			this._connection.stopGame();
+		})
+		// this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
 }

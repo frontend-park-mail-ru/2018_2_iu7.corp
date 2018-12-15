@@ -1,6 +1,9 @@
 extends ../base.pug
 
 block content
-    div
-        h1 Игра
-        p= roomData
+    div(id='privet')
+        each player in players
+            div
+                p= player
+        button(id="start-game") Начать игру
+        button(id="stop-game") Остановить игру

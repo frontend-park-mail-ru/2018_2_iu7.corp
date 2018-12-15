@@ -1,11 +1,10 @@
 import BaseValidator from './BaseValidator.js';
 
-
 export default class SignUpValidator extends BaseValidator {
 	validate () {
 		return super.validate(this._hasEmptyFields(),
-						this._isPasswordLongEnough(), 
-						this._isPasswordsMatching())
+			this._isPasswordLongEnough(),
+			this._isPasswordsMatching());
 	}
 
 	_hasEmptyFields () { // есть ли в форме пустые поля

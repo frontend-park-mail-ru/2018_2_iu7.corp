@@ -58,15 +58,15 @@ export default class ProfileModel {
 					// console.log('not auth')
 					const token = getCookie('refresh_token');
 					if (token) {
-						fetchModule.doPatch({ path : '/auth/session', body: {token} })
-							.then( response => {
+						fetchModule.doPatch({ path: '/auth/session', body: { token } })
+							.then(response => {
 								if (response.status === 200) {
 									return response.json();
 								} else {
 									return Promise.reject(new Error('uncorrect refresh token'));
 								}
 							})
-							.then( (user) => {
+							.then((user) => {
 								deleteCookie('auth_token');
 								setCookie('auth_token', user.auth_token);
 								authToken = getCookie('auth_token');
@@ -74,16 +74,15 @@ export default class ProfileModel {
 									'Authorization': 'Bearer ' + authToken
 								};
 								fetchModule.doPatch({ path: `/profiles/${id}`, body: data, headers: changeHeaders })
-									.then( response => {
+									.then(response => {
 										if (response.status === 200) {
 											Router.open(`/profile/${id}`);
 										}
-									})
+									});
 							})
-							.catch( (err) => {
+							.catch((err) => {
 								console.log(err);
-							})
-
+							});
 					} else {
 						return Promise.reject(new Error('not auth'));
 					}

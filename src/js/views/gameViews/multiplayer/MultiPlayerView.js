@@ -1,7 +1,7 @@
 import BaseView from '../../BaseView.js';
 import Bus from '../../../modules/Bus.js';
 import NavigationController from '../../../controllers/NavigationController.js';
-import SingleGame from '../../../game/singleplayer/SingleGame.js';
+import MultiPlayerGame from '../../../game/multiplayer/MultiPlayerGame.js';
 import { authMenuHeader, notAuthMenuHeader } from '../../dataTemplates/headerMenuData.js';
 
 const canvasTmpl = require('../../templates/gameTemplates/canvas.pug');
@@ -36,7 +36,8 @@ data.helpValues = [
 	}
 ];
 
-export default class SingleGameView extends BaseView {
+
+export default class MultiPlayerView extends BaseView {
 	constructor () {
 		super(canvasTmpl);
 		this._navigationController = new NavigationController();
@@ -59,8 +60,8 @@ export default class SingleGameView extends BaseView {
 		}
 		this.showInfo();
 
-		SingleGame.init();
-		SingleGame.start();
+		MultiPlayerGame.init();
+		MultiPlayerGame.start();
 		// resize();
 	}
 

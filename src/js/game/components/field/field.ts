@@ -1,15 +1,13 @@
-import { IExplodeBombData, IPlantedBombData } from '../bomb/bomb';
+import { IExplodeBombData, IPlantedBombPosition } from '../bomb/bomb';
 import GameBus from '../../GameBus';
 
-const enum BricksTypes {
+export const enum BricksTypes {
     STEEL = 1,
     FRAGILE = 2,
     GRASS = 3
 };
 
 export interface IBrick {
-    // width: number; // размеры кубика на карте
-    // height: number;
     size : number;
     xPos: number; // координаты кубика на карте
     yPos: number;
@@ -21,8 +19,6 @@ export interface IBrick {
 }
 
 abstract class AbstractBrick implements IBrick{
-    // public width: number = 45;
-    // public height: number = 45;
     public size = 45;
     public abstract xPos: number;
     public abstract yPos: number;
@@ -33,6 +29,7 @@ abstract class AbstractBrick implements IBrick{
         this.size = size;
     };
     public drawBrick (ctx: any): void {
+        // console.log(this._sprite);
         ctx.drawImage(this._sprite, this.xPos, this.yPos, this.size, this.size);
     };
 }
@@ -42,15 +39,15 @@ export class GrassBrick extends AbstractBrick {
         super()
         this.xPos = x * this.size;
         this.yPos = y * this.size;
-        this._sprite = new Image;
-        this._sprite.onload = () => {
-            GameBus.emit('single-draw-field');   
-        }
-        this._sprite.src = sprite;
+        this._sprite = sprite;
+        // this._sprite.onload = () => { // TODO убрать onload из-за него много раз запускается drawfiels 
+        //      
+        // }
+        // this._sprite.src = '/' + sprite;
     }
     public xPos : number;
     public yPos : number;
-    public _sprite : any;
+    public _sprite : HTMLImageElement;
     public passable : boolean = true;
     public destructible : boolean = false;
 }
@@ -60,12 +57,12 @@ export class FragileBrick extends AbstractBrick {
         super()
         this.xPos = x * this.size;
         this.yPos = y * this.size;
-        this._sprite = new Image;
-        this._sprite.src = sprite;
+        this._sprite = sprite;
+        // this._sprite.src = '/' + sprite;
     }
     public xPos : number;
     public yPos : number;
-    public _sprite : any;
+    public _sprite : HTMLImageElement;
     public passable : boolean = false;
     public destructible : boolean = true;
 }
@@ -75,12 +72,12 @@ export class SteelBrick extends AbstractBrick {
         super()
         this.xPos = x * this.size;
         this.yPos = y * this.size;
-        this._sprite = new Image;
-        this._sprite.src = sprite;
+        this._sprite = sprite;
+        // this._sprite.src = '/' + sprite;
     }
     public xPos : number;
     public yPos : number;
-    public _sprite : any;
+    public _sprite : HTMLImageElement;
     public passable : boolean = false;
     public destructible : boolean = false;
 }
@@ -92,14 +89,24 @@ export default class Field {
     private _ctx : any;
     private bricksInField : IBrick[][] = new Array();
 
+    private _grassSprite : HTMLImageElement;
+    private _steelSprite : HTMLImageElement;
+    private _fragileSprite :HTMLImageElement;
+
     constructor (bricksMatrix : number[][], sprites: any, ctx: any) {
         this._data = bricksMatrix;
         this.transpose(this._data);
         this._size = bricksMatrix.length;
         this._sprites = sprites;
+        this._grassSprite = new Image; // TODO убрать в enum
+        this._steelSprite = new Image;
+        this._fragileSprite = new Image;
+        this._fragileSprite.onload = () => {
+            this.drawField();
+        }
         this._ctx = ctx;
+        this.loadSpritesSrc();
         this.setField();
-        GameBus.on('single-draw-field', this.drawField.bind(this));
         GameBus.on('single-bomb-plant', this.onPlantBomb.bind(this));
         GameBus.on('single-bomb-explode', this.onExplodeBomb.bind(this));
     }
@@ -111,27 +118,36 @@ export default class Field {
         }
     }
 
+
+    public loadSpritesSrc () : void { 
+        // console.log('loading');
+        this._grassSprite.src = '/' + this._sprites.grassBrick;
+        this._steelSprite.src = '/' + this._sprites.steelBrick;
+        this._fragileSprite.src = '/' + this._sprites.fragileBrick;
+    }
+
+    // метод отрисовка поля в синглплеере, так же используется в мультиплеере чтобы отрисовать initial поле(только из травы)
     public setField (): void {
-        console.log(this._data);
+        // console.log(this._data);
         for (let i = 0; i < this._size; i++) {
-            console.log(this._data[i]);
+            // console.log(this._data[i]);
             const row = new Array();
             // this.bricksInField.push(row);
             for (let j = 0; j < this._size; j++) {
 
                 if (this._data[i][j] === BricksTypes.STEEL) {
-                    row.push(new SteelBrick(i, j, this._sprites.steelBrick));
+                    row.push(new SteelBrick(i, j, this._steelSprite));
                 }
                 if (this._data[i][j] === BricksTypes.FRAGILE) {
-                    row.push(new FragileBrick(i, j, this._sprites.fragileBrick));
+                    row.push(new FragileBrick(i, j, this._fragileSprite));
                 }
                 if (this._data[i][j] === BricksTypes.GRASS) {
-                    row.push(new GrassBrick(i, j, this._sprites.grassBrick));
+                    row.push(new GrassBrick(i, j, this._grassSprite));
                 }
             }
             this.bricksInField.push(row)
         }
-        console.log(this.bricksInField)
+        // console.log(this.bricksInField)
     }
 
     public getField (): IBrick[][] {
@@ -139,6 +155,7 @@ export default class Field {
     }
 
     public drawField (): void {
+        // console.log('field draw');
         for (const row of this.bricksInField) {
             for (const brick of row) {
                 brick.drawBrick(this._ctx);
@@ -158,7 +175,7 @@ export default class Field {
     // а бомба просто рисуется сверху, то для имитации непроходимости бомбы нужно сделать
     // непроходимым кубик в матрице this.bricksInField, стоящий на той же позиции, что и бомба
     // когда бомба взорвалась, этот кубик нужно обратно сделать проходимым
-    public onPlantBomb (data : IPlantedBombData) {
+    public onPlantBomb (data : IPlantedBombPosition) {
         this.bricksInField[data.xPos][data.yPos].passable = false;
     }
 
@@ -180,7 +197,7 @@ export default class Field {
     private explodeBrick (x : number, y : number) : boolean {
         if (!this.bricksInField[x][y].passable) {
             if (this.bricksInField[x][y].destructible) {
-                this.bricksInField[x][y] = new GrassBrick(x, y, this._sprites.grassBrick);
+                this.bricksInField[x][y] = new GrassBrick(x, y, this._grassSprite);
                 this.bricksInField[x][y].drawBrick(this._ctx);
                 return true
             }

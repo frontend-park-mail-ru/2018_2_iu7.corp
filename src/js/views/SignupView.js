@@ -113,7 +113,7 @@ export default class SignupView extends BaseView {
 
 	static showUnsuccessMessage () {
 		const errorField = document.getElementById('signUpError');
-		// errorField.innerText = message 
+		// errorField.innerText = message
 		errorField.removeAttribute('hidden');
 	}
 }

@@ -4,7 +4,6 @@ import NavigationController from '../controllers/NavigationController.js';
 import FormController from '../controllers/FormController.js';
 import { authMenuHeader, notAuthMenuHeader } from '../views/dataTemplates/headerMenuData.js';
 
-
 const form = require('./templates/form.pug');
 const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
 

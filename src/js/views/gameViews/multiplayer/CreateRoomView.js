@@ -8,8 +8,6 @@ import { authMenuHeader, notAuthMenuHeader } from '../../dataTemplates/headerMen
 const createRoomTmpl = require('../../templates/form.pug');
 const showRoomLinkTmpl = require('../../templates/gameTemplates/showRoomLink.pug');
 
-
-
 const userData = {
 	title: 'createroom',
 	id: 'createroom',
@@ -101,7 +99,7 @@ export default class CreateRoomView extends BaseView {
 		}
 	}
 
-	showLink(roomData) {
+	showLink (roomData) {
 		console.log('show link');
 		this._template = showRoomLinkTmpl;
 		const data = {
@@ -114,7 +112,7 @@ export default class CreateRoomView extends BaseView {
 			data.headerValues = authMenuHeader(this._currentUser.id);
 			super.render(data);
 		}
-	} 
+	}
 
 	registerActions () {
 		if (!this._registeredActions) {
