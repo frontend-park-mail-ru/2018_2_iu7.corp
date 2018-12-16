@@ -8,7 +8,6 @@ class SingleGame {
 		this._registeredActions = false;
 		this.halfWidth = window.innerWidth/2;
 		this._controls = new Controls();
-        
 	}
 
 	resize(){

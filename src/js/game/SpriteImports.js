@@ -3,7 +3,7 @@ import grass from '../../../sprites/Sprites/Blocks/BackgroundTile.png';
 import fragile from '../../../sprites/Sprites/Blocks/ExplodableBlock.png';
 import steel from '../../../sprites/Sprites/Blocks/SolidBlock.png';
 
-// bomb 
+// bomb
 import bomb1 from '../../../sprites/Sprites/Bomb/Bomb_f01.png';
 import bomb2 from '../../../sprites/Sprites/Bomb/Bomb_f02.png';
 import bomb3 from '../../../sprites/Sprites/Bomb/Bomb_f03.png';
@@ -25,7 +25,6 @@ import left1 from '../../../sprites/Sprites/Bomberman/Left/Bman_F_f00.png';
 import left2 from '../../../sprites/Sprites/Bomberman/Left/Bman_F_f03.png';
 import left3 from '../../../sprites/Sprites/Bomberman/Left/Bman_F_f06.png';
 
-
 // creep
 import frontC1 from '../../../sprites/Sprites/Creep/Front/Creep_F_f00.png';
 import frontC2 from '../../../sprites/Sprites/Creep/Front/Creep_F_f02.png';
@@ -44,75 +43,66 @@ import flame1 from '../../../sprites/Sprites/Flame/Flame_f00.png';
 import flame2 from '../../../sprites/Sprites/Flame/Flame_f01.png';
 import flame3 from '../../../sprites/Sprites/Flame/Flame_f02.png';
 
-
 export const fieldSprites = {
-    grassBrick : grass,
-    fragileBrick : fragile,
-    steelBrick : steel
-}
-
+	grassBrick: grass,
+	fragileBrick: fragile,
+	steelBrick: steel
+};
 
 export const playerSprites = {
-    down : [
-        front1,
-        front2,
-        front3
-    ],
+	down: [
+		front1,
+		front2,
+		front3
+	],
 
-    up : [
-        back1,
-        back2,
-        back3
-    ],
+	up: [
+		back1,
+		back2,
+		back3
+	],
 
-    right : [
-        right1,
-        right2,
-        right3
-    ],
+	right: [
+		right1,
+		right2,
+		right3
+	],
 
-    left : [
-        left1,
-        left2,
-        left3
-    ]
-}
-
+	left: [
+		left1,
+		left2,
+		left3
+	]
+};
 
 export const creepSprites = {
-    down : [
-        frontC1,
-        frontC2,
-        frontC3
-    ],
+	down: [
+		frontC1,
+		frontC2,
+		frontC3
+	],
 
-    up : [
-        backC1,
-        backC2,
-        backC3
-    ],
+	up: [
+		backC1,
+		backC2,
+		backC3
+	],
 
-    right : [
-        rightC1,
-        rightC2,
-        rightC3
-    ]
-}
+	right: [
+		rightC1,
+		rightC2,
+		rightC3
+	]
+};
 
 export const bombSprites = [
-    bomb1,
-    bomb2,
-    bomb3
-]
-
+	bomb1,
+	bomb2,
+	bomb3
+];
 
 export const flameSprites = [
-    flame1,
-    flame2,
-    flame3
-]
-
-
-
-
-
+	flame1,
+	flame2,
+	flame3
+];

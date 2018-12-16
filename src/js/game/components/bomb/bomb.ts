@@ -1,26 +1,27 @@
 import GameBus from '../../GameBus';
-import { isEmptyStatement } from 'babel-types';
+import { IBrick , SteelBrick, FragileBrick} from '../field/field';
 
 export interface IExplodeBombData {
     bombId : number;
     xPos : number;
     yPos : number;
-    explodedArea : Array<Array<IPlantedBombData>>
+    explodedArea : Array<Array<IPlantedBombPosition>>
 }
 
-export interface IPlantedBombData {
+export interface IPlantedBombPosition {
     xPos : number;
     yPos : number;
 }
 
 export default class Bomb {
 
-    constructor (id : number, x : number, y : number, size:number,  bombSprites : any, flameSprites : any, ctx : any) {
+    constructor (id : number, x : number, y : number, size:number, bombSprites : any, flameSprites : any, gameField : IBrick[][], ctx : any) { 
         this._id = id;
         this.x = x;
         this.y = y;
         this.xPos = x;
         this.yPos = y;
+        this.gameField = gameField;
         this._ctx = ctx;
         this._bombSprites = bombSprites;
         this._flameSprites = flameSprites;
@@ -30,10 +31,10 @@ export default class Bomb {
         this._flameSpritesSrc = [];
         // this._animationPointer = 0;
         this._bombAnimationTime = 1800;
-        this._flameAnimationTime = 200;
+        this._flameAnimationTime = 180;
         this._currentFrame = 0;
 
-        this.loadingSpritesSrc();
+        this.loadSpritesSrc();
         this.makeBombAnimationArray()
 
     }
@@ -62,8 +63,9 @@ export default class Bomb {
     private _flameAnimationTime : number;
     private _animationPointer : number;
     private _currentFrame : number;
+    private gameField : IBrick[][];
 
-    public startTimer () : void {
+    public startBombTimer () : void {
         this._startAnimationTime = performance.now();
         this._animationPointer = 0;
         setTimeout(this.explode.bind(this), 2000)
@@ -71,9 +73,39 @@ export default class Bomb {
 
     public explode () : void {
 
-        // область поражения бомбы
-        const area = new Array();
+        // данные бомбы (координаты, область поражения) на момент взрыва
+        const area : Array<Array<IPlantedBombPosition>> = this.harvestExplosionArea();
+        let data : IExplodeBombData = {
+            bombId : this._id,
+            xPos : this.xPos,
+            yPos : this.yPos,
+            explodedArea : area 
+        };
+        GameBus.emit('single-bomb-explode', data);
+    }
 
+
+    public drawBomb () : void {
+        this._bombAnimationArray[this._animationPointer]();
+    }
+
+    public loadSpritesSrc () : void { 
+        this._bombSprites.forEach( (s : string) => {
+            const sprite : HTMLImageElement = new Image;
+            sprite.src = s;
+            this._bombSpritesSrc.push(sprite);
+        })
+
+        this._flameSprites.forEach( (s : string) => {
+            const sprite : HTMLImageElement = new Image;
+            sprite.src = s;
+            this._flameSpritesSrc.push(sprite);
+        })
+    }
+
+    private harvestExplosionArea () : Array<Array<IPlantedBombPosition>> {
+        // область поражения бомбы
+        const area = new Array()
         //  по каким направлениям взрывается бомба
         const explosionVectors = [
             { // up
@@ -101,56 +133,31 @@ export default class Bomb {
             for (let i = 0; i < this.radius; i++) { // взрываем область соответствующую длине радиуса
                 const expXPos =  this.xPos + vec.dx * i;
                 const expYPos =  this.yPos + vec.dy * i;
-                // чтобы область поражения бомбы не выходила за размер матрицы поля
-                if ((expXPos > 0 && expYPos > 0) && (expXPos < 19 && expYPos < 19)) {
+                if (!(this.gameField[expXPos][expYPos] instanceof SteelBrick)) {
                     bombedWay.push( // позиция элемента попадающего под взрыв
                         {
                             xPos : expXPos,
                             yPos : expYPos
                         }
-                    )
+                    )                
+                }
+                if ((this.gameField[expXPos][expYPos] instanceof SteelBrick) || (this.gameField[expXPos][expYPos] instanceof FragileBrick)) {
+                    break;
                 }
             }
             area.push(bombedWay);
         })
-
-        // данные бомбы (координаты, область поражения) на момент взрыва
-        let data : IExplodeBombData = {
-            bombId : this._id,
-            xPos : this.xPos,
-            yPos : this.yPos,
-            explodedArea : area 
-        };
-        GameBus.emit('single-bomb-explode', data);
-    }
-
-
-    public draw () : void {
-        this._bombAnimationArray[this._animationPointer]();
-    }
-
-    public loadingSpritesSrc () : void { 
-        this._bombSprites.forEach( (s : string) => {
-            const sprite : HTMLImageElement = new Image;
-            sprite.src = s;
-            this._bombSpritesSrc.push(sprite);
-        })
-
-        this._flameSprites.forEach( (s : string) => {
-            const sprite : HTMLImageElement = new Image;
-            sprite.src = s;
-            this._flameSpritesSrc.push(sprite);
-        })
+        return area;      
     }
     
     private bombAnimate () : void {
         const time : number = performance.now();
         const shiftTime : number = time - this._startAnimationTime;
-        const currentAnimationtime : number =  shiftTime / this._bombAnimationTime;
-        if (currentAnimationtime < 1) {
+        const currentAnimationTime : number =  shiftTime / this._bombAnimationTime;
+        if (currentAnimationTime < 1) {
             this._ctx.drawImage(this._bombSpritesSrc[this._currentFrame], this.xPos * this.size, this.yPos * this.size, this.size, this.size);
-            if (~~shiftTime % 60 === 0) {
-                this._currentFrame = ++this._currentFrame % 3;
+            if (Math.floor(shiftTime) % 60 === 0) {
+                this._currentFrame = (this._currentFrame + 1) % 3;
             }
             requestAnimationFrame(() => this.bombAnimate());
         } 
@@ -165,42 +172,19 @@ export default class Bomb {
     private flameAnimate () : void {
         const time : number = performance.now();
         const shiftTime : number = time - this._startAnimationTime;
-        const currentAnimationtime : number =  shiftTime / this._flameAnimationTime;
-
-        const explosionVectors = [
-            { // up
-                dx:0, 
-                dy:-1
-            },
-
-            { // right
-                dx:1, 
-                dy:0
-            },
-
-            { // down
-                dx:0, 
-                dy:1
-            },
-            { // left
-                dx:-1, 
-                dy:0
-            }
-        ]
-        if (currentAnimationtime < 1) {
-            explosionVectors.forEach( vec => { // по каждому направлению
-                for (let i = 0; i < this.radius; i++) { // взрываем область соответствующую длине радиуса
-                    const expXPos =  this.xPos + vec.dx * i;
-                    const expYPos =  this.yPos + vec.dy * i;
-                    // чтобы область поражения бомбы не выходила за размер матрицы поля
-                    if ((expXPos > 0 && expYPos > 0) && (expXPos < 19 && expYPos < 19)) {
-                        this._ctx.drawImage(this._flameSpritesSrc[this._currentFrame], expXPos * this.size, expYPos * this.size, this.size, this.size);
-                    }
-                    if (~~shiftTime % 60 === 0) {
-                        this._currentFrame = ++this._currentFrame % 3;
-                    }
-                }
+        const currentAnimationTime : number =  shiftTime / this._flameAnimationTime;
+        
+        const area : Array<Array<IPlantedBombPosition>> = this.harvestExplosionArea();
+        if (currentAnimationTime < 1) {
+            area.forEach( vec => {
+                vec.forEach( pos => {
+                    // console.log(pos)
+                    this._ctx.drawImage(this._flameSpritesSrc[this._currentFrame], pos.xPos * this.size, pos.yPos * this.size, this.size, this.size);
+                })
             })
+            if (Math.floor(shiftTime) % 60 === 0) {
+                this._currentFrame = (this._currentFrame + 1) % 3;
+            }
             requestAnimationFrame(() => this.flameAnimate());
         } else {
             this._animationPointer = 0; // назначаем указатель анимации на индекс анимации огня

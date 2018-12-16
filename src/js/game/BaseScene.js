@@ -10,19 +10,6 @@ export default class BaseScene {
 
 		this._secondLayer = secondLayer;
 		this._secondLayerContext = secondLayerContext;
-
-	}
-
-	updateGameField (data) {
-		// console.log('Scene updateGameField');
-		// console.log('Scene data',data);
-		this._field.resetField(data);
-		// console.log(this._field._data);
-	}
-
-	updateUsers (data) {
-		// console.log('Scene updateUsers');
-		this._player.update(data.x, data.y, this._field.bricksInField);
 	}
 
 	clearFirstLayer () {
@@ -33,27 +20,29 @@ export default class BaseScene {
 		this._secondLayerContext.clearRect(0, 0, this._secondLayer.width, this._secondLayer.height);
 	}
 
-
-
 	render () {
-		// console.log('Scene render');
-		// this._field.drawField();
-		this._player.draw();
-		this._player.plantedBombs.forEach(bomb => {
-			bomb.draw();
-		});
+		// console.log(this._players); // TODO при взрыве бомбы игрок остается в массиве
+		this._players.forEach(player => {
+			player.plantedBombs.forEach( bomb => {
+				bomb.drawBomb();
+			})
+		}) 
+
+		this._players.forEach(player => {
+			player.drawPlayer();
+		}) 
 	}
 
 	loopCallback () {
-		this.clearSecondLayer(); 
+		this.clearSecondLayer();
 		this.render();
 		window.requestAnimationFrame(this.loopCallback.bind(this));
 	}
 
 	startLoop () {
 		// this._field.drawField();
-		this._player.draw();
-		window.addEventListener('resize', function(){console.log("resi")})
+		// this._player.draw();
+		// window.addEventListener('resize', function(){console.log("resi")})
 		window.requestAnimationFrame(this.loopCallback.bind(this));
 	}
 }

@@ -24,7 +24,6 @@ export default class FormController {
      */
 	callbackSubmit (event) {
 		event.preventDefault();
-		// console.log('SIGNUP SUBMIT');
 		if (this._validator && !this._validator.validate()) {
 			return;
 		}
@@ -40,20 +39,18 @@ export default class FormController {
 		Bus.emit('submit-data-' + this._formName, data);
 	}
 
-
 	createRoomCallbackSubmit (event) {
 		event.preventDefault();
 		if (this._validator && !this._validator.validate(event.target)) {
 			return;
 		}
-		const size = {}
+		const size = {};
 
 		let data = Array.from(event.target.elements)
 			.reduce((acc, val) => {
 				if (val.value !== '') {
-					if (val.name !== 'title'){
-						if(val.name === 'height' || val.name === 'width') {
-							console.log(val.name, val.value);
+					if (val.name !== 'title') {
+						if (val.name === 'height' || val.name === 'width') {
 							size[val.name] = parseInt(val.value);
 						} else {
 							acc[val.name] = parseInt(val.value);
@@ -65,7 +62,6 @@ export default class FormController {
 				return acc;
 			}, {});
 		data['field_size'] = size;
-		// console.log('submit game data', data);
 		Bus.emit('submit-data-' + this._formName, data);
 	}
 }

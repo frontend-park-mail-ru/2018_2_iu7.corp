@@ -13,6 +13,7 @@ import SingleGameView from './views/gameViews/singleplayer/SingleGameView.js';
 import ProfileView from './views/ProfileView.js';
 import ChangeView from './views/ChangeView.js';
 import LeaderboardView from './views/LeaderboardView.js';
+// import MultiPlayerView from './views/gameViews/multiplayer/MultiPlayerView.js'
 
 import MultiplayerMenuView from './views/gameViews/multiplayer/MultiplayerMenuView.js';
 import CreateRoomView from './views/gameViews/multiplayer/CreateRoomView.js';
@@ -60,6 +61,7 @@ function main () {
 		['/createroom', CreateRoomView],
 		['/room', RoomView],
 		['/leaderboard', LeaderboardView]
+		// ['/multiplayer', MultiPlayerView]
 	].forEach((route) => { Router.register(route[0], route[1]); });
 
 	Router.open(window.location.pathname);

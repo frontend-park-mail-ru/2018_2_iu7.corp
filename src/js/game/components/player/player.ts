@@ -1,13 +1,11 @@
 import { IBrick , GrassBrick} from '../field/field';
-import Bomb, { IExplodeBombData, IPlantedBombData } from '../bomb/bomb';
+import Bomb, { IExplodeBombData, IPlantedBombPosition } from '../bomb/bomb';
 import GameBus from '../../GameBus';
 
-import { file, continueStatement } from 'babel-types';
-
 export default class Player {
-    constructor(id : number, x : number, y : number, playerSprites : any, bombSprites : any, flameSprites : any, ctx : any) {
+    constructor(id : number, x : number, y : number, playerSprites : any, bombSprites : any, flameSprites : any) { // ctx : any) {
         this._id = id;
-        this._ctx = ctx;
+        // this._ctx = ctx;
         this.x = x;
         this.y = y;
         this.xPos = x;
@@ -17,8 +15,8 @@ export default class Player {
 
         this.maxBombsAmount = 1;
         this.currentbombsAmount = this.maxBombsAmount;
-        this.plantedBombs = [];
-        this._downSpritesSrc = [];
+        this.plantedBombs = []; 
+        this._downSpritesSrc = []; // TODO подумать куда убрать все массивы спрайтов
         this._upSpritesSrc = [];
         this._rightSpritesSrc = [];
         this._leftSpritesSrc = [];
@@ -27,10 +25,10 @@ export default class Player {
         this._flameSprites = flameSprites;
         this._endAnimationSprite = new Image;
         this._animationPointer = 0;
-        this.loadingSpritesSrc(); // загрузка спрайтов
+        this.loadSpritesSrc(); // загрузка спрайтов
         this.makePlayerAnimationArray();
 
-        this._animationTime = 120;
+        this._animationTime = 130;
 
         GameBus.on('single-bomb-explode', this.onExplodeBomb.bind(this));
     }
@@ -66,42 +64,43 @@ export default class Player {
     private _playerAnimationArray : Array<Function>;
     // индекс указывающий какую анимацию нужно отобразить, меняется по нажатию клавиши, по умолчанию 0 - стоит на месте
     private _animationPointer : number;
-    public _ctx : any;
+    public _ctx : CanvasRenderingContext2D;
 
     public setSpriteSize (size: number) : void{
         this.size = size;
     };
 
     // чтобы при каждой смене кадра не указывать новый src, можно загрузить их сразу
-    public loadingSpritesSrc () : void { 
+    public loadSpritesSrc () : void { 
         this._playerSprites.down.forEach( (s : string) => {
             const sprite : HTMLImageElement = new Image;
             sprite.onload = () => { // TODO убрать onload
                 this._endAnimationSprite = this._downSpritesSrc[0];
             }
-            sprite.src = s;
+            sprite.src = '/' + s;
             this._downSpritesSrc.push(sprite);
         })
         this._playerSprites.up.forEach( (s : string) => {
             const sprite : HTMLImageElement = new Image;
-            sprite.src = s;
+            sprite.src = '/' + s;
             this._upSpritesSrc.push(sprite);
         })
 
         this._playerSprites.right.forEach( (s : string) => {
             const sprite : HTMLImageElement = new Image;
-            sprite.src = s;
+            sprite.src = '/' + s;
             this._rightSpritesSrc.push(sprite);
         })
 
         this._playerSprites.left.forEach( (s : string) => {
             const sprite : HTMLImageElement = new Image;
-            sprite.src = s;
+            sprite.src = '/' + s;
             this._leftSpritesSrc.push(sprite);
         })
     }
 
-    public draw (): void {
+    public drawPlayer (): void {
+        // console.log('player draw');
         this._playerAnimationArray[this._animationPointer]();
     }
 
@@ -112,11 +111,11 @@ export default class Player {
     public plantBomb () : void {
         if (this.currentbombsAmount) {
             const bombId : number = this.maxBombsAmount - this.currentbombsAmount;
-            const newBomb : Bomb = new Bomb(bombId, this.xPos, this.yPos, this.size, this._bombSprites, this._flameSprites, this._ctx);
+            const newBomb : Bomb = new Bomb(bombId, this.xPos, this.yPos, this.size, this._bombSprites, this._flameSprites, this.gameField, this._ctx);
             this.plantedBombs.push(newBomb);
-            newBomb.startTimer();
+            newBomb.startBombTimer();
             this.currentbombsAmount -= 1;
-            let data : IPlantedBombData = {
+            let data : IPlantedBombPosition = {
                 xPos : newBomb.xPos,
                 yPos : newBomb.yPos
             };
@@ -141,7 +140,7 @@ export default class Player {
         }
     }
     
-    public update (x:number,y:number, field: IBrick[][], pointer : number): void {
+    public update (x:number,y:number, field: IBrick[][]) : void {
         if (this.checkNewPos(x,y, field)) {
 
             this.prevX = this.xPos;
@@ -150,7 +149,7 @@ export default class Player {
             this.yPos = y;
             this._currentFrame = 0;
             this._startAnimationTime = performance.now();
-            this._animationPointer = pointer;
+            this._animationPointer = this.chooseAnimationPointer();
         }
     }
 
@@ -159,6 +158,10 @@ export default class Player {
             return true;
         }
         return false;
+    }
+
+    public setCanvasContext (ctx : CanvasRenderingContext2D) {
+        this._ctx = ctx;
     }
 
     private makePlayerAnimationArray() {
@@ -174,10 +177,10 @@ export default class Player {
     private downAnimate () : void {
         const time : number = performance.now();
         const shiftTime : number = time - this._startAnimationTime;
-        const currentAnimationtime : number =  shiftTime / this._animationTime;
-        const newY : number = this.prevY * this.size + this.size * currentAnimationtime;
+        const currentAnimationTime : number =  shiftTime / this._animationTime;
+        const newY : number = this.prevY * this.size + this.size * currentAnimationTime;
         
-        if (currentAnimationtime < 1) {     
+        if (currentAnimationTime < 1) {     
             this._ctx.drawImage(this._downSpritesSrc[this._currentFrame], this.xPos * this.size, newY, this.size, this.size);
             this._currentFrame = ++this._currentFrame % 3 // 3 - количество спрайтов
             
@@ -192,10 +195,9 @@ export default class Player {
     private upAnimate () : void {
         const time : number = performance.now();
         const shiftTime : number = time - this._startAnimationTime;
-        const currentAnimationtime : number =  shiftTime / this._animationTime;
-        const newY : number = this.prevY * this.size - this.size * currentAnimationtime;
-             
-        if (currentAnimationtime < 1) {
+        const currentAnimationTime : number =  shiftTime / this._animationTime;
+        const newY : number = this.prevY * this.size - this.size * currentAnimationTime;             
+        if (currentAnimationTime < 1) {
             this._ctx.drawImage(this._upSpritesSrc[this._currentFrame], this.xPos * this.size, newY, this.size, this.size);
             this._currentFrame = ++this._currentFrame % 3 // 3 - количество спрайтов
             requestAnimationFrame(() => this.upAnimate());
@@ -209,10 +211,10 @@ export default class Player {
     private rightAnimate () : void {
         const time : number = performance.now();
         const shiftTime : number = time - this._startAnimationTime;
-        const currentAnimationtime : number =  shiftTime / this._animationTime;
-        const newX : number = this.prevX * this.size + this.size * currentAnimationtime;
+        const currentAnimationTime : number =  shiftTime / this._animationTime;
+        const newX : number = this.prevX * this.size + this.size * currentAnimationTime;
         
-        if (currentAnimationtime < 1) {     
+        if (currentAnimationTime < 1) {     
             this._ctx.drawImage(this._rightSpritesSrc[this._currentFrame], newX, this.yPos * this.size, this.size, this.size);
             this._currentFrame = ++this._currentFrame % 3 // 3 - количество спрайтов
             
@@ -227,10 +229,10 @@ export default class Player {
 
         const time : number = performance.now();
         const shiftTime : number = time - this._startAnimationTime;
-        const currentAnimationtime : number =  shiftTime / this._animationTime;
-        const newX : number = this.prevX * this.size - this.size * currentAnimationtime;
+        const currentAnimationTime : number =  shiftTime / this._animationTime;
+        const newX : number = this.prevX * this.size - this.size * currentAnimationTime;
         
-        if (currentAnimationtime < 1) {     
+        if (currentAnimationTime < 1) {     
             this._ctx.drawImage(this._leftSpritesSrc[this._currentFrame], newX, this.yPos * this.size, this.size, this.size);
             this._currentFrame = ++this._currentFrame % 3 // 3 - количество спрайтов
             
@@ -268,11 +270,32 @@ export default class Player {
             return false;
         }
     }
-}
 
-/**
- * как исправить огонь
- * 1) создать класс flame с методом анимации
- * 2) по завершению анимации бомбы сделать GameBus.emit('single-flame-animate')
- * 3)
- */
+    private chooseAnimationPointer () : number {
+        let  pointer : number = 0;
+
+        // игрок идет влево
+        if (this.prevX > this.xPos && this.prevY === this.yPos) {
+            pointer = 4;
+        }
+
+        // игрок идет вправо
+        else if (this.prevX < this.xPos && this.prevY === this.yPos) {
+            pointer = 2;
+        }
+        
+        // игрок идет вверх
+        else if (this.prevX === this.xPos && this.prevY > this.yPos) {
+            pointer = 1;
+        }
+
+        // игрок идет вниз
+        else if (this.prevX === this.xPos && this.prevY < this.yPos) {
+            pointer = 3;
+        }
+        
+
+
+        return pointer;
+    }
+}
