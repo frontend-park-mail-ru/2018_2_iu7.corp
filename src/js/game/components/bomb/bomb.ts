@@ -15,14 +15,16 @@ export interface IPlantedBombData {
 
 export default class Bomb {
 
-    constructor (id : number, x : number, y : number, bombSprites : any, flameSprites : any, ctx : any) {
+    constructor (id : number, x : number, y : number, size:number,  bombSprites : any, flameSprites : any, ctx : any) {
         this._id = id;
+        this.x = x;
+        this.y = y;
         this.xPos = x;
         this.yPos = y;
         this._ctx = ctx;
         this._bombSprites = bombSprites;
         this._flameSprites = flameSprites;
-        this.size = 45;
+        this.size = size;
         this.radius = 3; // радиус поражение 3 клетки, включая текущую позицию бомбы
         this._bombSpritesSrc = [];
         this._flameSpritesSrc = [];
@@ -39,7 +41,13 @@ export default class Bomb {
     public _id:number;
     public xPos:number;
     public yPos:number;
+    public x:number;
+    public y:number;
     public size:number;
+    public setSpriteSize (size: number) : void{
+        this.size = size;
+    };
+    
     public radius: number;
 
     private _ctx: any; 
@@ -118,7 +126,6 @@ export default class Bomb {
 
 
     public draw () : void {
-        console.log(this._animationPointer);
         this._bombAnimationArray[this._animationPointer]();
     }
 
@@ -156,7 +163,6 @@ export default class Bomb {
     }
 
     private flameAnimate () : void {
-        console.log('hi');
         const time : number = performance.now();
         const shiftTime : number = time - this._startAnimationTime;
         const currentAnimationtime : number =  shiftTime / this._flameAnimationTime;

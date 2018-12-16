@@ -13,6 +13,19 @@ export default class SingleScene extends BaseScene {
         super();
         this._field = null;
         this._player = null;
+        this._spriteSize = null;
+    }
+
+    resize(){
+        const windowWidth = window.innerWidth;
+		const windowHeight = window.innerHeight * 0.8;
+
+        const matrRowsCount = matr.length;
+		const matrColumnsCount = matr[0].length;        
+        const width = windowWidth / matrColumnsCount;
+        const height = windowHeight / matrRowsCount;
+
+        this._spriteSize = Math.min(width, height);
     }
 
     init(firstLayer, firstLayerContext, secondLayer, secondLayerContext) {
@@ -30,11 +43,19 @@ export default class SingleScene extends BaseScene {
         состоянием поля, и игра будет думать что игрок находится не за FragileBrick, а за GrassBrick,
         значит он попадает в область поражения
         */
-        
+
+        this.resize();
+        console.log("size ", this._spriteSize);
+
         this._player = new Player(1, 1, 1, sprites.playerSprites, sprites.bombSprites, sprites.flameSprites, this._secondLayerContext); 
         this._field = new Field(matr, sprites.fieldSprites, this._firstLayerContext);
+
+        this._field.setSpriteSize(this._spriteSize);
+        this._player.setSpriteSize(this._spriteSize);
         // вместо передачи поля через конструктор
         this._player.setField(this._field.bricksInField);
+
+        
 
 		Bus.on('single-field', this.updateGameField.bind(this));
         Bus.on('single-user', this.updateUsers.bind(this));

@@ -5,7 +5,7 @@
     background-color: #333;
     position: -webkit-sticky; /* Safari */
     position: sticky;
-    z-index: 3;
+    z-index: 4;
     top: 0;
 }
 
