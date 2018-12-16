@@ -8,4 +8,12 @@
     position: absolute;
     z-index: 2;
     background-color: transparent;
+    background-color: -webkit-transparent;
+}
+
+#canvasControls {
+    position: absolute;
+    z-index: 3;
+    background-color: transparent;
+    background-color: -webkit-transparent;
 }

@@ -9,11 +9,24 @@ import { matr } from '../GameConfig.js';
 import * as sprites from '../SpriteImports.js';
 
 export default class SingleScene extends BaseScene {
-	constructor () {
-		super();
-		this._field = null;
-		this._players = [];
-	}
+    constructor () {
+        super();
+        this._field = null;
+        this._players = [];
+        this._spriteSize = null;
+    }
+
+    resize(){
+        const windowWidth = window.innerWidth;
+		    const windowHeight = window.innerHeight * 0.8;
+
+        const matrRowsCount = matr.length;
+		    const matrColumnsCount = matr[0].length;        
+        const width = windowWidth / matrColumnsCount;
+        const height = windowHeight / matrRowsCount;
+
+        this._spriteSize = Math.min(width, height);
+    }
 
 	init (firstLayer, firstLayerContext, secondLayer, secondLayerContext) {
 		super.init(firstLayer, firstLayerContext, secondLayer, secondLayerContext);
@@ -30,20 +43,26 @@ export default class SingleScene extends BaseScene {
         состоянием поля, и игра будет думать что игрок находится не за FragileBrick, а за GrassBrick,
         значит он попадает в область поражения
         */
-		const player = new Player(1, 1, 1, sprites.playerSprites, sprites.bombSprites, sprites.flameSprites);
-		this._players.push(player);
-		this._field = new Field(matr, sprites.fieldSprites, this._firstLayerContext);
-		// вместо передачи поля через конструктор
-		this._players[0].setField(this._field.bricksInField);
-		this._players[0].setCanvasContext(this._secondLayerContext);
+        this.resize();
 
-		// Bus.on('single-field', this.updateGameField.bind(this));
-		Bus.on('single-user', this.updateUsers.bind(this));
-		Bus.on('single-setBomb', this.updateBombs.bind(this));
-		Bus.on('single-bomb-explosion', this.updateBombs.bind(this));
-		Bus.on('single-scene-start', this.startLoop.bind(this));
-		GameBus.on('single-player-death', this.updateGame.bind(this));
-	}
+        const player = new Player(1, 1, 1, sprites.playerSprites, sprites.bombSprites, sprites.flameSprites);
+        this._players.push(player);
+        this._field = new Field(matr, sprites.fieldSprites, this._firstLayerContext);
+        this._field.setSpriteSize(this._spriteSize);
+        player.setSpriteSize(this._spriteSize);
+        // вместо передачи поля через конструктор
+        this._players[0].setField(this._field.bricksInField);
+        this._players[0].setCanvasContext(this._secondLayerContext);
+
+        
+
+// 		    Bus.on('single-field', this.updateGameField.bind(this));
+        Bus.on('single-user', this.updateUsers.bind(this));
+        Bus.on('single-setBomb', this.updateBombs.bind(this));
+        Bus.on('single-bomb-explosion', this.updateBombs.bind(this))
+        Bus.on('single-scene-start', this.startLoop.bind(this));
+        GameBus.on('single-player-death', this.updateGame.bind(this));
+    }
 
 	updateUsers (data) {
 		this._players[0].update(this._players[0].xPos + data.dx, this._players[0].yPos + data.dy, this._field.bricksInField);

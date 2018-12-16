@@ -40,6 +40,9 @@ export default class BaseScene {
 	}
 
 	startLoop () {
+		// this._field.drawField();
+		// this._player.draw();
+		// window.addEventListener('resize', function(){console.log("resi")})
 		window.requestAnimationFrame(this.loopCallback.bind(this));
 	}
 }

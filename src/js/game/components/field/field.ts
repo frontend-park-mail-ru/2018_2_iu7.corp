@@ -8,28 +8,31 @@ export const enum BricksTypes {
 };
 
 export interface IBrick {
-    size : number;
+    size: number; // размеры кубика на карте
     xPos: number; // координаты кубика на карте
     yPos: number;
     _sprite: any; // можно в будущем заменить на текстуру
     passable: boolean; // можно ли пройти по кубику
     destructible: boolean; // можно ли разрушить кубик
     drawBrick(ctx: any): void; // нарисовать кубик 
-    resize(size : number) : void;
+    resize(size: number) : void;
 }
 
 abstract class AbstractBrick implements IBrick{
-    public size = 45;
+    public size: number = 45;
     public abstract xPos: number;
     public abstract yPos: number;
+    public abstract x: number;
+    public abstract y: number;
     public abstract _sprite: any;
     public abstract passable: boolean;
     public abstract destructible: boolean;
-    public resize (size : number ) {
+    public resize (size: number): void{
         this.size = size;
+        this.xPos = this.x * this.size;
+        this.yPos = this.y * this.size;
     };
     public drawBrick (ctx: any): void {
-        // console.log(this._sprite);
         ctx.drawImage(this._sprite, this.xPos, this.yPos, this.size, this.size);
     };
 }
@@ -45,6 +48,8 @@ export class GrassBrick extends AbstractBrick {
         // }
         // this._sprite.src = '/' + sprite;
     }
+    public x : number;
+    public y : number;
     public xPos : number;
     public yPos : number;
     public _sprite : HTMLImageElement;
@@ -60,6 +65,8 @@ export class FragileBrick extends AbstractBrick {
         this._sprite = sprite;
         // this._sprite.src = '/' + sprite;
     }
+    public x : number;
+    public y : number;
     public xPos : number;
     public yPos : number;
     public _sprite : HTMLImageElement;
@@ -75,6 +82,8 @@ export class SteelBrick extends AbstractBrick {
         this._sprite = sprite;
         // this._sprite.src = '/' + sprite;
     }
+    public x : number;
+    public y : number;
     public xPos : number;
     public yPos : number;
     public _sprite : HTMLImageElement;
@@ -85,6 +94,7 @@ export class SteelBrick extends AbstractBrick {
 export default class Field {
     private _data : number[][];
     private _size : number;
+    private _sizeSprite: number = 45;
     private _sprites : any
     private _ctx : any;
     private bricksInField : IBrick[][] = new Array();
@@ -158,6 +168,7 @@ export default class Field {
         // console.log('field draw');
         for (const row of this.bricksInField) {
             for (const brick of row) {
+                brick.resize(this._sizeSprite);
                 brick.drawBrick(this._ctx);
             }
         }
@@ -200,7 +211,8 @@ export default class Field {
     private explodeBrick (x : number, y : number) : boolean {
         if (!this.bricksInField[x][y].passable) {
             if (this.bricksInField[x][y].destructible) {
-                this.bricksInField[x][y] = new GrassBrick(x, y, this._grassSprite);
+                this.bricksInField[x][y] = new GrassBrick(x, y, this._sprites.grassBrick);
+                this.bricksInField[x][y].resize(this._sizeSprite);
                 this.bricksInField[x][y].drawBrick(this._ctx);
                 return true
             }

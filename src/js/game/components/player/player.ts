@@ -6,6 +6,8 @@ export default class Player {
     constructor(id : number, x : number, y : number, playerSprites : any, bombSprites : any, flameSprites : any) { // ctx : any) {
         this._id = id;
         // this._ctx = ctx;
+        this.x = x;
+        this.y = y;
         this.xPos = x;
         this.yPos = y;
         this.size = 45;
@@ -34,9 +36,11 @@ export default class Player {
     public _id : number;
     public xPos : number;
     public yPos : number;
+    public x : number;
+    public y : number;
     public size : number;
+
     public alive : boolean;
-    
     public color : string;
 
     public currentbombsAmount : number;
@@ -61,6 +65,10 @@ export default class Player {
     // индекс указывающий какую анимацию нужно отобразить, меняется по нажатию клавиши, по умолчанию 0 - стоит на месте
     private _animationPointer : number;
     public _ctx : CanvasRenderingContext2D;
+
+    public setSpriteSize (size: number) : void{
+        this.size = size;
+    };
 
     // чтобы при каждой смене кадра не указывать новый src, можно загрузить их сразу
     public loadSpritesSrc () : void { 
@@ -103,7 +111,7 @@ export default class Player {
     public plantBomb () : void {
         if (this.currentbombsAmount) {
             const bombId : number = this.maxBombsAmount - this.currentbombsAmount;
-            const newBomb : Bomb = new Bomb(bombId, this.xPos, this.yPos, this._bombSprites, this._flameSprites, this.gameField, this._ctx);
+            const newBomb : Bomb = new Bomb(bombId, this.xPos, this.yPos, this.size, this._bombSprites, this._flameSprites, this.gameField, this._ctx);
             this.plantedBombs.push(newBomb);
             newBomb.startBombTimer();
             this.currentbombsAmount -= 1;

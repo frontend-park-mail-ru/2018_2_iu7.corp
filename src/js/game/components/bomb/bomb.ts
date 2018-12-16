@@ -15,15 +15,17 @@ export interface IPlantedBombPosition {
 
 export default class Bomb {
 
-    constructor (id : number, x : number, y : number, bombSprites : any, flameSprites : any, gameField : IBrick[][], ctx : any) { 
+    constructor (id : number, x : number, y : number, size:number, bombSprites : any, flameSprites : any, gameField : IBrick[][], ctx : any) { 
         this._id = id;
+        this.x = x;
+        this.y = y;
         this.xPos = x;
         this.yPos = y;
         this.gameField = gameField;
         this._ctx = ctx;
         this._bombSprites = bombSprites;
         this._flameSprites = flameSprites;
-        this.size = 45;
+        this.size = size;
         this.radius = 3; // радиус поражение 3 клетки, включая текущую позицию бомбы
         this._bombSpritesSrc = [];
         this._flameSpritesSrc = [];
@@ -40,7 +42,13 @@ export default class Bomb {
     public _id:number;
     public xPos:number;
     public yPos:number;
+    public x:number;
+    public y:number;
     public size:number;
+    public setSpriteSize (size: number) : void{
+        this.size = size;
+    };
+    
     public radius: number;
 
     private _ctx: any; 
