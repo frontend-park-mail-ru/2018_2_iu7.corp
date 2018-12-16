@@ -21,7 +21,7 @@ export default class BaseScene {
 	}
 
 	render () {
-
+		// console.log(this._players); // TODO при взрыве бомбы игрок остается в массиве
 		this._players.forEach(player => {
 			player.plantedBombs.forEach( bomb => {
 				bomb.drawBomb();

@@ -37,6 +37,7 @@ export default class Socket {
 	update () {
 		this._socket.onmessage = function (event) {
 			const response = JSON.parse(event.data);
+			console.log(response);
 
 			if (response.type === 'room'){
 				// console.log('room data', response);
@@ -45,16 +46,18 @@ export default class Socket {
 
 			else if (response.type === 'object') {
 				// console.log('object data', response);
+				console.log('action, ', 'multiplayer-' + response.type + '-' + response.data.object_type);
 				// console.log(Bus._listeners);
 				Bus.emit('multiplayer-' + response.type + '-' + response.data.object_type, response.data);
 			} 
 			else if (response.type === 'ticker') {
-				console.log('ticker data', )
+				// console.log('ticker data', )
 			}
 		};
 	}
 
 	sendMessage(message) {
+		console.log(message);
 		this._socket.send(message);
 	}
 

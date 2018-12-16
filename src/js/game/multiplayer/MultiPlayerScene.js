@@ -14,8 +14,9 @@ class MultiPlayerScene extends BaseScene {
 		this._field = null;
 		this._players = [];
 		this._initialField = null
-		Bus.on('multiplayer-object-wall.solid', this.addSolidInNumberMatrix.bind(this));
-		Bus.on('multiplayer-object-wall.weak', this.addWeakInNumberMatrix.bind(this));
+		Bus.on('multiplayer-object-wall.solid', this.addSteelInField.bind(this));
+		Bus.on('multiplayer-object-wall.weak', this.addFragileInField.bind(this));
+		Bus.on('multiplayer-object-player', this.updateUsers.bind(this));
 	}
 
 	setPlayersId (players) {
@@ -30,20 +31,24 @@ class MultiPlayerScene extends BaseScene {
 	}
 
 	// добавляем в поле нужные блоки после нажатия кнопку начать игру (блоки добавляются по одному, на каждое сообщение с сервера)
-	addSolidInNumberMatrix (data) { 
-		this._initialField[data.transform.position.x][data.transform.position.y] = 1; // TODO использовать  типы из field.ts
-	}
 
-	addWeakInNumberMatrix (data) { 
-		this._initialField[data.transform.position.x][data.transform.position.y] = 2; // TODO использовать  типы из field.ts
+	addSteelInField (data) {
+		this._field._addSteelBrickInField(data.transform.position.x, data.transform.position.y);
+	}
+	
+	addFragileInField (data) { 
+		this._field._addFragileBrickInField(data.transform.position.x, data.transform.position.y);
 	}
 
 	// инициализируем игроков по предварительно сохраненному массиву id каждого игрока
 	addPlayers () {
+		console.log('players ID', this._playersId);
 		this._playersId.forEach( id => {
+			console.log('id', id);
 			const player = new Player(id, 0, 0, sprites.playerSprites, sprites.bombSprites, sprites.flameSprites);
 			this._players.push(player);
 		})
+		console.log('current players', this._players);
 	}
 
 	getCanvasContext () {
@@ -77,7 +82,6 @@ class MultiPlayerScene extends BaseScene {
 			this._registeredActions = true;
 		}
 
-		Bus.on('multiplayer-object-player', this.updateUsers.bind(this));
 		// Bus.on('multiplayer-object', this.updateField.bind(this));
 		// Bus.on('multiplayer-scene-start', this.startLoop.bind(this));
 
@@ -120,6 +124,8 @@ class MultiPlayerScene extends BaseScene {
 	// }
 
 	updateUsers (data) {
+		// console.log(data);
+		// console.log(this._players.length);
 		const playerToUpdate = this._players.filter(player => { 
 			return player._id === data.id
 		});

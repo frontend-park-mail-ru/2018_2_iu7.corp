@@ -163,11 +163,14 @@ export default class Field {
         }
     }
 
-    public resetField (data: number[][]): void {
-        this._size = data.length;
-        this.bricksInField = new Array();
-        this._data = data;
-        this.setField();
+    public _addSteelBrickInField (x : number, y : number) : void {
+        this.bricksInField[x][y] = new SteelBrick(x, y, this._steelSprite);
+        this.bricksInField[x][y].drawBrick(this._ctx);
+    }
+
+    public _addFragileBrickInField (x : number, y : number) : void {
+        this.bricksInField[x][y] = new FragileBrick(x, y, this._fragileSprite);
+        this.bricksInField[x][y].drawBrick(this._ctx);
     }
 
     // когда игрок ставит бомбу, ее нужно сделать непроходимой

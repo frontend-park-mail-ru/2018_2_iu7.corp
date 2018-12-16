@@ -137,6 +137,7 @@ export default class RoomView extends BaseView {
 	registerActions () {
 		const startButton = document.getElementById('start-game');
 		startButton.addEventListener('click', () => {
+			this.renderGame.bind(this)
 			this._connection.startGame();
 		})
 

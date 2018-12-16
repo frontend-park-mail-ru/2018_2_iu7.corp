@@ -1,9 +1,6 @@
 import GameBus from '../../GameBus';
 import { IBrick , SteelBrick, FragileBrick} from '../field/field';
 
-import { isEmptyStatement, typeAlias } from 'babel-types';
-
-
 export interface IExplodeBombData {
     bombId : number;
     xPos : number;
@@ -32,7 +29,7 @@ export default class Bomb {
         this._flameSpritesSrc = [];
         // this._animationPointer = 0;
         this._bombAnimationTime = 1800;
-        this._flameAnimationTime = 200;
+        this._flameAnimationTime = 180;
         this._currentFrame = 0;
 
         this.loadSpritesSrc();
@@ -173,7 +170,7 @@ export default class Bomb {
         if (currentAnimationTime < 1) {
             area.forEach( vec => {
                 vec.forEach( pos => {
-                    console.log(pos)
+                    // console.log(pos)
                     this._ctx.drawImage(this._flameSpritesSrc[this._currentFrame], pos.xPos * this.size, pos.yPos * this.size, this.size, this.size);
                 })
             })
