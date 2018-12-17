@@ -101,29 +101,6 @@ class MultiPlayerScene extends BaseScene {
 	}
 
 
-	// onKeyDown (e) { // TODO использовать контролы которые написал никита
-	// 	// console.log('keycode', e.keyCode);
-	// 	if (e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */ || e.keyCode === 90 /* z */) {
-	// 		// console.log('up');
-	// 		Bus.emit('multiplayer-send-message', 'player.move.up');
-	// 	}
-	// 	if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-	// 		// console.log('right');
-	// 		Bus.emit('multiplayer-send-message', 'player.move.right');
-	// 	}
-	// 	if (e.keyCode === 40 /* down */ || e.keyCode === 83 /* s */) {
-	// 		// console.log('down');
-	// 		Bus.emit('multiplayer-send-message', 'player.move.down');
-	// 	}
-	// 	if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */ || e.keyCode === 81 /* q */) {
-	// 		// console.log('left')
-	// 		Bus.emit('multiplayer-send-message', 'player.move.left');
-	// 	}
-	// 	if (e.keyCode === 70) {
-    //         	// Bus.emit('single-setBomb');
-	// 	}
-	// }
-
 	// updateField(data) {
 
 	// 	// console.log('new briks', data);

@@ -70,11 +70,11 @@ export default class Controls {
         this._context = this._canvas.getContext('2d');
 		if (!this._registeredActions) {
             // TODO window -> document
-			window.addEventListener('touchstart', this.onTouchStart.bind(this));
-			window.addEventListener('touchmove', this.onTouchMove.bind(this));
-            window.addEventListener('touchend', this.onTouchEnd.bind(this));
-            window.addEventListener('onorientationchange', this.resetControlsPos.bind(this));
-            window.addEventListener('onresize', this.resetControlsPos.bind(this));
+			document.addEventListener('touchstart', this.onTouchStart.bind(this));
+			document.addEventListener('touchmove', this.onTouchMove.bind(this));
+            document.addEventListener('touchend', this.onTouchEnd.bind(this));
+            document.addEventListener('onorientationchange', this.resetControlsPos.bind(this));
+            document.addEventListener('onresize', this.resetControlsPos.bind(this));
 
             document.addEventListener('keydown', this.onKeyDown.bind(this));
             document.addEventListener('keyup', this.onKeyUp.bind(this));
@@ -168,7 +168,7 @@ export default class Controls {
     drawControls(canvas, context){ 
         for(let i=0; i<this._touches.length; i++) {
             let touch = this._touches[i]; 
-            if(touch.identifier == this.leftTouchID){
+            if((touch.identifier == this.leftTouchID) && (touch.clientY > this._paddingHeight)){
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 context.beginPath(); 
                 context.strokeStyle = "cyan"; 
@@ -184,7 +184,7 @@ export default class Controls {
                 context.strokeStyle = "cyan"; 
                 context.arc(this._leftTouchPos._x, this._leftTouchPos._y, 40, 0,Math.PI*2, true); 
                 context.stroke(); 
-            } else {
+            } else if (touch.clientY > this._paddingHeight) {
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 context.beginPath(); 
                 context.fillStyle = "white";
