@@ -2,62 +2,77 @@ import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 
+import {openNav} from '../../css/styles/header/header.js';
+
 const menu = require('./templates/menu.pug');
 
 const notAuthLinks = [
 	{
-		label: 'Sign in',
+		label: 'Вход',
 		href: '/signin'
 	},
 	{
-		label: 'Sign up',
+		label: 'Регистрация',
 		href: '/signup'
 	},
 	{
-		label: 'Leaderboard',
+		label: 'Таблица лидеров',
 		href: '/leaderboard'
 	}
 ];
 
-const authLinks = [
+const mainMenu = [
 	{
-		label: 'Leaderboard',
-		href: '/leaderboard'
+		label: '💣 Мультиплеер',
+		href: '/multiplayerMenu'
 	},
 	{
-		label: 'Profile',
-		href: '/profile'
+		label: '💣 Одиночная игра',
+		href: '/single'
 	},
-	{
-		label: 'Sign out',
-		href: '/signout'
-	}
+	// {
+	// 	label: '💣 Об игре',
+	// 	href: '/about'
+	// }
 ];
 
 export default class MenuView extends BaseView {
 	constructor () {
-		super();
+		super(menu);
+		this._navigationController = new NavigationController();
 		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
 		Bus.emit('get-user');
 		super.show();
+		this.registerActions();
 	}
 
 	render (user) {
-		super.render();
-		this._navigationController = new NavigationController();
-
-		let main = document.createElement('main');
 		if (user.is_authenticated) {
-			main.innerHTML += menu({ values: authLinks });
+			const authLinks = [
+				{
+					label: 'Профиль',
+					href: `/profile/${user.id}`
+				},
+				{
+					label: 'Таблица лидеров',
+					href: '/leaderboard'
+				},
+				{
+					label: 'Выйти',
+					href: '/signout'
+				}
+			];
+			super.render({ mainMenu: mainMenu, headerValues: authLinks, openNav:openNav});
 		} else {
-			main.innerHTML += menu({ values: notAuthLinks });
+			super.render({ mainMenu: mainMenu, headerValues: notAuthLinks, openNav:openNav });
 		}
-		this.viewDiv.appendChild(main);
-
-		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 		Bus.off('done-get-user', this.render.bind(this));
+	}
+
+	registerActions () {
+		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
 }

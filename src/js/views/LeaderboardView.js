@@ -4,8 +4,9 @@ import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import LeaderboardModel from '../models/LeaderboardModel.js';
 
-const header = require('./templates/header.pug');
 const leaderboardTmpl = require('./templates/leaderboard.pug');
+const preloadTmpl = require('./templates/preload.pug');
+
 
 /**
  * View of the "Leaderboard" page
@@ -16,28 +17,36 @@ export default class LeaderboardView extends BaseView {
 	/**
      * Creates view and registres view events
      */
+
 	constructor () {
-		super();
+		super(leaderboardTmpl);
 		this._leaderboardModel = new LeaderboardModel(); // handle events
 		this._leaderboardController = new LeaderboardController();
 		this._navigationController = new NavigationController();
+		this._currentUser = null;
 
-		this.render();
-		Bus.on('done-leaderboard-fetch', this.renderUsers.bind(this));
+		this.preload();
+		Bus.on('done-get-user', this._setCurrentUser.bind(this));
+		Bus.on('done-leaderboard-fetch', this.render.bind(this));
+	}
+
+	_setCurrentUser(user) {
+		this._currentUser = user;
 	}
 
 	/**
-     * Emits load event and shows view
-     * 
-     */
+		 * Emits load event and shows view
+		 *
+		 */
 	show () {
+		Bus.emit('get-user');
 		super.show();
 		Bus.emit('leaderboard-load');
 	}
 
 	/**
      * Resets page number to 1
-     * 
+     *
      */
 	hide () {
 		Bus.emit('leaderboard-set-page', 1);
@@ -45,36 +54,88 @@ export default class LeaderboardView extends BaseView {
 	}
 
 	/**
-     * Render header and loading
-     * 
+     * Render loading page
+     *
      */
-	render () {
-		super.render();
+	preload () {
+		const data = {
+			headerValues: [
+				{
+					label: 'Вход',
+					href: '/signin'
+				},
+				{
+					label: 'Регистрация',
+					href: '/signup'
+				},
+				{
+					label: 'Таблица лидеров',
+					href: '/leaderboard'
+				}
+			],
+			title: 'Leaderboard'
+		};
+		this.viewDiv.innerHTML = '';
+		this.viewDiv.innerHTML = preloadTmpl(data);
 
-		this.viewDiv.innerHTML += header({ title: 'Leaderboard' });
-		let main = document.createElement('main');
-		const loading = document.createElement('p');
-		loading.innerText = 'Loading leaderboard';
-		main.appendChild(loading);
-		this.viewDiv.appendChild(main);
 	}
 
 	/**
      * Render list of users
      * @param {Array} users List of users on this page
-     * 
      */
-	renderUsers (users) {
-		this.viewDiv.getElementsByTagName('main')[0].innerHTML = '';
-		this.viewDiv.getElementsByTagName('main')[0].innerHTML = leaderboardTmpl({ usrs: users.profiles });
-		this.registerEvents();
+	render (users) {
+		if (this._currentUser.is_authenticated) {
+			const data = {
+				headerValues: [
+					{
+						label: 'Профиль',
+						href: `/profile/${this._currentUser.id}`
+					},
+					{
+						label: 'Таблица лидеров',
+						href: '/leaderboard'
+					},
+					{
+						label: 'Выйти',
+						href: '/signout'
+					}
+				],
+				title: 'Leaderboard',
+				usrs: users
+			};
+			super.render(data);
+		} else {
+			const data = {
+				headerValues: [
+					{
+						label: 'Вход',
+						href: '/signin'
+					},
+					{
+						label: 'Регистрация',
+						href: '/signup'
+					},
+					{
+						label: 'Таблица лидеров',
+						href: '/leaderboard'
+					}
+				],
+				title: 'Leaderboard',
+				usrs: users
+			};
+			super.render(data);
+		}
+		Bus.off('done-get-user', this._setCurrentUser.bind(this));
+		this.registerActions();
 	}
 
 	/**
      * Register events for NavigationController and LeaderboardController to handle
      *
      */
-	registerEvents () {
+	registerActions () {
+
 		document.getElementById('prev_page_link')
 			.addEventListener('click', this._leaderboardController.paginationPrevCallback.bind(this._leaderboardController));
 		document.getElementById('next_page_link')

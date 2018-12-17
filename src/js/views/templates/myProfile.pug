@@ -1,0 +1,15 @@
+extends base.pug
+
+block content
+    div
+        div
+            h3= 'Username: ' + user.username
+        div
+            h3= 'Email: ' + user.email
+        div
+            h3= 'Score: ' + user.score
+        
+        p
+            a(href=changeHref data-href=changeHref) Change Settings
+        p
+            a(href='/signout' data-href='/signout') Sign out

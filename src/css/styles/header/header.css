@@ -1,0 +1,122 @@
+.header {
+    margin: 0%;
+    padding: 0%;
+    overflow: hidden;
+    background-color: #333;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+}
+
+.header__title{
+    color: orange;
+    float: left;
+    display: block;
+    text-align: center;
+    padding: 14px 14px;
+    text-decoration: none;
+    /* font-size: 14px + 5vw; */
+}
+.header__title:hover {
+    background-color: #111;
+}
+
+.header__login {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 14px;
+    text-decoration: none;
+}
+.header__login:hover {
+    background-color: #111;
+}
+
+.header__sign-up{
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 14px;
+    text-decoration: none;
+}
+.header__sign-up:hover {
+    background-color: #111;
+}
+
+.header__leaderboard{
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 14px;
+    text-decoration: none;
+}
+.header__leaderboard:hover {
+    background-color: #111;
+}
+
+/* header's dropdown */
+.dropdown__toggler {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+/* 
+.dropdown__toggler:hover {
+    background-color: #111;
+} */
+
+
+/* Выплывающий хедер */
+
+.dropdown__overlay {
+	margin-top: 0%;
+    height: 0%;
+    width: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.8);
+    overflow-y: hidden;
+    transition: 0.5s;
+}
+
+.dropdown__overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.dropdown__overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.dropdown__overlay .dropdown__closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+}
+
+@media screen and (max-height: 450px) {
+  .dropdown__overlay {overflow-y: auto;}
+  .dropdown__overlay a {font-size: 20px}
+  .dropdown__overlay .dropdown__closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+  }
+}

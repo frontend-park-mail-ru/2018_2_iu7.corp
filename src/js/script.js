@@ -2,38 +2,41 @@ import 'babel-polyfill';
 
 import Router from './modules/Router.js';
 import Bus from './modules/Bus.js';
-import UserModel from './models/UserModel.js';
+import AuthModel from './models/AuthModel.js';
 
 import MenuView from './views/MenuView.js';
 import SignupView from './views/SignupView.js';
 import SigninView from './views/SigninView.js';
+import GameView from './views/GameView.js';
 
 import ProfileView from './views/ProfileView.js';
 import ChangeView from './views/ChangeView.js';
 import LeaderboardView from './views/LeaderboardView.js';
 
-if ('serviceWorker' in navigator) {
-	navigator.serviceWorker.register('/sw.js', { scope: '/' })
-		.then(function (registration) {
-			console.log('SW registration OK:', registration);
-		})
-		.catch(function (err) {
-			console.log('SW registration FAIL:', err);
-		});
-}
+import MultiplayerMenuView from './views/gameViews/MultiplayerMenuView.js';
+import CreateRoomView from './views/gameViews/CreateRoomView.js';
 
-UserModel._data = null;
+import ProfileController from './controllers/ProfileController.js';
+import ProfileModel from './models/ProfileModel.js';
+
+Bus.on('profile-fetch', (id) => { ProfileModel.loadProfile(id); });
+Bus.on('changes-fetch', (data) => { ProfileModel.loadProfileChanges(data); });
+Bus.on('current-profile-fetch', () => { ProfileModel.loadCurrentProfile(); });
+
+Bus.on('set-target-id', (id) => { ProfileController._setTargetId(id); });
+Bus.on('profile-load', () => { ProfileController._loadProfile(); });
+Bus.on('done-profile-fetch', (data) => { ProfileController._checkIdMatching(data); });
+Bus.on('get-user', () => { ProfileController._getCurrentUser(); });
+
 
 Bus.on('unsuccess-signup', () => { SignupView.showUnsuccessMessage(); });
 Bus.on('unsuccess-signin', () => { SigninView.showUnsuccessMessage(); });
-Bus.on('get-user', () => { UserModel.Fetch(); });
-Bus.on('submit-data-signup', (data) => { UserModel.Register(data); });
-Bus.on('submit-data-signin', (data) => { UserModel.Signin(data); });
-Bus.on('submit-data-change', (data) => { UserModel.Change(data); });
-Bus.on('user-signout', () => { UserModel.Signout(); });
+Bus.on('submit-data-signup', (data) => { AuthModel.Register(data); });
+Bus.on('submit-data-signin', (data) => { AuthModel.Signin(data); });
+Bus.on('submit-data-change', (data) => { ProfileController._makeSettingsChanges(data); });
+Bus.on('user-signout', () => { AuthModel.Signout(); });
 Bus.on('wipe-views', () => {
 	Router.open('/');
-	Router.rerender();
 });
 Bus.on('error', (error) => {
 	console.log(error);
@@ -41,13 +44,17 @@ Bus.on('error', (error) => {
 });
 
 function main () {
-	Router
-		.register('/', MenuView)
-		.register('/signup', SignupView)
-		.register('/signin', SigninView)
-		.register('/profile', ProfileView)
-		.register('/change', ChangeView)
-		.register('/leaderboard', LeaderboardView);
+	[['/', MenuView],
+		['/signup', SignupView],
+		['/signin', SigninView],
+		['/profile', ProfileView],
+		['/change', ChangeView],
+		['/single', GameView],
+		['/multiplayerMenu', MultiplayerMenuView],
+		['/createroom', CreateRoomView],
+		['/leaderboard', LeaderboardView],
+	].forEach((route) => { Router.register(route[0], route[1]); });
+
 
 	Router.open(window.location.pathname);
 }

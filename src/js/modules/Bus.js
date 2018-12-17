@@ -7,12 +7,12 @@ export class Bus {
 		if (!this._listeners[event]) {
 			this._listeners[event] = [];
 		}
-		this._listeners[event].push({ callback });
+		this._listeners[event].push({ callback });		
 	}
 
 	off (event, callback) {
 		this._listeners[event] = this._listeners[event].filter((listener) => {
-			return listener !== callback;
+			return listener.callback !== callback;
 		});
 	}
 
@@ -20,6 +20,7 @@ export class Bus {
 		this._listeners[event].forEach((listener) => {
 			listener.callback(data);
 		});
+		
 	}
 }
 

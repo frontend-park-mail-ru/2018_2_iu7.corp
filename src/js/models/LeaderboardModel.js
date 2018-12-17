@@ -10,7 +10,7 @@ export default class LeaderboardModel {
      * Creates the model
      */
 	constructor () {
-		Bus.on('leaderboard-fetch', this.loadUsers.bind(this), false);
+		Bus.on('leaderboard-fetch', this.loadUsers.bind(this));
 	}
 
 	/**
@@ -18,7 +18,7 @@ export default class LeaderboardModel {
      * @return {Promise} return
      */
 	loadUsers (page) {
-		return fetchModule.doGet({ path: `/profiles/leaderboard/pages/${page}` })
+		return fetchModule.doGet({ path: `/profiles?page_index=${page}` })
 			.then((resp) => {
 				if (resp.status === 200) {
 					return resp.json();
