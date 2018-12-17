@@ -10,6 +10,7 @@ import MenuView from './views/MenuView.js';
 import SignupView from './views/SignupView.js';
 import SigninView from './views/SigninView.js';
 import SingleGameView from './views/gameViews/singleplayer/SingleGameView.js';
+
 import ProfileView from './views/ProfileView.js';
 import ChangeView from './views/ChangeView.js';
 import LeaderboardView from './views/LeaderboardView.js';
@@ -34,6 +35,7 @@ Bus.on('get-user', () => { ProfileController._getCurrentUser(); });
 
 Bus.on('set-target-room', (id) => { GameController._setTargetGameId(id); });
 Bus.on('get-target-room', () => { GameController._getTargetGameId(); });
+
 
 Bus.on('unsuccess-signup', () => { SignupView.showUnsuccessMessage(); });
 Bus.on('unsuccess-signin', () => { SigninView.showUnsuccessMessage(); });
@@ -63,6 +65,7 @@ function main () {
 		['/leaderboard', LeaderboardView]
 		// ['/multiplayer', MultiPlayerView]
 	].forEach((route) => { Router.register(route[0], route[1]); });
+
 
 	Router.open(window.location.pathname);
 }

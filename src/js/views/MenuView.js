@@ -5,6 +5,8 @@ import '../../css/styles/dropdown/dropdown.js';
 import '../../css/styles/input/slider.js';
 import { authMenuHeader, notAuthMenuHeader } from '../views/dataTemplates/headerMenuData.js';
 
+import {openNav} from '../../css/styles/header/header.js';
+
 const menu = require('./templates/menu.pug');
 
 const mainMenu = [

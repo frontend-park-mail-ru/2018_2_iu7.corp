@@ -64,6 +64,7 @@ export default class LeaderboardView extends BaseView {
 		};
 		this.viewDiv.innerHTML = '';
 		this.viewDiv.innerHTML = preloadTmpl(data);
+
 	}
 
 	/**
@@ -95,6 +96,7 @@ export default class LeaderboardView extends BaseView {
      *
      */
 	registerActions () {
+
 		document.getElementById('prev_page_link')
 			.addEventListener('click', this._leaderboardController.paginationPrevCallback.bind(this._leaderboardController));
 		document.getElementById('next_page_link')
