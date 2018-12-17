@@ -1,9 +1,11 @@
 extends ../base.pug
 
 block game-content
+    div(id="controlsLayer")
+        canvas(id="canvasControls")
     div(id="firstLayer")
         canvas(id="canvas1")
-    div(id="SecondLayer")
+    div(id="secondLayer")
         canvas(id="canvas2")
     
     div(id="dropdown-game-info" class="dropdown__overlay")
