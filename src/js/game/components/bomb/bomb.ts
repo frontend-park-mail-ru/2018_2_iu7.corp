@@ -17,6 +17,8 @@ export default class Bomb {
 
     constructor (id : number, x : number, y : number, bombSprites : any, flameSprites : any, gameField : IBrick[][], ctx : any) { 
         this._id = id;
+        this.x = x;
+        this.y = y;
         this.xPos = x;
         this.yPos = y;
         this.gameField = gameField;
@@ -40,7 +42,14 @@ export default class Bomb {
     public _id:number;
     public xPos:number;
     public yPos:number;
+    public x:number;
+    public y:number;
     public size:number;
+
+    // public setSpriteSize (size: number) : void{
+    //     this.size = size;
+    // };
+    
     public radius: number;
 
     private _ctx: any; 

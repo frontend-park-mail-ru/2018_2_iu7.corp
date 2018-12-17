@@ -1,25 +1,44 @@
 import Bus from '../../modules/Bus.js';
 import SingleScene from './SingleScene.js';
+import Controls from '../controls/Controls.js';
 
 export default class SingleGame {
 	constructor () {
 		this._scene = new SingleScene();
 		this._registeredActions = false;
+		this.halfWidth = window.innerWidth/2;
+		this._controls = new Controls();
+	}
+
+	resize(){
+		console.log("wsgdgff")
+		/// TODO resize canvas
+		this._scene.resize();
 	}
 
 	init () {
 		console.log('Game init');
+
+		const controlsLayer = document.getElementById('canvasControls');
+		
 		const firstLayer = document.getElementById('canvas1');
 		const firstLayerContext = firstLayer.getContext('2d');
 
 		const secondLayer = document.getElementById('canvas2');
 		const secondLayerContext = secondLayer.getContext('2d');
+		
 
-		firstLayer.width = window.innerWidth;
-		firstLayer.height = window.innerHeight// * 0.7;
+		const width = window.innerWidth;
+		const height = window.innerHeight * 0.8;
+		
+		firstLayer.width = width;
+		firstLayer.height = height;
 
-		secondLayer.width = window.innerWidth;
-		secondLayer.height = window.innerHeight //* 0.7;
+		secondLayer.width = width;
+		secondLayer.height = height;
+
+		controlsLayer.width = width;
+		controlsLayer.height = height;
 
 		this._scene.init(firstLayer, firstLayerContext, secondLayer, secondLayerContext);
 		if (!this._registeredActions) {
@@ -28,7 +47,7 @@ export default class SingleGame {
 		}
 	}
 
-	start () {
+    start () {
 		console.log('Game start');
 		Bus.emit('single-scene-start');
 	}
