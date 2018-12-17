@@ -18,6 +18,7 @@ export default class LeaderboardModel {
      * @return {Promise} return
      */
 	loadUsers (page) {
+
 		return fetchModule.doGet({ path: `/profiles?page_index=${page}` })
 			.then((resp) => {
 				if (resp.status === 200) {
@@ -26,8 +27,10 @@ export default class LeaderboardModel {
 				Bus.emit('error'); // TODO errors
 			})
 			.then((data) => {
+
 				// console.log(data);
 				// console.log('TYPEOF', typeof(data));
+
 				Bus.emit('done-leaderboard-fetch', data);
 			});
 	}
