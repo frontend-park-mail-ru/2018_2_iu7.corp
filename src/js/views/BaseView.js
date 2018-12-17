@@ -4,7 +4,6 @@ import '../../css/styles/header/game-menu/game-menu.css';
 import '../../css/styles/dropdown/dropdown.css';
 import '../../css/styles/grid/grid.css';
 import '../../css/styles/menu/menu.css';
-import '../../css/styles/chat/chat.css';
 import '../../css/styles/fonts/Rubik/rubik.css';
 import '../../css/styles/input/input.css';
 import '../../css/styles/input/slider.css';
