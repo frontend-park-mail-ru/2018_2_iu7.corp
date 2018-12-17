@@ -34,16 +34,29 @@ export default class SingleGameView extends BaseView {
 	constructor () {
 		super(canvasTmpl);
 		this._navigationController = new NavigationController();
-		Bus.on('done-get-user', this.render.bind(this));
+		// Bus.on('done-get-user', this.render.bind(this));
+
+		// this.render();
 	}
 
 	show () {
+		console.log('show', this._game);
+		this._game = new SingleGame();
+		Bus.on('done-get-user', this.render.bind(this));
 		Bus.emit('get-user');
 		super.show();
 		this.registerActions();
 	}
+	hide () {
+		super.hide();
+		this._game._scene.clearEvents();
+		this._game.end();
+		delete this._game;
+		Bus.totalOff('done-get-user');
+	}
 
 	render (user) {
+		console.log('view render')
 		if (!user.is_authenticated) {
 			data.headerValues = notAuthMenuHeader();
 			super.render(data);
@@ -53,8 +66,9 @@ export default class SingleGameView extends BaseView {
 		}
 		this.showInfo();
 
-		SingleGame.init();
-		SingleGame.start();
+		this._game.init();
+		this._game.start();
+		// Bus.totalOff('done-get-user');
 		// resize();
 	}
 
@@ -68,6 +82,6 @@ export default class SingleGameView extends BaseView {
 
 	registerActions () {
 		// this.viewDiv.onload(this.showInfo());
-		// this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
 }

@@ -13,16 +13,31 @@ class MultiPlayerScene extends BaseScene {
 		super();
 		this._registeredActions = false;
 		this._field = null;
+		this.myId = null;
 		this._players = [];
 		this._controls = new Controls('multiplayer'); // режим контролов влиет на тип отправки сообщения в Bus
 		this._initialField = null
 		Bus.on('multiplayer-object-wall.solid', this.addSteelInField.bind(this));
 		Bus.on('multiplayer-object-wall.weak', this.addFragileInField.bind(this));
-		Bus.on('multiplayer-object-player', this.updateUsers.bind(this));
+		Bus.on('multiplayer-object-wall.weak-down', this.onBrickExplode.bind(this));
+
+		Bus.on('multiplayer-object-player-alive', this.onUpdateUsers.bind(this));
+		Bus.on('multiplayer-object-player-dead', this.onDeadUsers.bind(this));
+
+		Bus.on('multiplayer-object-bomb-placed', this.onPlantBomb.bind(this));
+		Bus.on('multiplayer-object-bomb-detonated', this.onDetonateBomb.bind(this));
 	}
 
 	setPlayersId (players) {
 		this._playersId = players;
+	}
+	
+	// запоминаем id игрока чтобы по событию player-dead проверить кто умер
+	// если игрок с запомненным id, то нужно убрать лиснер 'keydown'
+	setMyId (id) {
+		if (!this.myId){
+			this.myId = id;	
+		}
 	}
 
 	// инициализируем матрицу заданного размера кубиками grassBrick до начала игры
@@ -44,13 +59,13 @@ class MultiPlayerScene extends BaseScene {
 
 	// инициализируем игроков по предварительно сохраненному массиву id каждого игрока
 	addPlayers () {
-		console.log('players ID', this._playersId);
+		// console.log('players ID', this._playersId);
 		this._playersId.forEach( id => {
 			console.log('id', id);
 			const player = new Player(id, 0, 0, sprites.playerSprites, sprites.bombSprites, sprites.flameSprites);
 			this._players.push(player);
 		})
-		console.log('current players', this._players);
+		// console.log('current players', this._players);
 	}
 
 	getCanvasContext () {
@@ -107,7 +122,7 @@ class MultiPlayerScene extends BaseScene {
 	// 	this._field.setBrick(data.transform.position.x, data.transform.position.y, data.object_type);
 	// }
 
-	updateUsers (data) {
+	onUpdateUsers (data) {
 		// console.log(data);
 		// console.log(this._players.length);
 		const playerToUpdate = this._players.filter(player => { 
@@ -115,6 +130,42 @@ class MultiPlayerScene extends BaseScene {
 		});
 		playerToUpdate[0].update(data.transform.position.x, data.transform.position.y, this._field.bricksInField);
 	}
+
+	onPlantBomb (data) {
+		this._players.forEach( player => {
+			player.addBomb(data.object_id, data.transform.position.x, data.transform.position.y);
+		})		
+	}
+
+	onDetonateBomb (data) {
+		this._players.forEach( player => {
+			const explodedBomb = player.plantedBombs.filter( b => {
+				return b._id === data.object_id;
+			})[0];
+			explodedBomb.execFlameAnimation();
+			player.plantedBombs = player.plantedBombs.filter( b => {
+				return b._id !== data.object_id;
+			})
+		})
+	}
+
+	onDeadUsers (data) {
+		// console.log(data);
+		// console.log(this._players);
+		this._players = this._players.filter( player => {
+			return player._id !== data.id;
+		})
+		// if (data.id === this.myId) {
+		// 	document.removeEventListener('keydown', this.onKeyDown);
+		// }
+	}
+
+	onBrickExplode (data) {
+		console.log('hi', data);
+		this._field._addGrassBrickInField(data.transform.position.x, data.transform.position.y);
+	}
+
+
 
 	// updateBombs () {
 	// 	this._player.plantBomb();

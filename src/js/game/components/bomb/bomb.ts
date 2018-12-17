@@ -17,22 +17,24 @@ export default class Bomb {
 
     constructor (id : number, x : number, y : number, bombSprites : any, flameSprites : any, gameField : IBrick[][], ctx : any) { 
         this._id = id;
+        this.x = x;
+        this.y = y;
         this.xPos = x;
         this.yPos = y;
         this.gameField = gameField;
         this._ctx = ctx;
         this._bombSprites = bombSprites;
         this._flameSprites = flameSprites;
-        this.size = 45;
-        this.radius = 3; // радиус поражение 3 клетки, включая текущую позицию бомбы
         this._bombSpritesSrc = [];
         this._flameSpritesSrc = [];
-        // this._animationPointer = 0;
-        this._bombAnimationTime = 1800;
-        this._flameAnimationTime = 180;
-        this._currentFrame = 0;
-
         this.loadSpritesSrc();
+        this.size = 45;
+        this.radius = 3; // радиус поражение 3 клетки, включая текущую позицию бомбы
+        // this._animationPointer = 0;
+        this._bombAnimationTime = 2900;
+        this._flameAnimationTime = 100;
+        this._explosionTimeOut = 3000;
+        this._currentFrame = 0;
         this.makeBombAnimationArray()
 
     }
@@ -40,7 +42,14 @@ export default class Bomb {
     public _id:number;
     public xPos:number;
     public yPos:number;
+    public x:number;
+    public y:number;
     public size:number;
+
+    // public setSpriteSize (size: number) : void{
+    //     this.size = size;
+    // };
+    
     public radius: number;
 
     private _ctx: any; 
@@ -53,6 +62,7 @@ export default class Bomb {
     private _startAnimationTime : number;
     private _bombAnimationTime : number;
     private _flameAnimationTime : number;
+    private _explosionTimeOut : number;
     private _animationPointer : number;
     private _currentFrame : number;
     private gameField : IBrick[][];
@@ -60,8 +70,37 @@ export default class Bomb {
     public startBombTimer () : void {
         this._startAnimationTime = performance.now();
         this._animationPointer = 0;
-        setTimeout(this.explode.bind(this), 2000)
+        setTimeout(this.explode.bind(this), this._explosionTimeOut);
     }
+
+    // метод для мультиплеера, так как вся логика на сервере, то ее испольнение на фронте дублировать не нужно
+    public startBombAnimation () : void {
+        this._startAnimationTime = performance.now();
+        this._animationPointer = 0;
+    }
+
+    // сеттеры если будем делать powerUps 
+    public setExplosionTimeOut (time : number) : void {
+        this._explosionTimeOut = time;
+    }
+
+    public setBombAnimationTime (time : number) : void {
+        this._bombAnimationTime = time;
+    }
+
+    public setFlameAnimationTime (time : number) : void {
+        this._flameAnimationTime = time;
+    }
+
+    public setBombRadius (radius : number) : void {
+        this.radius = radius;
+    }
+
+    // использутся если бомба взорволась раньше своего времени, к примеру по цепной реакции от другой бомбы
+    public execFlameAnimation () : void {
+        this._animationPointer = 1;
+    }
+
 
     public explode () : void {
 
@@ -84,13 +123,13 @@ export default class Bomb {
     public loadSpritesSrc () : void { 
         this._bombSprites.forEach( (s : string) => {
             const sprite : HTMLImageElement = new Image;
-            sprite.src = s;
+            sprite.src = '/' + s;
             this._bombSpritesSrc.push(sprite);
         })
 
         this._flameSprites.forEach( (s : string) => {
             const sprite : HTMLImageElement = new Image;
-            sprite.src = s;
+            sprite.src = '/' + s;
             this._flameSpritesSrc.push(sprite);
         })
     }
@@ -125,6 +164,7 @@ export default class Bomb {
             for (let i = 0; i < this.radius; i++) { // взрываем область соответствующую длине радиуса
                 const expXPos =  this.xPos + vec.dx * i;
                 const expYPos =  this.yPos + vec.dy * i;
+                // console.log(this.gameField[expXPos][expYPos]);
                 if (!(this.gameField[expXPos][expYPos] instanceof SteelBrick)) {
                     bombedWay.push( // позиция элемента попадающего под взрыв
                         {
@@ -179,7 +219,7 @@ export default class Bomb {
             }
             requestAnimationFrame(() => this.flameAnimate());
         } else {
-            this._animationPointer = 0; // назначаем указатель анимации на индекс анимации огня
+            this._animationPointer = 0; // назначаем указатель анимации на индекс анимации бомбы
             this._currentFrame = 0;
         }
     }

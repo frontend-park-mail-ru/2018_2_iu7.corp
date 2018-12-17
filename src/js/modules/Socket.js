@@ -46,9 +46,23 @@ export default class Socket {
 
 			else if (response.type === 'object') {
 				// console.log('object data', response);
-				console.log('action, ', 'multiplayer-' + response.type + '-' + response.data.object_type);
+				// console.log('action, ', 'multiplayer-' + response.type + '-' + response.data.object_type + '-' + response.data.state);
+
+				if (response.data.state) {
+					Bus.emit('multiplayer-' + response.type + '-' + response.data.object_type + '-' + response.data.state, response.data);
+				} else {
+					Bus.emit('multiplayer-' + response.type + '-' + response.data.object_type , response.data);
+				}
+
+				// if (response.data.object_type === 'wall.solid' || response.data.object_type === 'wall.weak') {
+				// 	Bus.emit('multiplayer-' + response.type + '-' + response.data.object_type , response.data);
+				// }
+				// else if (response.data.object_type === 'player') {
+				// 	Bus.emit('multiplayer-' + response.type + '-' + response.data.object_type + '-' + response.data.state, response.data);
+				// }
+				// console.log('action, ', 'multiplayer-' + response.type + '-' + response.data.object_type + '-' + response.data.state);
 				// console.log(Bus._listeners);
-				Bus.emit('multiplayer-' + response.type + '-' + response.data.object_type, response.data);
+				// Bus.emit('multiplayer-' + response.type + '-' + response.data.object_type , response.data);
 			} 
 			else if (response.type === 'ticker') {
 				// console.log('ticker data', )

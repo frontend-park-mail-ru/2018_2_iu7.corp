@@ -5,7 +5,6 @@ import GameBus from '../../GameBus';
 export default class Player {
     constructor(id : number, x : number, y : number, playerSprites : any, bombSprites : any, flameSprites : any) { // ctx : any) {
         this._id = id;
-        // this._ctx = ctx;
         this.xPos = x;
         this.yPos = y;
         this.size = 45;
@@ -34,9 +33,11 @@ export default class Player {
     public _id : number;
     public xPos : number;
     public yPos : number;
+    public x : number;
+    public y : number;
     public size : number;
+
     public alive : boolean;
-    
     public color : string;
 
     public currentbombsAmount : number;
@@ -61,6 +62,10 @@ export default class Player {
     // индекс указывающий какую анимацию нужно отобразить, меняется по нажатию клавиши, по умолчанию 0 - стоит на месте
     private _animationPointer : number;
     public _ctx : CanvasRenderingContext2D;
+
+    public setSpriteSize (size: number) : void{
+        this.size = size;
+    };
 
     // чтобы при каждой смене кадра не указывать новый src, можно загрузить их сразу
     public loadSpritesSrc () : void { 
@@ -92,7 +97,6 @@ export default class Player {
     }
 
     public drawPlayer (): void {
-        // console.log('player draw');
         this._playerAnimationArray[this._animationPointer]();
     }
 
@@ -113,6 +117,20 @@ export default class Player {
             };
             GameBus.emit('single-bomb-plant', data);
         }
+    }
+
+    
+    // метод для мультиплеера, так как вся логика на сервере, то ее испольнение на фронте дублировать не нужно    
+    public addBomb (id : number,x : number, y : number) : void {
+        const newBomb : Bomb = new Bomb(id, x, y, this._bombSprites, this._flameSprites, this.gameField, this._ctx);
+        newBomb.startBombAnimation();
+        this.plantedBombs.push(newBomb);
+    }
+
+    public removeBomb (id : number) : void {
+        this.plantedBombs = this.plantedBombs.filter( b => {
+            return b._id !== id;
+        })
     }
 
     public onExplodeBomb (data : IExplodeBombData) : void {

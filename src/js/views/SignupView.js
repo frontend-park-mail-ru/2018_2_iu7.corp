@@ -75,6 +75,7 @@ export default class SignupView extends BaseView {
 	}
 
 	render (user) {
+		console.log('signup render');
 		if (!user.is_authenticated) {
 			this._template = form;
 			super.render(data);

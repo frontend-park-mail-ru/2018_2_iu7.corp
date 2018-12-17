@@ -176,4 +176,3 @@ export const VectorConst = {
 	TO_RADIANS : Math.PI / 180,
 	temp : new Vector()
     };
-    
