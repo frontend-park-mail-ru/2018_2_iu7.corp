@@ -7,16 +7,6 @@ import { authMenuHeader, notAuthMenuHeader } from '../../dataTemplates/headerMen
 const canvasTmpl = require('../../templates/gameTemplates/canvas.pug');
 const data = {};
 
-data.headerMenu = [
-	{
-		label: '⏱',
-		data: '00'
-	},
-	{
-		label: '👾',
-		data: '4'
-	}
-];
 data.helpValues = [
 	{
 		label: 'Цель игры',
@@ -28,7 +18,11 @@ data.helpValues = [
 	},
 	{
 		label: 'Поставить бомбу',
-		data: '"f"'
+		data: 'Пробел или Enter'
+	},
+	{
+		label: 'Для сенсорных устройств',
+		data: 'джостик слева и кнопка справа'
 	},
 	{
 		label: 'Радиус бомбы',
@@ -65,11 +59,11 @@ export default class SingleGameView extends BaseView {
 	}
 
 	showInfo () {
-		document.getElementById('dropdown-game-info').style.height = '100%';
+		document.getElementById('dropdown-game-info').style.width = '100%';
 	};
 
 	hideInfo () {
-		document.getElementById('dropdown-game-info').style.height = '0%';
+		document.getElementById('dropdown-game-info').style.width = '0%';
 	};
 
 	registerActions () {
