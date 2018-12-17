@@ -5,6 +5,7 @@ import NavigationController from '../../../controllers/NavigationController.js';
 import MultiPlayerScene from '../../../game/multiplayer/MultiPlayerScene.js';
 import { makeNumberMatrix } from '../../../game/GameUtils.ts';
 import { authMenuHeader, notAuthMenuHeader } from '../../dataTemplates/headerMenuData.js';
+import Router from '../../../modules/Router.js';
 
 const roomTmpl = require('../../templates/gameTemplates/room.pug');
 const canvasTmpl = require('../../templates/gameTemplates/canvas.pug');
@@ -44,7 +45,10 @@ export default class RoomView extends BaseView {
 		Bus.on('multiplayer-room-pending', this.render.bind(this)); // отрисовываем новых людей
 		Bus.on('multiplayer-room-pending', this._setInitialFieldMatrix.bind(this)); // предварительно перед началом игры создаем карту нужного размера из блоков grass
 		Bus.on('multiplayer-room-pending', this._setPlayersId.bind(this));
-		Bus.on('multiplayer-room-on', this.renderGame.bind(this))
+		Bus.on('multiplayer-room-pending', this._setMyId.bind(this));
+
+		Bus.on('multiplayer-room-on', this.renderGame.bind(this));
+		Bus.on('multiplayer-room-off', this.openMenu.bind(this));
 	}
 
 	_setCurrentUser (user) {
@@ -57,14 +61,18 @@ export default class RoomView extends BaseView {
 
 	// инициализируем матрицу заданного размера кубиками grassBrick до начала игры
 	_setInitialFieldMatrix (data) {
-		const matrix = makeNumberMatrix(data.field_size.height, data.field_size.width)
-		MultiPlayerScene.initNumberMatrix(matrix)
+		const matrix = makeNumberMatrix(data.field_size.height, data.field_size.width);
+		MultiPlayerScene.initNumberMatrix(matrix);
+	}
+
+	_setMyId (data) {
+		MultiPlayerScene.setMyId(data.players[data.players.length - 1]);
 	}
 
 	// каждый раз когда в комнату заходит игрок, обновляем массив игроков для будущей сцены
 	// массив игроков да начала игры является массивом id каждого игрока
 	_setPlayersId (data) {
-		console.log("connected: ", data)
+		console.log('connected: ', data);
 		MultiPlayerScene.setPlayersId(data.players);
 	}
 
@@ -79,13 +87,13 @@ export default class RoomView extends BaseView {
 
 	render (data) {
 		// нужно, чтобы выделить текущего пользователя
-		if (!this._meLocked){
+		if (!this._meLocked) {
 			this._me = data.players[data.players.length - 1];
 			this._meLocked = true;
 		}
 
 		const renderData = {
-			players : data.players,
+			players: data.players,
 			me: this._me
 		};
 
@@ -93,38 +101,38 @@ export default class RoomView extends BaseView {
 			renderData.headerValues = notAuthMenuHeader();
 			renderData.headerValues.push({
 				label: 'Завершить игру',
-				href: "javascript:void(0)",
-				id:"stop-game"
+				href: 'javascript:void(0)',
+				id: 'stop-game'
 			});
 			super.render(renderData);
 		} else {
 			renderData.headerValues = authMenuHeader(this._currentUser.id);
 			renderData.headerValues.push({
 				label: 'Завершить игру',
-				href: "javascript:void(0)",
-				id:"stop-game"
+				href: 'javascript:void(0)',
+				id: 'stop-game'
 			});
 			super.render(renderData);
 		}
 		this.registerActions();
 	}
 
-	renderGame () { 
+	renderGame () {
 		this._template = canvasTmpl;
 		if (!this._currentUser.is_authenticated) {
 			inGameRenderData.headerValues = notAuthMenuHeader();
 			inGameRenderData.headerValues.push({
 				label: 'Завершить игру',
-				href: "javascript:void(0)",
-				id:"stop-game"
+				href: 'javascript:void(0)',
+				id: 'stop-game'
 			});
 			super.render(inGameRenderData);
 		} else {
 			inGameRenderData.headerValues = authMenuHeader(this._currentUser.id);
 			inGameRenderData.headerValues.push({
 				label: 'Завершить игру',
-				href: "javascript:void(0)",
-				id:"stop-game"
+				href: 'javascript:void(0)',
+				id: 'stop-game'
 			});
 			super.render(inGameRenderData);
 		}
@@ -133,6 +141,9 @@ export default class RoomView extends BaseView {
 		MultiPlayerScene.startLoop();
 	}
 
+	openMenu () {
+		Router.open('/');
+	}
 
 	hide () {
 		super.hide();
@@ -157,14 +168,13 @@ export default class RoomView extends BaseView {
 	registerActions () {
 		const startButton = document.getElementById('start-game');
 		startButton.addEventListener('click', () => {
-			this.renderGame.bind(this)
 			this._connection.startGame();
-		})
+		});
 
 		const stopButton = document.getElementById('stop-game');
 		stopButton.addEventListener('click', () => {
 			this._connection.stopGame();
-		})
+		});
 		// this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
 }

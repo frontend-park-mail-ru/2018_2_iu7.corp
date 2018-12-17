@@ -5,7 +5,6 @@ import GameBus from '../../GameBus';
 export default class Player {
     constructor(id : number, x : number, y : number, playerSprites : any, bombSprites : any, flameSprites : any) { // ctx : any) {
         this._id = id;
-        // this._ctx = ctx;
         this.xPos = x;
         this.yPos = y;
         this.size = 45;
@@ -92,7 +91,6 @@ export default class Player {
     }
 
     public drawPlayer (): void {
-        // console.log('player draw');
         this._playerAnimationArray[this._animationPointer]();
     }
 
@@ -113,6 +111,20 @@ export default class Player {
             };
             GameBus.emit('single-bomb-plant', data);
         }
+    }
+
+    
+    // метод для мультиплеера, так как вся логика на сервере, то ее испольнение на фронте дублировать не нужно    
+    public addBomb (id : number,x : number, y : number) : void {
+        const newBomb : Bomb = new Bomb(id, x, y, this._bombSprites, this._flameSprites, this.gameField, this._ctx);
+        newBomb.startBombAnimation();
+        this.plantedBombs.push(newBomb);
+    }
+
+    public removeBomb (id : number) : void {
+        this.plantedBombs = this.plantedBombs.filter( b => {
+            return b._id !== id;
+        })
     }
 
     public onExplodeBomb (data : IExplodeBombData) : void {

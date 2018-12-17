@@ -36,7 +36,6 @@ data.helpValues = [
 	}
 ];
 
-
 export default class MultiPlayerView extends BaseView {
 	constructor () {
 		super(canvasTmpl);

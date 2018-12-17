@@ -40,10 +40,7 @@ export class GrassBrick extends AbstractBrick {
         this.xPos = x * this.size;
         this.yPos = y * this.size;
         this._sprite = sprite;
-        // this._sprite.onload = () => { // TODO убрать onload из-за него много раз запускается drawfiels 
-        //      
-        // }
-        // this._sprite.src = '/' + sprite;
+
     }
     public xPos : number;
     public yPos : number;
@@ -58,7 +55,6 @@ export class FragileBrick extends AbstractBrick {
         this.xPos = x * this.size;
         this.yPos = y * this.size;
         this._sprite = sprite;
-        // this._sprite.src = '/' + sprite;
     }
     public xPos : number;
     public yPos : number;
@@ -73,7 +69,6 @@ export class SteelBrick extends AbstractBrick {
         this.xPos = x * this.size;
         this.yPos = y * this.size;
         this._sprite = sprite;
-        // this._sprite.src = '/' + sprite;
     }
     public xPos : number;
     public yPos : number;
@@ -170,6 +165,11 @@ export default class Field {
 
     public _addFragileBrickInField (x : number, y : number) : void {
         this.bricksInField[x][y] = new FragileBrick(x, y, this._fragileSprite);
+        this.bricksInField[x][y].drawBrick(this._ctx);
+    }
+
+    public _addGrassBrickInField (x : number, y : number) : void {
+        this.bricksInField[x][y] = new GrassBrick(x, y, this._grassSprite);
         this.bricksInField[x][y].drawBrick(this._ctx);
     }
 
