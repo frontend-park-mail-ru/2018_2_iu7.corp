@@ -4,6 +4,7 @@ import Router from '../../modules/Router.js';
 import GameBus from '../GameBus.ts';
 import Field from '../components/field/field.ts';
 import Player from '../components/player/player.ts';
+import Controls from '../controls/Controls.js';
 
 import * as sprites from '../SpriteImports.js';
 
@@ -14,6 +15,7 @@ class MultiPlayerScene extends BaseScene {
 		this._field = null;
 		this.myId = null;
 		this._players = [];
+		this._controls = new Controls('multiplayer'); // режим контролов влиет на тип отправки сообщения в Bus
 		this._initialField = null
 		Bus.on('multiplayer-object-wall.solid', this.addSteelInField.bind(this));
 		Bus.on('multiplayer-object-wall.weak', this.addFragileInField.bind(this));
@@ -67,6 +69,8 @@ class MultiPlayerScene extends BaseScene {
 	}
 
 	getCanvasContext () {
+		this.controlsLayer = document.getElementById('canvasControls');
+
 		this.firstLayer = document.getElementById('canvas1');
 		this.firstLayerContext = this.firstLayer.getContext('2d');
 
@@ -78,6 +82,9 @@ class MultiPlayerScene extends BaseScene {
 
 		this.secondLayer.width = window.innerWidth;
 		this.secondLayer.height = window.innerHeight //* 0.7;
+
+		this.controlsLayer.width = window.innerWidth;
+		this.controlsLayer.height = window.innerHeight;
 	}
 
 	init () { //(firstLayer, firstLayerContext, secondLayer, secondLayerContext) {
@@ -93,7 +100,7 @@ class MultiPlayerScene extends BaseScene {
 		})
 
 		if (!this._registeredActions) {
-			document.addEventListener('keydown', this.onKeyDown.bind(this));
+			this._controls.init(this.controlsLayer);
 			this._registeredActions = true;
 		}
 
@@ -108,29 +115,6 @@ class MultiPlayerScene extends BaseScene {
 		// GameBus.on('single-player-death', this.updateGame.bind(this));
 	}
 
-
-	onKeyDown (e) { // TODO использовать контролы которые написал никита
-		// console.log('keycode', e.keyCode);
-		if (e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */ || e.keyCode === 90 /* z */) {
-			// console.log('up');
-			Bus.emit('multiplayer-send-message', 'player.move.up');
-		}
-		if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-			// console.log('right');
-			Bus.emit('multiplayer-send-message', 'player.move.right');
-		}
-		if (e.keyCode === 40 /* down */ || e.keyCode === 83 /* s */) {
-			// console.log('down');
-			Bus.emit('multiplayer-send-message', 'player.move.down');
-		}
-		if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */ || e.keyCode === 81 /* q */) {
-			// console.log('left')
-			Bus.emit('multiplayer-send-message', 'player.move.left');
-		}
-		if (e.keyCode === 70) {
-			Bus.emit('multiplayer-send-message', 'player.drop.bomb');
-		}
-	}
 
 	// updateField(data) {
 

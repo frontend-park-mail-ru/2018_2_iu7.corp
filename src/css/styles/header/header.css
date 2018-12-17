@@ -2,16 +2,16 @@
     margin: 0%;
     padding: 0%;
     overflow: hidden;
-    background-color: #333;
-    position: -webkit-sticky; /* Safari */
-    position: sticky;
+    /* background-color: #333; */
+    position: -webkit-absolute; /* Safari */
+    position: absolute;
     z-index: 4;
     top: 0;
 }
 
 .header__title{
     color: orange;
-    float: left;
+    /* float: left; */
     display: block;
     text-align: center;
     padding: 14px 14px;

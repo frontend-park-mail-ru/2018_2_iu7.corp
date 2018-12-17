@@ -3,7 +3,34 @@ import Vector from './Vector.js';
 import getDirectionFromTouch from '../utils/math.js';
 
 export default class Controls {
-	constructor () {
+    constructor (mode) { // TODO mode: single/multi -> messages changes
+        switch (mode) {
+            case 'multiplayer':
+                this._messageType = 'multiplayer-send-message';
+                this._messages = {
+                    UP : 'player.move.up',
+                    DOWN: 'player.move.down',
+                    LEFT: 'player.move.left',
+                    RIGHT: 'player.move.right',
+                    BOMB: 'player.drop.bomb',
+                    // F: [70, 'f'],
+                };
+                break;
+            case 'singleplayer':
+                this._messageType = 'single-user';
+                this._messages = {
+                    UP : { dx: 0, dy: -1 },
+                    DOWN: { dx: 0, dy: 1 },
+                    LEFT: { dx: -1, dy: 0 },
+                    RIGHT: { dx: 1, dy: 0 },
+                    BOMB: 'single-setBomb',
+                    // F: [70, 'f'],
+                };
+                break;
+        
+            default:
+                break;
+        }
         this._registeredActions = false;
         this._paddingHeight = window.innerHeight * 0.2;
         this._halfWidth = window.innerWidth / 2;
@@ -41,13 +68,13 @@ export default class Controls {
     init (canvas) {
         this._canvas = canvas;
         this._context = this._canvas.getContext('2d');
-        console.log('ctx: ', this._context);
 		if (!this._registeredActions) {
-			window.addEventListener('touchstart', this.onTouchStart.bind(this));
-			window.addEventListener('touchmove', this.onTouchMove.bind(this));
-            window.addEventListener('touchend', this.onTouchEnd.bind(this));
-            window.addEventListener('onorientationchange', this.resetControlsPos.bind(this));
-            window.addEventListener('onresize', this.resetControlsPos.bind(this));
+            // TODO window -> document
+			document.addEventListener('touchstart', this.onTouchStart.bind(this));
+			document.addEventListener('touchmove', this.onTouchMove.bind(this));
+            document.addEventListener('touchend', this.onTouchEnd.bind(this));
+            document.addEventListener('onorientationchange', this.resetControlsPos.bind(this));
+            document.addEventListener('onresize', this.resetControlsPos.bind(this));
 
             document.addEventListener('keydown', this.onKeyDown.bind(this));
             document.addEventListener('keyup', this.onKeyUp.bind(this));
@@ -58,19 +85,19 @@ export default class Controls {
 
     handleMessage(message){
         if (this._keyCodes.UP.includes(message)) {
-			Bus.emit('single-user', {dx:0, dy:-1, pointer : 1});
+			Bus.emit(this._messageType, this._messages.UP);
 		}
 		if (this._keyCodes.RIGHT.includes(message)) {
-            Bus.emit('single-user', {dx:1, dy:0, pointer : 2});
+            Bus.emit(this._messageType, this._messages.RIGHT);
 		}
 		if (this._keyCodes.DOWN.includes(message)) {
-            Bus.emit('single-user', {dx:0, dy:1, pointer : 3});
+            Bus.emit(this._messageType, this._messages.DOWN);
 		}
 		if (this._keyCodes.LEFT.includes(message)) {
-            Bus.emit('single-user', {dx:-1, dy:0, pointer : 4});
+            Bus.emit(this._messageType, this._messages.LEFT);
 		}
 		if (this._keyCodes.BOMB.includes(message)) {
-            Bus.emit('single-setBomb');
+            Bus.emit(this._messages.BOMB);
         }
         if (this._keyCodes.F.includes(message)) /* f to pay respects */ {
 			// Bus.emit('pay-respects');
@@ -141,7 +168,7 @@ export default class Controls {
     drawControls(canvas, context){ 
         for(let i=0; i<this._touches.length; i++) {
             let touch = this._touches[i]; 
-            if(touch.identifier == this.leftTouchID){
+            if((touch.identifier == this.leftTouchID) && (touch.clientY > this._paddingHeight)){
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 context.beginPath(); 
                 context.strokeStyle = "cyan"; 
@@ -157,8 +184,7 @@ export default class Controls {
                 context.strokeStyle = "cyan"; 
                 context.arc(this._leftTouchPos._x, this._leftTouchPos._y, 40, 0,Math.PI*2, true); 
                 context.stroke(); 
-                
-            } else {
+            } else if (touch.clientY > this._paddingHeight) {
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 context.beginPath(); 
                 context.fillStyle = "white";

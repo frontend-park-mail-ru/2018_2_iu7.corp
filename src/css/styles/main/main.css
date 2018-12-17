@@ -7,11 +7,12 @@ html {
     padding: 0%;
     background-color: #350656;
     background-image: url("title_background.jpg");
-    background-repeat: no-repeat;
-    background-size:100%;
-    background-position: center;
-    background-attachment: scroll;
-    background-size:cover;
+    /* background-repeat: no-repeat; */
+    /* background-size:100%; */
+    background-position: center center;
+    /* background-attachment: scroll; */
+    background-size: cover;
+
 }
 @media (min-width: 320px) {
 	html { font-size: calc( 3.125vw + 10px ); } 

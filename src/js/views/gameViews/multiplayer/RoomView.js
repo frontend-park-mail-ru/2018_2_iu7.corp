@@ -12,16 +12,6 @@ const canvasTmpl = require('../../templates/gameTemplates/canvas.pug');
 
 const inGameRenderData = {};
 
-inGameRenderData.headerMenu = [
-	{
-		label: '⏱',
-		data: '00'
-	},
-	{
-		label: '👾',
-		data: '4'
-	}
-];
 inGameRenderData.helpValues = [
 	{
 		label: 'Цель игры',
@@ -45,6 +35,8 @@ export default class RoomView extends BaseView {
 	constructor () {
 		super(roomTmpl);
 		this._currentUser = null;
+		this._me = null;
+		this._meLocked = false;
 		this._currentRoomId = null;
 		this._connection = new Socket();
 		this._navigationController = new NavigationController();
@@ -79,7 +71,6 @@ export default class RoomView extends BaseView {
 	// каждый раз когда в комнату заходит игрок, обновляем массив игроков для будущей сцены
 	// массив игроков да начала игры является массивом id каждого игрока
 	_setPlayersId (data) {
-		console.log(data.players);
 		MultiPlayerScene.setPlayersId(data.players);
 	}
 
@@ -93,15 +84,32 @@ export default class RoomView extends BaseView {
 	}
 
 	render (data) {
+		// нужно, чтобы выделить текущего пользователя
+		if (!this._meLocked){
+			this._me = data.players[data.players.length - 1];
+			this._meLocked = true;
+		}
+
 		const renderData = {
-			players : data.players
+			players : data.players,
+			me: this._me
 		};
 
 		if (!this._currentUser.is_authenticated) {
 			renderData.headerValues = notAuthMenuHeader();
+			renderData.headerValues.push({
+				label: 'Завершить игру',
+				href: "javascript:void(0)",
+				id:"stop-game"
+			});
 			super.render(renderData);
 		} else {
 			renderData.headerValues = authMenuHeader(this._currentUser.id);
+			renderData.headerValues.push({
+				label: 'Завершить игру',
+				href: "javascript:void(0)",
+				id:"stop-game"
+			});
 			super.render(renderData);
 		}
 		this.registerActions();
@@ -111,9 +119,19 @@ export default class RoomView extends BaseView {
 		this._template = canvasTmpl;
 		if (!this._currentUser.is_authenticated) {
 			inGameRenderData.headerValues = notAuthMenuHeader();
+			inGameRenderData.headerValues.push({
+				label: 'Завершить игру',
+				href: "javascript:void(0)",
+				id:"stop-game"
+			});
 			super.render(inGameRenderData);
 		} else {
 			inGameRenderData.headerValues = authMenuHeader(this._currentUser.id);
+			inGameRenderData.headerValues.push({
+				label: 'Завершить игру',
+				href: "javascript:void(0)",
+				id:"stop-game"
+			});
 			super.render(inGameRenderData);
 		}
 		this.showInfo();

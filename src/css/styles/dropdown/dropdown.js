@@ -1,7 +1,7 @@
 window.openDropdown = function (ID) {
-	document.getElementById(ID).style.height = '100%';
+	document.getElementById(ID).style.width = '100%';
 };
 
 window.closeDropdown = function (ID) {
-	document.getElementById(ID).style.height = '0%';
+	document.getElementById(ID).style.width = '0%';
 };

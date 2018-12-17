@@ -6,21 +6,13 @@ export default class SingleGame {
 	constructor () {
 		this._scene = new SingleScene();
 		this._registeredActions = false;
-		this.halfWidth = window.innerWidth/2;
-		this._controls = new Controls();
-	}
-
-	resize(){
-		console.log("wsgdgff")
-		/// TODO resize canvas
-		this._scene.resize();
+		this._controls = new Controls('singleplayer'); // режим контролов влиет на тип отправки сообщения в Bus
 	}
 
 	init () {
 		console.log('Game init');
 
 		const controlsLayer = document.getElementById('canvasControls');
-		
 		const firstLayer = document.getElementById('canvas1');
 		const firstLayerContext = firstLayer.getContext('2d');
 
@@ -40,9 +32,12 @@ export default class SingleGame {
 		controlsLayer.width = width;
 		controlsLayer.height = height;
 
+		controlsLayer.width = window.innerWidth;
+		controlsLayer.height = window.innerHeight;
+
 		this._scene.init(firstLayer, firstLayerContext, secondLayer, secondLayerContext);
 		if (!this._registeredActions) {
-			document.body.addEventListener('keydown', this.onKeyDown.bind(this), true);
+			this._controls.init(controlsLayer);
 			this._registeredActions = true;
 		}
 	}
@@ -52,29 +47,6 @@ export default class SingleGame {
 		Bus.emit('single-scene-start');
 	}
 
-    onKeyDown (e) {
-		// console.log('keycode', e.keyCode);
-		if (e.keyCode === 38 /* up */ || e.keyCode === 87 /* w */ || e.keyCode === 90 /* z */) {
-			Bus.emit('single-user', { dx: 0, dy: -1 });
-		}
-		if (e.keyCode === 39 /* right */ || e.keyCode === 68 /* d */) {
-           		Bus.emit('single-user', { dx: 1, dy: 0 });
-		}
-		if (e.keyCode === 40 /* down */ || e.keyCode === 83 /* s */) {
-            	Bus.emit('single-user', { dx: 0, dy: 1 });
-		}
-		if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */ || e.keyCode === 81 /* q */) {
-            	Bus.emit('single-user', { dx: -1, dy: 0 });
-		}
-		if (e.keyCode === 70) {
-            	Bus.emit('single-setBomb');
-		}
-	}
-
-	end () {
-		console.log('end');
-		document.body.removeEventListener('keydown', this.onKeyDown.bind(this), true);
-	}
 }
 
 // export default new SingleGame();

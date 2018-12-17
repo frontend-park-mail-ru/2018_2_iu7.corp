@@ -1,6 +1,10 @@
 export function authMenuHeader (id) {
 	return [
 		{
+			label: 'Главная',
+			href: '/'
+		},
+		{
 			label: 'Профиль',
 			href: `/profile/${id}`
 		},
@@ -17,6 +21,10 @@ export function authMenuHeader (id) {
 
 export function notAuthMenuHeader () {
 	return [
+		{
+			label: 'Главная',
+			href: '/'
+		},
 		{
 			label: 'Вход',
 			href: '/signin'

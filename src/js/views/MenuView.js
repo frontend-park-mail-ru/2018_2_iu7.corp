@@ -10,11 +10,11 @@ const menu = require('./templates/menu.pug');
 
 const mainMenu = [
 	{
-		label: '💣 Мультиплеер',
+		label: 'Мультиплеер',
 		href: '/multiplayerMenu'
 	},
 	{
-		label: '💣 Одиночная игра',
+		label: 'Одиночная игра',
 		href: '/single'
 	}
 	// {
