@@ -17,7 +17,6 @@ export default class LeaderboardView extends BaseView {
 	/**
      * Creates view and registres view events
      */
-
 	constructor () {
 		super(leaderboardTmpl);
 		this._leaderboardModel = new LeaderboardModel(); // handle events
@@ -88,6 +87,7 @@ export default class LeaderboardView extends BaseView {
 		}
 		Bus.off('done-get-user', this._setCurrentUser.bind(this));
 		this.registerActions();
+
 	}
 
 	/**
