@@ -1,7 +1,7 @@
 import Bus from '../../modules/Bus.js';
 import SingleScene from './SingleScene.js';
 
-class SingleGame {
+export default class SingleGame {
 	constructor () {
 		this._scene = new SingleScene();
 		this._registeredActions = false;
@@ -23,7 +23,7 @@ class SingleGame {
 
 		this._scene.init(firstLayer, firstLayerContext, secondLayer, secondLayerContext);
 		if (!this._registeredActions) {
-			document.addEventListener('keydown', this.onKeyDown.bind(this));
+			document.body.addEventListener('keydown', this.onKeyDown.bind(this), true);
 			this._registeredActions = true;
 		}
 	}
@@ -51,6 +51,11 @@ class SingleGame {
             	Bus.emit('single-setBomb');
 		}
 	}
+
+	end () {
+		console.log('end');
+		document.body.removeEventListener('keydown', this.onKeyDown.bind(this), true);
+	}
 }
 
-export default new SingleGame();
+// export default new SingleGame();

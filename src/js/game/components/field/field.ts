@@ -29,7 +29,6 @@ abstract class AbstractBrick implements IBrick{
         this.size = size;
     };
     public drawBrick (ctx: any): void {
-        // console.log(this._sprite);
         ctx.drawImage(this._sprite, this.xPos, this.yPos, this.size, this.size);
     };
 }
@@ -40,10 +39,6 @@ export class GrassBrick extends AbstractBrick {
         this.xPos = x * this.size;
         this.yPos = y * this.size;
         this._sprite = sprite;
-        // this._sprite.onload = () => { // TODO убрать onload из-за него много раз запускается drawfiels 
-        //      
-        // }
-        // this._sprite.src = '/' + sprite;
     }
     public xPos : number;
     public yPos : number;
@@ -58,7 +53,6 @@ export class FragileBrick extends AbstractBrick {
         this.xPos = x * this.size;
         this.yPos = y * this.size;
         this._sprite = sprite;
-        // this._sprite.src = '/' + sprite;
     }
     public xPos : number;
     public yPos : number;
@@ -73,7 +67,6 @@ export class SteelBrick extends AbstractBrick {
         this.xPos = x * this.size;
         this.yPos = y * this.size;
         this._sprite = sprite;
-        // this._sprite.src = '/' + sprite;
     }
     public xPos : number;
     public yPos : number;
@@ -94,7 +87,8 @@ export default class Field {
     private _fragileSprite :HTMLImageElement;
 
     constructor (bricksMatrix : number[][], sprites: any, ctx: any) {
-        this._data = bricksMatrix;
+        console.log(bricksMatrix);
+        this._data = [...bricksMatrix]; // делаем именно копию переменной
         this.transpose(this._data);
         this._size = bricksMatrix.length;
         this._sprites = sprites;
@@ -128,11 +122,8 @@ export default class Field {
 
     // метод отрисовка поля в синглплеере, так же используется в мультиплеере чтобы отрисовать initial поле(только из травы)
     public setField (): void {
-        // console.log(this._data);
         for (let i = 0; i < this._size; i++) {
-            // console.log(this._data[i]);
             const row = new Array();
-            // this.bricksInField.push(row);
             for (let j = 0; j < this._size; j++) {
 
                 if (this._data[i][j] === BricksTypes.STEEL) {
@@ -147,7 +138,6 @@ export default class Field {
             }
             this.bricksInField.push(row)
         }
-        // console.log(this.bricksInField)
     }
 
     public getField (): IBrick[][] {
@@ -155,7 +145,6 @@ export default class Field {
     }
 
     public drawField (): void {
-        // console.log('field draw');
         for (const row of this.bricksInField) {
             for (const brick of row) {
                 brick.drawBrick(this._ctx);
@@ -163,6 +152,7 @@ export default class Field {
         }
     }
 
+    // методы для мультиплеера, используются для построения поля
     public _addSteelBrickInField (x : number, y : number) : void {
         this.bricksInField[x][y] = new SteelBrick(x, y, this._steelSprite);
         this.bricksInField[x][y].drawBrick(this._ctx);
@@ -170,6 +160,12 @@ export default class Field {
 
     public _addFragileBrickInField (x : number, y : number) : void {
         this.bricksInField[x][y] = new FragileBrick(x, y, this._fragileSprite);
+        this.bricksInField[x][y].drawBrick(this._ctx);
+    }
+
+    // так же для замены взорванного блока на проходимый блок
+    public _addGrassBrickInField (x : number, y : number) : void {
+        this.bricksInField[x][y] = new GrassBrick(x, y, this._grassSprite);
         this.bricksInField[x][y].drawBrick(this._ctx);
     }
 
@@ -184,16 +180,12 @@ export default class Field {
 
     // TODO бомба пробивает деревяшки находящиеся за непробиваемой стеной
     public onExplodeBomb (data : IExplodeBombData) : void {
+        console.log('AREA', data.explodedArea);
         this.bricksInField[data.xPos][data.yPos].passable = true;
         data.explodedArea.forEach( vec => {
             vec.some( brick => {
                 return this.explodeBrick(brick.xPos, brick.yPos)
             });
-            // vec.some( function(brick) : boolean {
-            //     this.bricksInField[data.xPos][data.yPos].passable = true; // ругается на неявный тип any у this
-
-            //     return true
-            // })
         })
     }
 

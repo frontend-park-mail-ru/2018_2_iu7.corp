@@ -5,6 +5,7 @@ import NavigationController from '../../../controllers/NavigationController.js';
 import MultiPlayerScene from '../../../game/multiplayer/MultiPlayerScene.js';
 import { makeNumberMatrix } from '../../../game/GameUtils.ts';
 import { authMenuHeader, notAuthMenuHeader } from '../../dataTemplates/headerMenuData.js';
+import Router from '../../../modules/Router.js';
 
 const roomTmpl = require('../../templates/gameTemplates/room.pug');
 const canvasTmpl = require('../../templates/gameTemplates/canvas.pug');
@@ -52,7 +53,9 @@ export default class RoomView extends BaseView {
 		Bus.on('multiplayer-room-pending', this.render.bind(this)); // отрисовываем новых людей
 		Bus.on('multiplayer-room-pending', this._setInitialFieldMatrix.bind(this)); // предварительно перед началом игры создаем карту нужного размера из блоков grass
 		Bus.on('multiplayer-room-pending', this._setPlayersId.bind(this));
-		Bus.on('multiplayer-room-on', this.renderGame.bind(this))
+		Bus.on('multiplayer-room-pending', this._setMyId.bind(this));
+		Bus.on('multiplayer-room-on', this.renderGame.bind(this));
+		Bus.on('multiplayer-room-off', this.openMenu.bind(this))
 	}
 
 	_setCurrentUser (user) {
@@ -61,6 +64,10 @@ export default class RoomView extends BaseView {
 
 	_setCurrentRoomId (id) {
 		this._currentRoomId = id;
+	}
+
+	_setMyId (data) {
+		MultiPlayerScene.setMyId(data.players[data.players.length - 1])
 	}
 
 	// инициализируем матрицу заданного размера кубиками grassBrick до начала игры
@@ -72,6 +79,7 @@ export default class RoomView extends BaseView {
 	// каждый раз когда в комнату заходит игрок, обновляем массив игроков для будущей сцены
 	// массив игроков да начала игры является массивом id каждого игрока
 	_setPlayersId (data) {
+		console.log(data.players);
 		MultiPlayerScene.setPlayersId(data.players);
 	}
 
@@ -113,6 +121,9 @@ export default class RoomView extends BaseView {
 		MultiPlayerScene.startLoop();
 	}
 
+	openMenu () {
+		Router.open('/');
+	}
 
 	hide () {
 		super.hide();
@@ -137,7 +148,7 @@ export default class RoomView extends BaseView {
 	registerActions () {
 		const startButton = document.getElementById('start-game');
 		startButton.addEventListener('click', () => {
-			this.renderGame.bind(this)
+			// this.renderGame.bind(this)
 			this._connection.startGame();
 		})
 

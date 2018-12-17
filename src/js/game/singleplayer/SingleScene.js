@@ -13,6 +13,11 @@ export default class SingleScene extends BaseScene {
 		super();
 		this._field = null;
 		this._players = [];
+
+		Bus.on('single-user', this.updateUsers.bind(this));
+		Bus.on('single-setBomb', this.updateBombs.bind(this));
+		Bus.on('single-scene-start', this.startLoop.bind(this));
+		GameBus.on('single-player-death', this.updateGame.bind(this));
 	}
 
 	init (firstLayer, firstLayerContext, secondLayer, secondLayerContext) {
@@ -32,17 +37,18 @@ export default class SingleScene extends BaseScene {
         */
 		const player = new Player(1, 1, 1, sprites.playerSprites, sprites.bombSprites, sprites.flameSprites);
 		this._players.push(player);
+		console.log('init matrix', matr);
 		this._field = new Field(matr, sprites.fieldSprites, this._firstLayerContext);
 		// вместо передачи поля через конструктор
 		this._players[0].setField(this._field.bricksInField);
 		this._players[0].setCanvasContext(this._secondLayerContext);
 
 		// Bus.on('single-field', this.updateGameField.bind(this));
-		Bus.on('single-user', this.updateUsers.bind(this));
-		Bus.on('single-setBomb', this.updateBombs.bind(this));
-		Bus.on('single-bomb-explosion', this.updateBombs.bind(this));
-		Bus.on('single-scene-start', this.startLoop.bind(this));
-		GameBus.on('single-player-death', this.updateGame.bind(this));
+		// Bus.on('single-user', this.updateUsers.bind(this));
+		// Bus.on('single-setBomb', this.updateBombs.bind(this));
+		// // Bus.on('single-bomb-explosion', this.updateBombs.bind(this));
+		// Bus.on('single-scene-start', this.startLoop.bind(this));
+		// GameBus.on('single-player-death', this.updateGame.bind(this));
 	}
 
 	updateUsers (data) {
@@ -53,16 +59,19 @@ export default class SingleScene extends BaseScene {
 		this._players[0].plantBomb();
 	}
 
-	updateGame () {
+	clearEvents () {
 		Bus.totalOff('single-field');
 		Bus.totalOff('single-user');
 		Bus.totalOff('single-setBomb');
-		Bus.totalOff('single-bomb-explosion');
 		Bus.totalOff('single-scene-start');
 
 		GameBus.totalOff('single-bomb-plant');
 		GameBus.totalOff('single-player-death');
 		GameBus.totalOff('single-bomb-explode');
+	}
+	updateGame () {
+		this._players.pop();
+		this.clearEvents();
 
 		Router.open('/');
 	}
