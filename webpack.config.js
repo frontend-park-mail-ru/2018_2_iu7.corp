@@ -1,27 +1,40 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const ServiceWorkerWebpackPlugin = require(	'serviceworker-webpack-plugin');
 
 module.exports = {
+	watch: true,
+	watchOptions: {
+		ignored: /node_modules/
+	},
 	entry: {
 		main: './src/js/script.js'
 	},
 
 	output: {
-		filename: 'main.js',
+		filename: '[name].bundle.js',
 		path: path.resolve(__dirname, 'dist')
 	},
-
+	resolve: {
+		extensions: ['.ts', '.tsx', '.js']
+	},
 	module: {
 		rules: [
 			{
 				test: /\.css$/,
 				use: ['style-loader', 'css-loader']
 			},
-
+			{
+                test: /\.(eot|svg|ttf|woff|woff2)$/,
+                loader: 'file?name=public/fonts/[name].[ext]'
+            },
 			{
 				test: /\.pug$/,
 				use: 'pug-loader'
+			},
+			{
+				test: /\.ts$/,
+				exclude: /node_modules/,
+				use: 'ts-loader',
 			},
 			{
 				test: /\.js$/,
@@ -32,19 +45,17 @@ module.exports = {
 					presets: ['@babel/preset-env']
 				  }
 				}
+			},
+			{
+				test: /\.(png|jp(e*)g|svg)$/,  
+				use: [{
+					loader: 'file-loader',
+					options: { 
+						name: 'images/[hash]-[name].[ext]'
+					} 
+				}]
 			}
 
 		]
 	},
-
-	plugins: [	
-		new HtmlWebpackPlugin({
-			filename: 'index.html',
-			template: './src/index.html'
-		}),
-		new ServiceWorkerWebpackPlugin({
-			entry: path.join(__dirname, './src/js/sw.js')
-		})
-	]
-
 };

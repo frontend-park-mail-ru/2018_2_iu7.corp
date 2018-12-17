@@ -5,18 +5,33 @@ import FormController from '../controllers/FormController.js';
 import SignUpValidator from '../validators/SignUpValidator.js';
 
 const form = require('./templates/form.pug');
-const header = require('./templates/header.pug');
+const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
 
 const data = {
+	headerValues: [
+		{
+			label: 'Вход',
+			href: '/signin'
+		},
+		{
+			label: 'Регистрация',
+			href: '/signup'
+		},
+		{
+			label: 'Таблица лидеров',
+			href: '/leaderboard'
+		}
+	],
+	title: 'Registration',
 	id: 'signup',
 	actionError: 'signUpError',
-	actionErrorMessage: 'Such user has already been created',
+	actionErrorMessage: 'Такой пользователь уже существует',
 	fields: [
 		{
 			id: 'username_input',
 			name: 'username',
 			type: 'text',
-			placeholder: 'Username',
+			placeholder: 'Имя пользователя',
 			errorId: 'username_error'
 		},
 		{
@@ -30,14 +45,14 @@ const data = {
 			id: 'password_input',
 			name: 'password',
 			type: 'password',
-			placeholder: 'Password',
+			placeholder: 'Пароль',
 			errorId: 'password_error'
 		},
 		{
 			id: 'password_repeat_input',
 			name: 'password_repeat',
 			type: 'password',
-			placeholder: 'Confirm password',
+			placeholder: 'Подтвердите пароль',
 			errorId: 'password_repeat_error'
 		}
 	]
@@ -45,46 +60,60 @@ const data = {
 
 export default class SignupView extends BaseView {
 	constructor () {
-		super();
+		super(form);
+		this._navigationController = new NavigationController();
+		this._formController = new FormController('signup', SignUpValidator);
+		this._registeredActions = false;
 		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
+		console.log('SignUP show');
 		Bus.emit('get-user');
 		super.show();
+		this.registerActions();
 	}
 
 	render (user) {
-		super.render();
-
-		this.viewDiv.innerHTML += header({ title: 'Registration' });
-
-		this._navigationController = new NavigationController();
-		this._formController = new FormController('signup', SignUpValidator);
-
-		let main = document.createElement('main');
-
-		if (user.is_authenticated) {
-			const span = document.createElement('span');
-			span.innerText = 'You have been already registered and signed in'
-			main.appendChild(span);
-			this.viewDiv.appendChild(main);
-			return;
+		if (!user.is_authenticated) {
+			this._template = form;
+			super.render(data);
+		} else {
+			const permissionMessageData = {
+				headerValues: [
+					{
+						label: 'Профиль',
+						href: `/profile/${user.id}`
+					},
+					{
+						label: 'Таблица лидеров',
+						href: '/leaderboard'
+					},
+					{
+						label: 'Выйти',
+						href: '/signout'
+					}
+				],
+				title: 'Регистрация',
+				message: 'Вы уже зарегистрированны и вошли в систему'
+			};
+			this._template = permissionMessageTmpl;
+			super.render(permissionMessageData);
 		}
-
-
-		main.innerHTML += form(data);
-
-		this.viewDiv.appendChild(main);
-
-		main.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
-		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
-
 		Bus.off('done-get-user', this.render.bind(this));
 	}
 
+	registerActions () {
+		if (!this._registeredActions) {
+			this.viewDiv.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
+			this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+			this._registeredActions = true;
+		}
+	}
+
 	static showUnsuccessMessage () {
-		let errorField = document.getElementById('signUpError');
+		const errorField = document.getElementById('signUpError');
+		// errorField.innerText = message
 		errorField.removeAttribute('hidden');
 	}
 }

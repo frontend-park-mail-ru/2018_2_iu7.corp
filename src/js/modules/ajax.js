@@ -1,17 +1,22 @@
-const serverUrl = 'https://strategio-api.now.sh';
+const serverUrl = 'http://80.252.155.65:8100';
+// const serverUrl = 'http://176.119.156.66';
 
 export class fetchModule {
-	static _ajax ({ method = 'GET', path = '/', body } = {}) {
+	static _ajax ({ method = 'GET', path = '/', body, headers } = {}) {
 		const url = serverUrl + path;
 
 		const options = {
 			mode: 'cors',
 			credentials: 'include',
-			method: method
+			method: method,
+			headers: {}
 		};
+		if (headers) {
+			options.headers = headers;
+		}
 
 		if (body) {
-			options.headers = { 'Content-Type': 'application/json; charset=utf-8' };
+			options.headers['Content-Type'] = 'application/json; charset=utf-8';
 			options.body = JSON.stringify(body);
 		}
 		return fetch(url, options);
@@ -31,5 +36,8 @@ export class fetchModule {
 
 	static doPut (params = {}) {
 		return this._ajax({ ...params, method: 'PUT' });
+	}
+	static doPatch (params = {}) {
+		return this._ajax({ ...params, method: 'PATCH' });
 	}
 }

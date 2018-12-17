@@ -1,0 +1,19 @@
+#canvas1 {
+    position: absolute;
+    z-index: 1;
+    background-color: transparent;
+}
+
+#canvas2 {
+    position: absolute;
+    z-index: 2;
+    background-color: transparent;
+    background-color: -webkit-transparent;
+}
+
+#canvasControls {
+    position: absolute;
+    z-index: 3;
+    background-color: transparent;
+    background-color: -webkit-transparent;
+}

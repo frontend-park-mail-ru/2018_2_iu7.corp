@@ -1,0 +1,47 @@
+.header {
+    margin: 0%;
+    padding: 0%;
+    overflow: hidden;
+    /* background-color: #333; */
+    position: -webkit-absolute; /* Safari */
+    position: absolute;
+    z-index: 4;
+    top: 0;
+}
+
+.header__title{
+    color: orange;
+    /* float: left; */
+    display: block;
+    text-align: center;
+    padding: 14px 14px;
+    text-decoration: none;
+    /* font-size: 14px + 5vw; */
+}
+.header__title:hover {
+    background-color: #111;
+}
+
+.header__leaderboard:hover {
+    background-color: #111;
+}
+
+.header__title-label{
+    color: orange;
+    float: left;
+    display: block;
+    text-align: center;
+    padding: 14px 14px;
+    text-decoration: none;
+    /* font-size: 14px + 5vw; */
+}
+
+.header__title-data{
+    color: white;
+    float: left;
+    display: block;
+    text-align: center;
+    padding: 14px 14px;
+    text-decoration: none;
+    /* font-size: 14px + 5vw; */
+}

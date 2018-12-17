@@ -1,0 +1,43 @@
+.menu__links {
+    display: none;
+    /* position: absolute; */
+    /* background-color: #333; */
+    /* min-width: 160px; */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.menu__links a{
+    color: orange;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.menu__links a:hover {
+    background-color: #50137c;
+    opacity: 0.9;
+}
+
+.menu__links {
+    display: block;
+}
+
+.menu__separator{
+    display: block;
+    padding: 5%;
+    background-color: #333;
+}
+
+.left-inner__separator {
+    display: block;
+    padding: 5%;
+    background-color: #350656;
+}
+
+.nav_link{
+    color: orange;
+    margin: 5%;
+    text-decoration: none;
+}

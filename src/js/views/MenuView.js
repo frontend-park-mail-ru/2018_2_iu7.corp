@@ -1,63 +1,50 @@
 import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
+import '../../css/styles/dropdown/dropdown.js';
+import '../../css/styles/input/slider.js';
+import { authMenuHeader, notAuthMenuHeader } from '../views/dataTemplates/headerMenuData.js';
 
 const menu = require('./templates/menu.pug');
 
-const notAuthLinks = [
+const mainMenu = [
 	{
-		label: 'Sign in',
-		href: '/signin'
+		label: 'Мультиплеер',
+		href: '/multiplayerMenu'
 	},
 	{
-		label: 'Sign up',
-		href: '/signup'
-	},
-	{
-		label: 'Leaderboard',
-		href: '/leaderboard'
+		label: 'Одиночная игра',
+		href: '/single'
 	}
-];
-
-const authLinks = [
-	{
-		label: 'Leaderboard',
-		href: '/leaderboard'
-	},
-	{
-		label: 'Profile',
-		href: '/profile'
-	},
-	{
-		label: 'Sign out',
-		href: '/signout'
-	}
+	// {
+	// 	label: '💣 Об игре',
+	// 	href: '/about'
+	// }
 ];
 
 export default class MenuView extends BaseView {
 	constructor () {
-		super();
+		super(menu);
+		this._navigationController = new NavigationController();
 		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
 		Bus.emit('get-user');
 		super.show();
+		this.registerActions();
 	}
 
 	render (user) {
-		super.render();
-		this._navigationController = new NavigationController();
-
-		let main = document.createElement('main');
 		if (user.is_authenticated) {
-			main.innerHTML += menu({ values: authLinks });
+			super.render({ mainMenu: mainMenu, headerValues: authMenuHeader(user.id) });
 		} else {
-			main.innerHTML += menu({ values: notAuthLinks });
+			super.render({ mainMenu: mainMenu, headerValues: notAuthMenuHeader() });
 		}
-		this.viewDiv.appendChild(main);
-
-		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 		Bus.off('done-get-user', this.render.bind(this));
+	}
+
+	registerActions () {
+		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
 }

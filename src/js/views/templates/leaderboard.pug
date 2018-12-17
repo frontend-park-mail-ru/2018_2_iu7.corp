@@ -1,17 +1,20 @@
-div
-    table 
-        thead
-            tr
-                th Username
-                th Score
-        tbody
-            each user in usrs
+extends base.pug
+
+block content
+    div
+        table 
+            thead
                 tr
-                    td= user.username
-                    td= user.score
-div
-    p
-        a(href="#" id="prev_page_link") Туда
-        a(href="#" id="next_page_link") Сюда
-          
-        
+                    th Имя пользователя
+                    th Счет
+            tbody
+                each user in usrs
+                    tr
+                        td= user.username
+                        td= user.score
+    div
+        p
+            a(href="#" id="prev_page_link" class="nav_link") Туда
+            a(href="#" id="next_page_link" class="nav_link") Сюда
+            
+            

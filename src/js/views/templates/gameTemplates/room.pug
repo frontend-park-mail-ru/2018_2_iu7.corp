@@ -1,0 +1,12 @@
+extends ../base.pug
+
+block content
+    div(id='privet')
+        each player in players
+            div
+                case player
+                    when me
+                        p(class="me-player")= 'Игрок № ' + player
+                    default
+                        p= 'Игрок № ' + player
+        a(href="javascript:void(0)" id="start-game" class="nav_link") Начать игру

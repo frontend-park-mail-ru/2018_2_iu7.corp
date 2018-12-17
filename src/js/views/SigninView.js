@@ -2,26 +2,30 @@ import BaseView from './BaseView.js';
 import Bus from '../modules/Bus.js';
 import NavigationController from '../controllers/NavigationController.js';
 import FormController from '../controllers/FormController.js';
+import { authMenuHeader, notAuthMenuHeader } from '../views/dataTemplates/headerMenuData.js';
+
 const form = require('./templates/form.pug');
-const header = require('./templates/header.pug');
+const permissionMessageTmpl = require('./templates/notPermittedAction.pug');
 
 const data = {
+	headerValues: notAuthMenuHeader(),
+	title: 'Вход',
 	id: 'signin',
 	actionError: 'signInError',
-	actionErrorMessage: 'Incorrect login or password',
+	actionErrorMessage: 'Неверные логин или пароль',
 	fields: [
 		{
 			id: 'username_input',
 			name: 'username',
 			type: 'text',
-			placeholder: 'Username',
+			placeholder: 'Имя пользователя',
 			errorId: 'username_error'
 		},
 		{
 			id: 'password_input',
 			name: 'password',
 			type: 'password',
-			placeholder: 'Password',
+			placeholder: 'Пароль',
 			errorId: 'password_error'
 		}
 	]
@@ -29,41 +33,42 @@ const data = {
 
 export default class SigninView extends BaseView {
 	constructor () {
-		super();
+		super(form);
+		this._navigationController = new NavigationController();
+		this._formController = new FormController('signin');
+		this._registeredActions = false;
 		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
+		console.log('SignIN show');
 		Bus.emit('get-user');
 		super.show();
+		this.registerActions();
 	}
 
 	render (user) {
-		super.render();
-
-		this.viewDiv.innerHTML += header({ title: 'Login' });
-
-		this._navigationController = new NavigationController();
-		this._formController = new FormController('signin');
-
-		let main = document.createElement('main');
-
-		if (user.is_authenticated) {
-			const span = document.createElement('span');
-			span.innerText = 'You have been already signed in';
-			main.appendChild(span);
-			this.viewDiv.appendChild(main);
-			return;
+		if (!user.is_authenticated) {
+			this._template = form;
+			super.render(data);
+		} else {
+			const permissionMessageData = {
+				headerValues: authMenuHeader(user.id),
+				title: 'Вход',
+				message: 'Вы уже вошли в свой профиль'
+			};
+			this._template = permissionMessageTmpl;
+			super.render(permissionMessageData);
 		}
-
-		main.innerHTML += form(data);
-
-		this.viewDiv.appendChild(main);
-
-		main.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
-		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
-
 		Bus.off('done-get-user', this.render.bind(this));
+	}
+
+	registerActions () {
+		if (!this._registeredActions) {
+			this.viewDiv.addEventListener('submit', this._formController.callbackSubmit.bind(this._formController));
+			this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+			this._registeredActions = true;
+		}
 	}
 
 	static showUnsuccessMessage () {

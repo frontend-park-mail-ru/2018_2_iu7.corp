@@ -24,8 +24,7 @@ export default class FormController {
      */
 	callbackSubmit (event) {
 		event.preventDefault();
-
-		if (this._validator && !this._validator.validate(event.target)) {
+		if (this._validator && !this._validator.validate()) {
 			return;
 		}
 
@@ -37,6 +36,33 @@ export default class FormController {
 				return acc;
 			}, {});
 
+		Bus.emit('submit-data-' + this._formName, data);
+	}
+
+	createRoomCallbackSubmit (event) {
+		event.preventDefault();
+		if (this._validator && !this._validator.validate(event.target)) {
+			return;
+		}
+		const size = {};
+
+		let data = Array.from(event.target.elements)
+			.reduce((acc, val) => {
+				if (val.value === ''){
+					return acc;
+				}
+				if (val.name !== 'title') {
+					if (val.name === 'height' || val.name === 'width') {
+						size[val.name] = parseInt(val.value);
+					} else {
+						acc[val.name] = parseInt(val.value);
+					}
+				} else {
+					acc[val.name] = val.value;
+				}
+				return acc;
+			}, {});
+		data['field_size'] = size;
 		Bus.emit('submit-data-' + this._formName, data);
 	}
 }

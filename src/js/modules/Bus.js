@@ -12,11 +12,16 @@ export class Bus {
 
 	off (event, callback) {
 		this._listeners[event] = this._listeners[event].filter((listener) => {
-			return listener !== callback;
+			return listener.callback !== callback;
 		});
 	}
 
+	totalOff (event) {
+		this._listeners[event] = [];
+	}
+
 	emit (event, data) {
+		// console.log('emitted event', event);
 		this._listeners[event].forEach((listener) => {
 			listener.callback(data);
 		});
