@@ -26,6 +26,6 @@ html
             p(class="dropdown__closebtn" onclick="closeDropdown('dropdown')") &times;
             div(class="dropdown__overlay-content")
                 for val in headerValues
-                    a(href=val.href data-href=val.href class="dropdown__content")= val.label
+                    a(href=val.href data-href=val.href class="dropdown__content" id=val.id)= val.label
         
 

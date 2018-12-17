@@ -9,6 +9,7 @@ import '../../css/styles/fonts/Rubik/rubik.css';
 import '../../css/styles/input/input.css';
 import '../../css/styles/input/slider.css';
 import '../../css/styles/game/canvas/canvas.css';
+import '../../css/styles/game/menu/menu.css';
 
 export default class BaseView {
 	constructor (template) {

@@ -103,7 +103,8 @@ export default class CreateRoomView extends BaseView {
 		console.log('show link');
 		this._template = showRoomLinkTmpl;
 		const data = {
-			linkHref: `/room/${roomData.id}`
+			linkHref: `/room/${roomData.id}`,
+			roomNumber: roomData.id
 		};
 		if (!this._currentUser.is_authenticated) {
 			data.headerValues = notAuthMenuHeader();
