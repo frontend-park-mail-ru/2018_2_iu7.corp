@@ -1,7 +1,7 @@
 export default class BaseValidator {
 	validate (...validations) {
 		for (const validation of validations) {
-			if (validation) {
+			if (!validation) {
 				return false;
 			}
 		}
