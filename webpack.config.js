@@ -1,5 +1,4 @@
 const path = require('path');
-const ServiceWorkerWebpackPlugin = require(	'serviceworker-webpack-plugin');
 
 module.exports = {
 	watch: true,
