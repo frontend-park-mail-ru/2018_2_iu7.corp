@@ -5,7 +5,7 @@ import GameBus from '../GameBus.ts';
 import Field from '../components/field/field.ts';
 import Player from '../components/player/player.ts';
 import Controls from '../controls/Controls.js';
-import { matr } from '../GameConfig.js';
+import numberMatrixMapGenerator from '../utils/mapGenerate.ts';
 
 import * as sprites from '../SpriteImports.js';
 
@@ -39,9 +39,10 @@ class SingleScene extends BaseScene {
         состоянием поля, и игра будет думать что игрок находится не за FragileBrick, а за GrassBrick,
         значит он попадает в область поражения
         */
-		const player = new Player(1, 1, 1, sprites.playerSprites, sprites.bombSprites, sprites.flameSprites);
+		const player = new Player(1, 3, 0, sprites.playerSprites, sprites.bombSprites, sprites.flameSprites);
 		this._players.push(player);
-		this._field = new Field(matr, sprites.fieldSprites, this.firstLayerContext);
+		const numberMatrixField = numberMatrixMapGenerator(20, 20); // TODO пусть поле всегда будет квадратное
+		this._field = new Field(numberMatrixField, sprites.fieldSprites, this.firstLayerContext);
 		// вместо передачи поля через конструктор
 		this._players[0].setField(this._field.bricksInField);
 		this._players[0].setCanvasContext(this.secondLayerContext);
