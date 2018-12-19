@@ -13,7 +13,7 @@ export default class Socket {
 	}
 
 	connectionOpen () {
-		this._socket = new WebSocket(`ws://bombich.ru/api/multiplayer/rooms/${this._roomId}/ws`);
+		this._socket = new WebSocket(`wss://bombich.ru/api/multiplayer/rooms/${this._roomId}/ws`);
 		this._socket.onopen = function (event) {
 			console.log('connection started');
 			let tmpMsq = {

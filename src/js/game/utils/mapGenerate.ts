@@ -10,7 +10,7 @@ export default function numberMatrixMapGenerator (x : number, y : number) : numb
     }
 
     numberMatrix.push(firstRow);
-    // 3 штуки травки чтобы поле было более свободно
+    // 4 штуки травки чтобы поле было более свободно
     const bricks : Array<number> = [
         BricksTypes.STEEL, 
         BricksTypes.FRAGILE, 

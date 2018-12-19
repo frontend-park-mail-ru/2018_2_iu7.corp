@@ -1,4 +1,4 @@
-const serverUrl = 'http://bombich.ru/api';
+const serverUrl = 'https://bombich.ru/api';
 
 export class fetchModule {
 	static _ajax ({ method = 'GET', path = '/', body, headers } = {}) {
