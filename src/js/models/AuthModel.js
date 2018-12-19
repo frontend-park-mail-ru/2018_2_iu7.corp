@@ -8,21 +8,18 @@ export default class AuthModel {
 			.then(response => {
 				console.log('Registration response: ', response);
 				if (response.status === 200) {
-					// console.log('Registration Done: ', response.status);
 					const username = data.username;
 					const password = data.password;
 					Bus.emit('submit-data-signin', { username, password });
 				}
 				if (response.status === 409) { // TODO на новом сервере ответы != 200 не падают в catch
-					// console.log('email duplicate: ', response.status);
 					Bus.emit('unsuccess-signup');
 				}
 				if (response.status === 422) {
-					// console.log('registration server validation: ', response.status);
 					return Promise.reject(response.status);
 				}
 			})
-			.catch((err) => {
+			.catch(() => {
 				Bus.emit('unsuccess-signup');
 			});
 	}
@@ -32,15 +29,12 @@ export default class AuthModel {
 			.then(response => {
 				console.log('SignIN response: ', response);
 				if (response.status === 200) {
-					// console.log('SignIN Done: ', response.status);
 					return response.json();
 				}
-				if (response.status === 401) { // TODO на новом сервере ответы != 200 не падают в catch
-					// console.log('NOT AUTH: ', response.status);
+				if (response.status === 401) {
 					Bus.emit('unsuccess-signin');
 				}
 				if (response.status === 422) {
-					// console.log('SignIN validation error: ', response.status);
 					Bus.emit('unsuccess-signin');
 				}
 			})
@@ -48,9 +42,6 @@ export default class AuthModel {
 				setCookie('id', user.profile_id.toString());
 				setCookie('auth_token', user.auth_token);
 				setCookie('refresh_token', user.refresh_token);
-				// console.log(getCookie('id'))
-				// console.log(getCookie('auth_token'))
-				// console.log(getCookie('refresh_token'))
 				Bus.emit('wipe-views');
 			})
 			.catch((err) => {
@@ -70,9 +61,6 @@ export default class AuthModel {
 					deleteCookie('id');
 					deleteCookie('auth_token');
 					deleteCookie('refresh_token');
-					// console.log(getCookie('id'))
-					// console.log(getCookie('auth_token'))
-					// console.log(getCookie('refresh_token'))
 					Bus.emit('wipe-views');
 				}
 				if (response.status === 401) {

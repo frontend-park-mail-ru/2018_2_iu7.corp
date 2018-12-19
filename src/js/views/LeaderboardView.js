@@ -87,7 +87,6 @@ export default class LeaderboardView extends BaseView {
 		}
 		Bus.off('done-get-user', this._setCurrentUser.bind(this));
 		this.registerActions();
-
 	}
 
 	/**

@@ -48,7 +48,7 @@ export default class FormController {
 
 		let data = Array.from(event.target.elements)
 			.reduce((acc, val) => {
-				if (val.value === ''){
+				if (val.value === '') {
 					return acc;
 				}
 				if (val.name !== 'title') {

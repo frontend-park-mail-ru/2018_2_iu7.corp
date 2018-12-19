@@ -137,6 +137,7 @@ export default class RoomView extends BaseView {
 			super.render(inGameRenderData);
 		}
 		this.showInfo();
+
 		MultiPlayerScene.init();
 		MultiPlayerScene.startLoop();
 	}
@@ -175,6 +176,6 @@ export default class RoomView extends BaseView {
 		stopButton.addEventListener('click', () => {
 			this._connection.stopGame();
 		});
-		// this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
 }

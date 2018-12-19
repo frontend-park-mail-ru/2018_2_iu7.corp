@@ -1,8 +1,8 @@
 import BaseView from '../../BaseView.js';
 import Bus from '../../../modules/Bus.js';
 import NavigationController from '../../../controllers/NavigationController.js';
-import SingleGame from '../../../game/singleplayer/SingleGame.js';
 import { authMenuHeader, notAuthMenuHeader } from '../../dataTemplates/headerMenuData.js';
+import SingleScene from '../../../game/singleplayer/SingleScene.js';
 
 const canvasTmpl = require('../../templates/gameTemplates/canvas.pug');
 const data = {};
@@ -53,9 +53,8 @@ export default class SingleGameView extends BaseView {
 		}
 		this.showInfo();
 
-		SingleGame.init();
-		SingleGame.start();
-		// resize();
+		SingleScene.init();
+		SingleScene.startLoop();
 	}
 
 	showInfo () {
@@ -67,7 +66,6 @@ export default class SingleGameView extends BaseView {
 	};
 
 	registerActions () {
-		// this.viewDiv.onload(this.showInfo());
-		// this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
+		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
 }

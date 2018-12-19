@@ -36,7 +36,6 @@ Bus.on('get-user', () => { ProfileController._getCurrentUser(); });
 Bus.on('set-target-room', (id) => { GameController._setTargetGameId(id); });
 Bus.on('get-target-room', () => { GameController._getTargetGameId(); });
 
-
 Bus.on('unsuccess-signup', () => { SignupView.showUnsuccessMessage(); });
 Bus.on('unsuccess-signin', () => { SigninView.showUnsuccessMessage(); });
 Bus.on('submit-data-signup', (data) => { AuthModel.Register(data); });

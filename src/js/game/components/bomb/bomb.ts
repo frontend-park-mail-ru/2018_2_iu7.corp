@@ -156,6 +156,7 @@ export default class Bomb {
                 const expXPos =  this.xPos + vec.dx * i;
                 const expYPos =  this.yPos + vec.dy * i;
                 // console.log(this.gameField[expXPos][expYPos]);
+                // TODO если поставить бомбу скраю, то будет ошибка из-за отрицательных идексов
                 if (!(this.gameField[expXPos][expYPos] instanceof SteelBrick)) {
                     bombedWay.push( // позиция элемента попадающего под взрыв
                         {
@@ -163,7 +164,7 @@ export default class Bomb {
                             yPos : expYPos
                         }
                     )                
-                }
+                } // TODO можно убать и оставить просто else
                 if ((this.gameField[expXPos][expYPos] instanceof SteelBrick) || (this.gameField[expXPos][expYPos] instanceof FragileBrick)) {
                     break;
                 }

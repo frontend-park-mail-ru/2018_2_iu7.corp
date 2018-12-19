@@ -35,7 +35,7 @@ export default class SigninView extends BaseView {
 	constructor () {
 		super(form);
 		this._navigationController = new NavigationController();
-		this._formController = new FormController('signin');
+		this._formController = new FormController('signin'); // TODO добавить валидатор на пустую форму
 		this._registeredActions = false;
 		Bus.on('done-get-user', this.render.bind(this));
 	}

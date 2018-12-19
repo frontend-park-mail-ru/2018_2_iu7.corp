@@ -30,7 +30,7 @@ class Router {
 		let queryParams = {
 			path: null,
 			id: null,
-			page_index: null
+			pageIndex: null
 		};
 
 		if (path.includes('page_index')) {
@@ -69,8 +69,8 @@ class Router {
 	_open (pathname) {
 		// console.log('pathname', pathname);
 		// console.log('путиии', this._routes);
-		let { path, id, page_index } = this.parsePath(pathname);
-		// console.log(path, id, page_index);
+		let { path, id, pageIndex } = this.parsePath(pathname);
+		// console.log(path, id, pageIndex);
 		if (!this._routes[path]) {
 			Bus.emit('error', 'no such path is registred');
 			return;
@@ -81,8 +81,8 @@ class Router {
 			viewEntity = new View();
 		}
 
-		if (page_index) { // для лидерборда
-			Bus.emit('leaderboard-set-page', page_index);
+		if (pageIndex) { // для лидерборда
+			Bus.emit('leaderboard-set-page', pageIndex);
 		}
 
 		if (id) { // устанавливаем id нужного пользователя через контроллер
