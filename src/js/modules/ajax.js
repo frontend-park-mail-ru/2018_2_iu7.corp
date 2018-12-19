@@ -1,5 +1,4 @@
-const serverUrl = 'http://80.252.155.65:8100';
-// const serverUrl = 'http://176.119.156.66';
+const serverUrl = 'http://bombich.ru/api';
 
 export class fetchModule {
 	static _ajax ({ method = 'GET', path = '/', body, headers } = {}) {
