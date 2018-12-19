@@ -53,7 +53,7 @@ class SingleScene extends BaseScene {
 	}
 
 	updateUsers (data) {
-		this._players[0].update(this._players[0].xPos + data.dx, this._players[0].yPos + data.dy, this._field.bricksInField);
+		this._players[0].update(this._players[0].xPos + data.dx, this._players[0].yPos + data.dy);
 	}
 
 	updateBombs () {

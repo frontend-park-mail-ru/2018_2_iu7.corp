@@ -85,7 +85,7 @@ class MultiPlayerScene extends BaseScene {
 		const playerToUpdate = this._players.filter(player => {
 			return player._id === data.id;
 		});
-		playerToUpdate[0].update(data.transform.position.x, data.transform.position.y, this._field.bricksInField);
+		playerToUpdate[0].update(data.transform.position.x, data.transform.position.y);
 	}
 
 	onPlantBomb (data) {
@@ -113,7 +113,6 @@ class MultiPlayerScene extends BaseScene {
 	}
 
 	onBrickExplode (data) {
-		console.log('hi', data);
 		this._field._addGrassBrickInField(data.transform.position.x, data.transform.position.y);
 	}
 	// if (data.id === this.myId) {

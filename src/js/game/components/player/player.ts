@@ -144,8 +144,8 @@ export default class Player {
         }
     }
     
-    public update (x:number,y:number, field: IBrick[][]) : void {
-        if (this.checkNewPos(x,y, field)) {
+    public update (x:number,y:number) : void {
+        if (this.checkNewPos(x,y)) {
 
             this.prevX = this.xPos;
             this.prevY = this.yPos;
@@ -157,9 +157,12 @@ export default class Player {
         }
     }
 
-    public checkNewPos (newPosX:number, newPosY:number, field: IBrick[][]): boolean {
-        if (field[newPosX][newPosY].passable) {
-            return true;
+    public checkNewPos (newPosX:number, newPosY:number): boolean {
+        if ((newPosX >= 0 && newPosX < this.gameField.length) && (newPosY >= 0 && newPosY < this.gameField[0].length)) {
+            if (this.gameField[newPosX][newPosY].passable) {
+                return true;
+            }
+            return false;
         }
         return false;
     }
