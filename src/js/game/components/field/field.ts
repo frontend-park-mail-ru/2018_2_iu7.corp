@@ -1,4 +1,5 @@
-import { IExplodeBombData, IPlantedBombPosition } from '../bomb/bomb';
+import { IExplodeBombData, IEntityPosition } from '../interfaces/IBomb';
+import { IBrick } from '../interfaces/IBrick';
 import GameBus from '../../GameBus';
 
 export const enum BricksTypes {
@@ -7,16 +8,6 @@ export const enum BricksTypes {
     GRASS = 3
 };
 
-export interface IBrick {
-    size : number;
-    xPos: number; // координаты кубика на карте
-    yPos: number;
-    _sprite: any; // можно в будущем заменить на текстуру
-    passable: boolean; // можно ли пройти по кубику
-    destructible: boolean; // можно ли разрушить кубик
-    drawBrick(ctx: any): void; // нарисовать кубик 
-    resize(size : number) : void;
-}
 
 abstract class AbstractBrick implements IBrick{
     public size = 45;
@@ -29,7 +20,6 @@ abstract class AbstractBrick implements IBrick{
         this.size = size;
     };
     public drawBrick (ctx: any): void {
-        // console.log(this._sprite);
         ctx.drawImage(this._sprite, this.xPos, this.yPos, this.size, this.size);
     };
 }
@@ -176,7 +166,7 @@ export default class Field {
     // а бомба просто рисуется сверху, то для имитации непроходимости бомбы нужно сделать
     // непроходимым кубик в матрице this.bricksInField, стоящий на той же позиции, что и бомба
     // когда бомба взорвалась, этот кубик нужно обратно сделать проходимым
-    public onPlantBomb (data : IPlantedBombPosition) {
+    public onPlantBomb (data : IEntityPosition) {
         this.bricksInField[data.xPos][data.yPos].passable = false;
     }
 

@@ -43,7 +43,7 @@ export default class Controls {
 		this._touches = []; // array of touch vectors
 
 		// вот именно эти две переменные отвечают за адекватную отправку команд
-		this._moveInterval = 120;
+		this._moveInterval = 250;
 		this.time = 0;
 		this.direction = null;
 

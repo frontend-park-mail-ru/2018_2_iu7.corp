@@ -139,7 +139,7 @@ export default class RoomView extends BaseView {
 		this.showInfo();
 
 		MultiPlayerScene.init();
-		MultiPlayerScene.startLoop();
+		MultiPlayerScene.multiPlayerLoop();
 	}
 
 	openMenu () {

@@ -1,33 +1,40 @@
 import { BricksTypes } from '../components/field/field';
 
 export default function numberMatrixMapGenerator (x : number, y : number) : number[][] {
-    
-    const numberMatrix : Array<Array<number>> = new Array();
-    const firstRow : Array<number> = new Array();
-    
-    for (let i = 0; i < x; i++) {
-        firstRow.push(3);
-    }
 
-    numberMatrix.push(firstRow);
-    // 4 штуки травки чтобы поле было более свободно
-    const bricks : Array<number> = [
-        BricksTypes.STEEL, 
+    const bricks : Array<number> = [ 
         BricksTypes.FRAGILE, 
         BricksTypes.GRASS, 
         BricksTypes.GRASS, 
         BricksTypes.GRASS,
         BricksTypes.GRASS
-
     ]; 
-    for (let i = 0; i < y-1; i++) {
-        const row : Array<number> = new Array();
-        for (let j = 0; j < x; j++) {
-            const brickIndex = Math.floor(Math.random() * 6);
-            row.push(bricks[brickIndex]);
-        }
-        numberMatrix.push(row);
-    }
+    const numberMatrix : Array<Array<number>> = new Array();
+    const emptyRow : Array<number> = new Array();
 
-    return numberMatrix;
+    for (let i = 0; i < x; i++) {
+        emptyRow.push(3);
+    }
+    numberMatrix.push(emptyRow);
+    for (let i = 1; i < y; i++) {
+        const row : Array<number> = new Array();
+        if (i % 2 === 0) {
+            for (let j = 0; j < x; j++) {
+                const brickIndex = Math.floor(Math.random() * 5);
+                row.push(bricks[brickIndex]); 
+            }
+            numberMatrix.push(row);
+        } else {
+            for (let j = 0; j < x; j++) {
+                if (j % 2 === 0) {
+                    const brickIndex = Math.floor(Math.random() * 5);
+                    row.push(bricks[brickIndex]);
+                } else {
+                    row.push(BricksTypes.STEEL);
+                } 
+            }
+            numberMatrix.push(row);
+        }
+    } 
+    return numberMatrix;  
 }

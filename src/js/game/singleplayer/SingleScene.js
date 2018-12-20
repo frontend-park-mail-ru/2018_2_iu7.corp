@@ -4,6 +4,7 @@ import Router from '../../modules/Router.js';
 import GameBus from '../GameBus.ts';
 import Field from '../components/field/field.ts';
 import Player from '../components/player/player.ts';
+import Creep from '../components/creep/creep.ts';
 import Controls from '../controls/Controls.js';
 import numberMatrixMapGenerator from '../utils/mapGenerate.ts';
 
@@ -14,16 +15,28 @@ class SingleScene extends BaseScene {
 		super(); // нужно оставить даже если в BaseScene нет констурктора, иначе this - undefined
 		this._field = null;
 		this._players = [];
+		this._creeps = [];
 		this._registeredActions = false;
 		this._controls = new Controls('singleplayer'); // режим контролов влиет на тип отправки сообщения в Bus
 
 		Bus.on('single-user', this.updateUsers.bind(this));
 		Bus.on('single-setBomb', this.updateBombs.bind(this));
 		Bus.on('single-bomb-explosion', this.updateBombs.bind(this));
-		Bus.on('single-scene-start', this.startLoop.bind(this));
 		GameBus.on('single-player-death', this.updateGame.bind(this));
+		GameBus.on('single-creep-death', this.updateCreeps.bind(this));
 	}
 
+	generateCreeps (field) {
+		for (let i = 0; i < 5; i++) {
+			let y = Math.floor(Math.random()* 19);
+			let x = Math.floor(Math.random()* 19);
+			while (field[y][x] !== 3) {
+				x = Math.floor(Math.random() * 19);
+			}
+			const creep= new Creep(i,x,y,sprites.creepSprites);
+			this._creeps.push(creep);
+		}
+	}
 	init () {
 		this.getCanvasContext();
 
@@ -41,9 +54,19 @@ class SingleScene extends BaseScene {
         */
 		const player = new Player(1, 3, 0, sprites.playerSprites, sprites.bombSprites, sprites.flameSprites);
 		this._players.push(player);
-		const numberMatrixField = numberMatrixMapGenerator(20, 20); // TODO пусть поле всегда будет квадратное
+
+		const numberMatrixField = numberMatrixMapGenerator(19, 19); // TODO пусть поле всегда будет квадратное
+		this.generateCreeps(numberMatrixField);
+
 		this._field = new Field(numberMatrixField, sprites.fieldSprites, this.firstLayerContext);
 		// вместо передачи поля через конструктор
+
+		this._creeps.forEach(creep => {
+			creep.setField(this._field.bricksInField);
+			creep.setCanvasContext(this.secondLayerContext);
+			creep.creepBrain();	
+		});
+
 		this._players[0].setField(this._field.bricksInField);
 		this._players[0].setCanvasContext(this.secondLayerContext);
 
@@ -61,7 +84,15 @@ class SingleScene extends BaseScene {
 		this._players[0].plantBomb();
 	}
 
+	updateCreeps (data) {
+		this._creeps = this._creeps.filter( creep => {
+			return creep._id !== data.creepId;
+		})
+		console.log(this._creeps);
+	}
+
 	updateGame () {
+
 		Bus.totalOff('single-field');
 		Bus.totalOff('single-user');
 		Bus.totalOff('single-setBomb');
@@ -71,6 +102,7 @@ class SingleScene extends BaseScene {
 		GameBus.totalOff('single-bomb-plant');
 		GameBus.totalOff('single-player-death');
 		GameBus.totalOff('single-bomb-explode');
+		GameBus.totalOff('single-creep-death');
 
 		Router.open('/');
 	}

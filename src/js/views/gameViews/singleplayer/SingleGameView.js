@@ -54,7 +54,7 @@ export default class SingleGameView extends BaseView {
 		this.showInfo();
 
 		SingleScene.init();
-		SingleScene.startLoop();
+		SingleScene.singlePlayerLoop();
 	}
 
 	showInfo () {

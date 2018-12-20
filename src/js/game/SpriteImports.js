@@ -34,9 +34,13 @@ import backC1 from '../../../sprites/Sprites/Creep/Back/Creep_B_f00.png';
 import backC2 from '../../../sprites/Sprites/Creep/Back/Creep_B_f02.png';
 import backC3 from '../../../sprites/Sprites/Creep/Back/Creep_B_f05.png';
 
-import rightC1 from '../../../sprites/Sprites/Creep/Side/Creep_S_f00.png';
-import rightC2 from '../../../sprites/Sprites/Creep/Side/Creep_S_f05.png';
-import rightC3 from '../../../sprites/Sprites/Creep/Side/Creep_S_f06.png';
+import rightC1 from '../../../sprites/Sprites/Creep/Right/Creep_S_f00.png';
+import rightC2 from '../../../sprites/Sprites/Creep/Right/Creep_S_f05.png';
+import rightC3 from '../../../sprites/Sprites/Creep/Right/Creep_S_f06.png';
+
+import leftC1 from '../../../sprites/Sprites/Creep/Left/Creep_S_f00.png';
+import leftC2 from '../../../sprites/Sprites/Creep/Left/Creep_S_f05.png';
+import leftC3 from '../../../sprites/Sprites/Creep/Left/Creep_S_f06.png';
 
 // flame
 import flame1 from '../../../sprites/Sprites/Flame/Flame_f00.png';
@@ -92,6 +96,12 @@ export const creepSprites = {
 		rightC1,
 		rightC2,
 		rightC3
+	],
+
+	left: [
+		leftC1,
+		leftC2,
+		leftC3
 	]
 };
 

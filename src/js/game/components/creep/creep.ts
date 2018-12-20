@@ -1,29 +1,20 @@
-import { GrassBrick } from '../field/field';
+import { GrassBrick} from '../field/field';
 import { IBrick } from '../interfaces/IBrick';
-import Bomb from '../bomb/bomb';
 import { IExplodeBombData, IEntityPosition } from '../interfaces/IBomb';
 import GameBus from '../../GameBus';
 
-export default class Player {
-    constructor(id : number, x : number, y : number, playerSprites : any, bombSprites : any, flameSprites : any) { // ctx : any) {
+export default class Creep {
+    constructor (id : number, x : number, y : number, creepSprites : any) {
         this._id = id;
         this.xPos = x;
         this.yPos = y;
         this.size = 45;
         this.alive = true;
 
-        this.maxBombsAmount = 1;
-        this.currentbombsAmount = this.maxBombsAmount;
-        this.plantedBombs = []; 
         this._downSpritesSrc = []; // TODO подумать куда убрать все массивы спрайтов
         this._upSpritesSrc = [];
         this._rightSpritesSrc = [];
         this._leftSpritesSrc = [];
-        this._playerSprites = playerSprites; // имена файлов
-        this._bombSprites = bombSprites;
-        this._flameSprites = flameSprites;
-        this._endAnimationSprite = new Image;
-        this._animationPointer = 0;
         this._newPosition = {
             xPos : x,
             yPos : y
@@ -32,12 +23,17 @@ export default class Player {
             xPos : x,
             yPos : y
         }
-        this.loadSpritesSrc(); // загрузка спрайтов
-        this.makePlayerAnimationArray();
+        this._creepSprites = creepSprites; // имена файлов
 
-        this._animationTime = 300;
+        this._endAnimationSprite = new Image;
+        this._animationPointer = 0;
+        this.loadSpritesSrc(); // загрузка спрайтов
+        this.makeCreepAnimationArray();
+
+        this._animationTime = 600;
 
         GameBus.on('single-bomb-explode', this.onExplodeBomb.bind(this));
+
     }
 
     public _id : number;
@@ -46,16 +42,11 @@ export default class Player {
     public size : number; // *
     public alive : boolean;
     
-    public currentbombsAmount : number; // *
-    public maxBombsAmount : number; // *
-    public plantedBombs : Array<Bomb>; // *
-
     // private prevX : number;
     // private prevY : number;
     private gameField : IBrick[][]
-    private _playerSprites : any;
-    private _bombSprites : any; // *
-    private _flameSprites : any; // *
+    private _creepSprites : any;
+
     private _animationTime : number; 
     private _startAnimationTime : number;
     private _currentFrame : number;
@@ -64,17 +55,19 @@ export default class Player {
     private _rightSpritesSrc : Array<HTMLImageElement>;
     private _leftSpritesSrc : Array<HTMLImageElement>;
     private _endAnimationSprite : HTMLImageElement;
-    private _playerAnimationArray : Array<Function>;
-
-    private _startAnimationPosition : IEntityPosition;
+    private _creepAnimationArray : Array<Function>;
     // индекс указывающий какую анимацию нужно отобразить, меняется по нажатию клавиши, по умолчанию 0 - стоит на месте
     private _animationPointer : number;
     public _ctx : CanvasRenderingContext2D;
+    private _lastIdea : number;
     private _newPosition : IEntityPosition;
+    private _startAnimationPosition : IEntityPosition;
 
-    // чтобы при каждой смене кадра не указывать новый src, можно загрузить их сразу
+
+
+        // чтобы при каждой смене кадра не указывать новый src, можно загрузить их сразу
     public loadSpritesSrc () : void { 
-        this._playerSprites.down.forEach( (s : string) => {
+        this._creepSprites.down.forEach( (s : string) => {
             const sprite : HTMLImageElement = new Image;
             sprite.onload = () => { 
                 this._endAnimationSprite = this._downSpritesSrc[0];
@@ -82,89 +75,65 @@ export default class Player {
             sprite.src = '/' + s;
             this._downSpritesSrc.push(sprite);
         })
-        this._playerSprites.up.forEach( (s : string) => {
+        this._creepSprites.up.forEach( (s : string) => {
             const sprite : HTMLImageElement = new Image;
             sprite.src = '/' + s;
             this._upSpritesSrc.push(sprite);
         })
 
-        this._playerSprites.right.forEach( (s : string) => {
+        this._creepSprites.right.forEach( (s : string) => {
             const sprite : HTMLImageElement = new Image;
             sprite.src = '/' + s;
             this._rightSpritesSrc.push(sprite);
         })
 
-        this._playerSprites.left.forEach( (s : string) => {
+        this._creepSprites.left.forEach( (s : string) => {
             const sprite : HTMLImageElement = new Image;
             sprite.src = '/' + s;
             this._leftSpritesSrc.push(sprite);
         })
     }
 
-    public drawPlayer (): void {
-        this._playerAnimationArray[this._animationPointer]();
+    public drawCreep (): void {
+        this._creepAnimationArray[this._animationPointer]();
     }
 
     public setField(field : IBrick[][]) : void {
         this.gameField = field;
     }
 
-    public plantBomb () : void { // *
-        if (this.currentbombsAmount) {
-            const bombId : number = this.maxBombsAmount - this.currentbombsAmount;
-            const newBomb : Bomb = new Bomb(bombId, this.xPos, this.yPos, this._bombSprites, this._flameSprites, this.gameField, this._ctx);
-            this.plantedBombs.push(newBomb);
-            newBomb.startBombTimer();
-            this.currentbombsAmount -= 1;
-            let data : IEntityPosition = {
-                xPos : newBomb.xPos,
-                yPos : newBomb.yPos
-            };
-            GameBus.emit('single-bomb-plant', data);
-        }
-    }
-
-    
-    // метод для мультиплеера, так как вся логика на сервере, то ее испольнение на фронте дублировать не нужно    
-    public addBomb (id : number,x : number, y : number) : void { // *
-        const newBomb : Bomb = new Bomb(id, x, y, this._bombSprites, this._flameSprites, this.gameField, this._ctx);
-        newBomb.startBombAnimation();
-        this.plantedBombs.push(newBomb);
-    }
-
-    public removeBomb (id : number) : void { // *
-        this.plantedBombs = this.plantedBombs.filter( b => {
-            return b._id !== id;
-        })
-    }
-
-    public onExplodeBomb (data : IExplodeBombData) : void { // * 
+    public onExplodeBomb (data : IExplodeBombData) {
         data.explodedArea.forEach( vec => {
             vec.some( position => {
-                return this.explodePlayer(position.xPos, position.yPos)
+                return this.explodeCreep(position.xPos, position.yPos)
             });
         })
 
         if (!this.alive) {
-            GameBus.emit('single-player-death');
+            clearTimeout(this._lastIdea); // когда крип умирает нужно завершить ход его мыслей
+            GameBus.emit('single-creep-death', {creepId : this._id});
+        } 
+    }
+
+    private explodeCreep (x : number, y : number) : boolean { // * 
+        if (!(this.gameField[x][y] instanceof GrassBrick)) {
+            return true;
+        } else if (this.xPos === x && this.yPos === y) {
+            this.alive = false;
+            return true;
         } else {
-            this.currentbombsAmount += 1;
-            this.plantedBombs = this.plantedBombs.filter( b => { // удаляем бомбу, которая только что взорвалась
-                return b._id !== data.bombId; // TODO посмотреть как удалять объект из памяти
-            })
+            return false;
         }
     }
-    
+
     public update (x : number, y : number) : void {
-        if (this.checkNewPos(x, y)) {
-            this._startAnimationPosition.xPos = this.xPos;
-            this._startAnimationPosition.yPos = this.yPos;
-            this._newPosition.xPos = x,
-            this._newPosition.yPos = y;
-            this._currentFrame = 0;
-            this._startAnimationTime = performance.now();
-            this._animationPointer = this.chooseAnimationPointer();   
-        }
+        this._startAnimationPosition.xPos = this.xPos;
+        this._startAnimationPosition.yPos = this.yPos;
+        this._newPosition.xPos = x,
+        this._newPosition.yPos = y;
+        this._currentFrame = 0;
+        this._startAnimationTime = performance.now();
+        this._animationPointer = this.chooseAnimationPointer();          
     }
 
     public changePosition () {
@@ -182,19 +151,55 @@ export default class Player {
         return false;
     }
 
-    
-
     public setCanvasContext (ctx : CanvasRenderingContext2D) : void {
         this._ctx = ctx;
     }
 
-    private makePlayerAnimationArray() : void {
-        this._playerAnimationArray = [];
-        this._playerAnimationArray.push(this.stayAnimate.bind(this));
-        this._playerAnimationArray.push(this.upAnimate.bind(this));
-        this._playerAnimationArray.push(this.rightAnimate.bind(this));
-        this._playerAnimationArray.push(this.downAnimate.bind(this));
-        this._playerAnimationArray.push(this.leftAnimate.bind(this));
+    public creepBrain () {
+        const avaliableWaysInCurrentPosition = new Array();
+        const generalAvaliableWays = [
+            { // up
+                dx:0, 
+                dy:-1
+            },
+
+            { // right
+                dx:1, 
+                dy:0
+            },
+
+            { // down
+                dx:0, 
+                dy:1
+            },
+            { // left
+                dx:-1, 
+                dy:0
+            }
+        ]
+
+        // определяем куда крип может пойти из текущей позиции
+        generalAvaliableWays.forEach( way => {
+            if (this.checkNewPos(this.xPos + way.dx, this.yPos + way.dy)) {
+                avaliableWaysInCurrentPosition.push(way);
+            }
+        })
+
+        const randomWayChoice = Math.floor(Math.random() * (avaliableWaysInCurrentPosition.length));
+        const way = avaliableWaysInCurrentPosition[randomWayChoice];
+        if (way) { // если крип оказался не заперт
+            this.update(this.xPos + way.dx, this.yPos + way.dy);
+        }
+        this._lastIdea = setTimeout(this.creepBrain.bind(this), 620);
+    }
+
+    private makeCreepAnimationArray() : void {
+        this._creepAnimationArray = [];
+        this._creepAnimationArray.push(this.stayAnimate.bind(this));
+        this._creepAnimationArray.push(this.upAnimate.bind(this));
+        this._creepAnimationArray.push(this.rightAnimate.bind(this));
+        this._creepAnimationArray.push(this.downAnimate.bind(this));
+        this._creepAnimationArray.push(this.leftAnimate.bind(this));
     }
 
 
@@ -295,28 +300,6 @@ export default class Player {
         const xPos = this.xPos * this.size;
         const yPos = this.yPos * this.size;
         this._ctx.drawImage(this._endAnimationSprite,xPos, yPos, this.size, this.size);
-    }
-
-    /*
-    в данном методе используется instanceof вместо атрибутов класса passable, dectructible,
-    так как при вызове события 'single-bomb-plant', у ячейки, на которую ставится бомба
-    атрибут passable меняется с true на false, таким образом объект класса GrassBrick
-    становится неотличим от объекта класса SteelBrick. Это значит, что ячейка, куда была
-    поставлена бомба, будет считаться объектом класса SteelBrick, на котором и после которого
-    область поражения уже отсутствует, таким образом игрок никак не может быть убить потому что
-    не может попасть в область поражения
-    */
-
-    private explodePlayer (x : number, y : number) : boolean { // * 
-        // раньше тут была проверка !this.gameField[x][y].passable
-        if (!(this.gameField[x][y] instanceof GrassBrick)) {
-            return true;
-        } else if (this.xPos === x && this.yPos === y) {
-            this.alive = false;
-            return true;
-        } else {
-            return false;
-        }
     }
 
     private chooseAnimationPointer () : number {

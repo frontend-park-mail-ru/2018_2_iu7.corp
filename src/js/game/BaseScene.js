@@ -1,3 +1,5 @@
+import GameBus from './GameBus.ts';
+
 export default class BaseScene {
 	getCanvasContext () {
 		this.controlsLayer = document.getElementById('canvasControls');
@@ -26,26 +28,49 @@ export default class BaseScene {
 		this.secondLayerContext.clearRect(0, 0, this.secondLayer.width, this.secondLayer.height);
 	}
 
-	render () {
-		// console.log(this._players); // TODO при взрыве бомбы игрок остается в массиве
-		this._players.forEach(player => {
-			player.plantedBombs.forEach(bomb => {
-				bomb.drawBomb();
-			});
+	checkCollisions () {
+		this._creeps.forEach( creep => {
+			if (creep.xPos === this._players[0].xPos && creep.yPos === this._players[0].yPos) {
+				GameBus.emit('single-player-death');
+			}
 		});
+	}
 
+	renderPlayers () {
 		this._players.forEach(player => {
 			player.drawPlayer();
 		});
 	}
 
-	loopCallback () {
-		this.clearSecondLayer();
-		this.render();
-		window.requestAnimationFrame(this.loopCallback.bind(this));
+	// TODO при взрыве бомбы игрок остается в массиве
+	renderBombs () {
+		this._players.forEach(player => {
+			player.plantedBombs.forEach(bomb => {
+				bomb.drawBomb();
+			});
+		});
 	}
 
-	startLoop () {
-		window.requestAnimationFrame(this.loopCallback.bind(this));
+	renderCreeps () {
+		this._creeps.forEach(creep => {
+			creep.drawCreep();
+		});
 	}
+
+	singlePlayerLoop () {
+		this.clearSecondLayer();
+		this.renderBombs();
+		this.renderPlayers();
+		this.renderCreeps();
+		this.checkCollisions();
+		window.requestAnimationFrame(this.singlePlayerLoop.bind(this));
+	}
+
+	multiPlayerLoop () {
+		this.clearSecondLayer();
+		this.renderBombs();
+		this.renderPlayers();
+		window.requestAnimationFrame(this.multiPlayerLoop.bind(this));
+	}
+
 }
