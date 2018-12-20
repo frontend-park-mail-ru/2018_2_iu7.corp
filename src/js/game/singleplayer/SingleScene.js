@@ -10,7 +10,7 @@ import numberMatrixMapGenerator from '../utils/mapGenerate.ts';
 
 import * as sprites from '../SpriteImports.js';
 
-class SingleScene extends BaseScene {
+export default class SingleScene extends BaseScene {
 	constructor () {
 		super(); // нужно оставить даже если в BaseScene нет констурктора, иначе this - undefined
 		this._field = null;
@@ -88,7 +88,15 @@ class SingleScene extends BaseScene {
 		this._creeps = this._creeps.filter( creep => {
 			return creep._id !== data.creepId;
 		})
-		console.log(this._creeps);
+	}
+
+	singlePlayerLoop () {
+		this.clearSecondLayer();
+		this.renderBombs();
+		this.renderPlayers();
+		this.renderCreeps();
+		this.checkCollisions();
+		window.requestAnimationFrame(this.singlePlayerLoop.bind(this));
 	}
 
 	updateGame () {
@@ -108,4 +116,4 @@ class SingleScene extends BaseScene {
 	}
 }
 
-export default new SingleScene();
+// export default new SingleScene();

@@ -42,7 +42,7 @@ export default class FormController {
 
 	createRoomCallbackSubmit (event) {
 		event.preventDefault();
-		if (this._validator && !this._validator.validate(event.target)) {
+		if (this._validator && !this._validator.validate()) {
 			return;
 		}
 		const size = {};

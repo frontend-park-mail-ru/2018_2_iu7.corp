@@ -115,6 +115,13 @@ class MultiPlayerScene extends BaseScene {
 	onBrickExplode (data) {
 		this._field._addGrassBrickInField(data.transform.position.x, data.transform.position.y);
 	}
+
+	multiPlayerLoop () {
+		this.clearSecondLayer();
+		this.renderBombs();
+		this.renderPlayers();
+		window.requestAnimationFrame(this.multiPlayerLoop.bind(this));
+	}
 	// if (data.id === this.myId) {
 	//   document.removeEventListener('keydown', this.onKeyDown);
 

@@ -12,12 +12,12 @@ export default class CreateRoomValidator extends BaseValidator {
 		const time = document.getElementById('time_limit_input').value;
 		if (time > 100) {
 			super._setError('time_limit_error', 'слишком долго');
-			return true;
+			return false;
 		} else if (time < 5) {
 			super._setError('time_limit_error', 'слишком быстро');
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	_participantsCountCheck () {
@@ -29,30 +29,30 @@ export default class CreateRoomValidator extends BaseValidator {
 			super._setError('max_num_players_error', 'слишком мало игроков');
 			return true;
 		}
-		return false;
+		return true;
 	}
 
 	_fieldWidthCheck () {
 		const width = document.getElementById('width_input').value;
 		if (width > 50) {
 			super._setError('width_error', 'слишком большая ширина');
-			return true;
+			return false;
 		} else if (width < 20) {
 			super._setError('width_error', 'слишком маленькая ширина');
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	_fieldHeightCheck () {
 		const height = document.getElementById('height_input').value;
 		if (height > 50) {
 			super._setError('height_error', 'слишком большая высота');
-			return true;
+			return false;
 		} else if (height < 20) {
 			super._setError('height_error', 'слишком маленькая высота');
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 }

@@ -1,6 +1,7 @@
 import GameBus from './GameBus.ts';
 
 export default class BaseScene {
+
 	getCanvasContext () {
 		this.controlsLayer = document.getElementById('canvasControls');
 
@@ -56,21 +57,4 @@ export default class BaseScene {
 			creep.drawCreep();
 		});
 	}
-
-	singlePlayerLoop () {
-		this.clearSecondLayer();
-		this.renderBombs();
-		this.renderPlayers();
-		this.renderCreeps();
-		this.checkCollisions();
-		window.requestAnimationFrame(this.singlePlayerLoop.bind(this));
-	}
-
-	multiPlayerLoop () {
-		this.clearSecondLayer();
-		this.renderBombs();
-		this.renderPlayers();
-		window.requestAnimationFrame(this.multiPlayerLoop.bind(this));
-	}
-
 }

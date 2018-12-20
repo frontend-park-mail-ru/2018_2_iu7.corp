@@ -100,7 +100,6 @@ export default class CreateRoomView extends BaseView {
 	}
 
 	showLink (roomData) {
-		console.log('show link');
 		this._template = showRoomLinkTmpl;
 		const data = {
 			linkHref: `/room/${roomData.id}`,
