@@ -38,11 +38,10 @@ export default class SigninView extends BaseView {
 		this._navigationController = new NavigationController();
 		this._formController = new FormController('signin', SignInValidator); // TODO добавить валидатор на пустую форму
 		this._registeredActions = false;
-		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
-		console.log('SignIN show');
+		Bus.on('done-get-user', { callbackName : 'SigninView.render', callback : this.render.bind(this)});
 		Bus.emit('get-user');
 		super.show();
 		this.registerActions();
@@ -61,7 +60,11 @@ export default class SigninView extends BaseView {
 			this._template = permissionMessageTmpl;
 			super.render(permissionMessageData);
 		}
-		Bus.off('done-get-user', this.render.bind(this));
+	}
+
+	hide () {
+		super.hide();
+		Bus.off('done-get-user', 'SigninView.render');
 	}
 
 	registerActions () {

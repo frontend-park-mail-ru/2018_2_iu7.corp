@@ -64,11 +64,10 @@ export default class SignupView extends BaseView {
 		this._navigationController = new NavigationController();
 		this._formController = new FormController('signup', SignUpValidator);
 		this._registeredActions = false;
-		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
-		console.log('SignUP show');
+		Bus.on('done-get-user', { callbackName : 'SignupView.render', callback : this.render.bind(this)});
 		Bus.emit('get-user');
 		super.show();
 		this.registerActions();
@@ -100,7 +99,11 @@ export default class SignupView extends BaseView {
 			this._template = permissionMessageTmpl;
 			super.render(permissionMessageData);
 		}
-		Bus.off('done-get-user', this.render.bind(this));
+	}
+
+	hide () {
+		super.hide();
+		Bus.off('done-get-user', 'SignupView.render');
 	}
 
 	registerActions () {

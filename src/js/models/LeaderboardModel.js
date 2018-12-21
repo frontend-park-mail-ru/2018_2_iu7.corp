@@ -10,7 +10,7 @@ export default class LeaderboardModel {
      * Creates the model
      */
 	constructor () {
-		Bus.on('leaderboard-fetch', this.loadUsers.bind(this));
+		Bus.on('leaderboard-fetch', { callbackName : 'LeaderboardModel.loadUsers', callback : this.loadUsers.bind(this)});
 	}
 
 	/**
@@ -26,9 +26,6 @@ export default class LeaderboardModel {
 				Bus.emit('error'); // TODO errors
 			})
 			.then((data) => {
-				// console.log(data);
-				// console.log('TYPEOF', typeof(data));
-
 				Bus.emit('done-leaderboard-fetch', data);
 			});
 	}

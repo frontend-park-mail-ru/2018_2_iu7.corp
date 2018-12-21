@@ -12,10 +12,11 @@ export default class ChangeView extends BaseView {
 		super(form);
 		this._navigationController = new NavigationController();
 		this._formController = new FormController('change');
-		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
+		Bus.on('done-get-user', { callbackName : 'ChangeView.render', callback : this.render.bind(this)});
+
 		Bus.emit('get-user');
 		super.show();
 		this.registerActions();
@@ -63,7 +64,12 @@ export default class ChangeView extends BaseView {
 			this._template = permissionMessageTmpl;
 			super.render(permissionMessageData);
 		}
-		Bus.off('done-get-user', this.render.bind(this));
+	}
+
+	hide () {
+		super.hide();
+		Bus.off('done-get-user', 'ChangeView.render');
+
 	}
 
 	registerActions () {

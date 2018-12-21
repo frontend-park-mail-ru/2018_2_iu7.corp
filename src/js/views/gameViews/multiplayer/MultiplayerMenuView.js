@@ -10,10 +10,10 @@ export default class MultiplayerMenuView extends BaseView {
 	constructor () {
 		super(multiplayerMenuTmpl);
 		this._navigationController = new NavigationController();
-		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
+		Bus.on('done-get-user', { callbackName : 'MultiplayerMenuView.render', callback : this.render.bind(this)});
 		Bus.emit('get-user');
 		super.show();
 		this.registerActions();
@@ -27,6 +27,12 @@ export default class MultiplayerMenuView extends BaseView {
 			data.headerValues = authMenuHeader(user.id);
 			super.render(data);
 		}
+	}
+
+	hide () {
+		super.hide();
+		Bus.off('done-get-user', 'MultiplayerMenuView.render');
+
 	}
 
 	registerActions () {

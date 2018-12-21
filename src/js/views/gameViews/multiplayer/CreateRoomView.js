@@ -75,19 +75,16 @@ export default class CreateRoomView extends BaseView {
 		this._registeredActions = false;
 		this._navigationController = new NavigationController();
 		this._formController = new FormController('createroom', CreateRoomValidator);
-		Bus.on('done-get-user', this.render.bind(this));
-		Bus.on('done-create-room', this.showLink.bind(this));
 	}
 
 	show () {
-		console.log('create room show');
+		Bus.on('done-get-user', { callbackName : 'CreateRoomView.render', callback : this.render.bind(this)});
 		Bus.emit('get-user');
 		super.show();
 		this.registerActions();
 	}
 
 	render (user) {
-		console.log('render create room');
 		this._template = createRoomTmpl;
 		this._currentUser = user;
 		if (!user.is_authenticated) {
@@ -112,6 +109,12 @@ export default class CreateRoomView extends BaseView {
 			data.headerValues = authMenuHeader(this._currentUser.id);
 			super.render(data);
 		}
+	}
+
+	hide () {
+		super.hide();
+		Bus.off('done-get-user', 'CreateRoomView.render');
+
 	}
 
 	registerActions () {

@@ -12,10 +12,10 @@ export default class LeaderboardController {
 	constructor () {
 		this._currentPage = 1;
 
-		Bus.on('leaderboard-next-page', this._nextPage.bind(this));
-		Bus.on('leaderboard-prev-page', this._prevPage.bind(this));
-		Bus.on('leaderboard-set-page', this._setPage.bind(this));
-		Bus.on('leaderboard-load', this._loadPage.bind(this));
+		Bus.on('leaderboard-next-page', { callbackName : '_nextPage', callback : this._nextPage.bind(this) });
+		Bus.on('leaderboard-prev-page', { callbackName : '_prevPage', callback : this._prevPage.bind(this) });
+		Bus.on('leaderboard-set-page', { callbackName : '_setPage', callback : this._setPage.bind(this) });
+		Bus.on('leaderboard-load', { callbackName : '_loadPage', callback : this._loadPage.bind(this) });
 	}
 
 	/**

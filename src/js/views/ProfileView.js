@@ -10,16 +10,11 @@ const notMyProfileTmpl = require('./templates/notMyProfile.pug');
 export default class ProfileView extends BaseView {
 	constructor () {
 		super(myProfileTmpl);
-		this._socket = new WebSocket('wss://80.252.155.65:5000');
-		this._socket.onopen = function () {
-			console.log('connection started');
-		};
 		this._navigationController = new NavigationController();
 		this._currentUser = null;
 		this._chatPerson = null;
 		this.preload();
-		Bus.on('done-get-user', this._setCurrentUser.bind(this));
-		Bus.on('profile-render', this.render.bind(this));
+
 	}
 
 	_setCurrentUser (user) {
@@ -27,6 +22,8 @@ export default class ProfileView extends BaseView {
 	}
 
 	show () {
+		Bus.on('done-get-user', { callbackName : 'ProfileView._setCurrentUser', callback : this._setCurrentUser.bind(this)});
+		Bus.on('profile-render', { callbackName : 'ProfileView.render', callback : this.render.bind(this)});
 		Bus.emit('get-user');
 		Bus.emit('profile-load'); // идем в profileController и загружаем пользователя
 		super.show();
@@ -63,8 +60,7 @@ export default class ProfileView extends BaseView {
 				super.render(data);
 			}
 		}
-		Bus.off('profile-render', this.render.bind(this));
-		Bus.off('done-get-user', this._setCurrentUser.bind(this));
+
 	}
 
 	preload () {
@@ -76,34 +72,14 @@ export default class ProfileView extends BaseView {
 		this.viewDiv.innerHTML = preloadTmpl(data);
 	}
 
-	startChat (event) {
-		// event.preventDefault();
-		// const inf = {
-		// 	type: 'make_private_chat',
-		// 	data: [this._currentUser.id, this._chatPerson.id]
-		// }
-		// this._socket.send(JSON.stringify(inf));
-
-		const frame = document.createElement('iframe');
-		frame.wigth = 900;
-		frame.height = 500;
-		// frame.frameborder='0'
-
-		const framediv = document.getElementById('for-frame');
-		framediv.innerHTML = '';
-		framediv.appendChild(frame);
+	hide () {
+		super.hide();
+		Bus.off('done-get-user', 'ProfileView._setCurrentUser');
+		Bus.off('profile-render', 'ProfileView.render');
 	}
-
-	// make_private_chat(input){
-	// 	type = 'make_private_chat';
-	// 	data = [input.idfrom, input.idto];
-	// 	return JSON.stringify({type: type, data: data});
-	// };
 
 	registerActions () {
 		this.viewDiv.addEventListener('submit', this.startChat.bind(this));
 		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
-		// const startChat = document.getElementById('popupbtn');
-		// this.viewDiv.addEventListener('click', this.startChat().bind(this));
 	}
 }

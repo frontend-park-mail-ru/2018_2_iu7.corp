@@ -17,19 +17,20 @@ export default class SingleScene extends BaseScene {
 		this._players = [];
 		this._creeps = [];
 		this._registeredActions = false;
+		this.loop = true;
 		this._controls = new Controls('singleplayer'); // режим контролов влиет на тип отправки сообщения в Bus
 
-		Bus.on('single-user', this.updateUsers.bind(this));
-		Bus.on('single-setBomb', this.updateBombs.bind(this));
-		Bus.on('single-bomb-explosion', this.updateBombs.bind(this));
+		Bus.on('single-user', { callbackName : 'SingleScene.updateUsers', callback : this.updateUsers.bind(this)});
+		Bus.on('single-setBomb', { callbackName : 'SingleScene.updateBombs', callback : this.updateBombs.bind(this)});
+
 		GameBus.on('single-player-death', this.updateGame.bind(this));
 		GameBus.on('single-creep-death', this.updateCreeps.bind(this));
 	}
 
 	generateCreeps (field) {
-		for (let i = 0; i < 5; i++) {
-			let y = Math.floor(Math.random()* 19);
-			let x = Math.floor(Math.random()* 19);
+		for (let i = 0; i < 6; i++) {
+			let y = Math.floor(Math.random()* 16 + 3);
+			let x = Math.floor(Math.random()* 16 + 3) ;
 			while (field[y][x] !== 3) {
 				x = Math.floor(Math.random() * 19);
 			}
@@ -96,11 +97,14 @@ export default class SingleScene extends BaseScene {
 		this.renderPlayers();
 		this.renderCreeps();
 		this.checkCollisions();
-		window.requestAnimationFrame(this.singlePlayerLoop.bind(this));
+		
+		if (this.loop) { 
+			window.requestAnimationFrame(this.singlePlayerLoop.bind(this));
+		}
 	}
 
 	updateGame () {
-
+		this.loop = false; // останавливаем requestAnimationFrame
 		Bus.totalOff('single-field');
 		Bus.totalOff('single-user');
 		Bus.totalOff('single-setBomb');

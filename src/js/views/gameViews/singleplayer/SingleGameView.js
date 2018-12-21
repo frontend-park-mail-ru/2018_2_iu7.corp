@@ -34,13 +34,14 @@ export default class SingleGameView extends BaseView {
 	constructor () {
 		super(canvasTmpl);
 		this._navigationController = new NavigationController();
-		Bus.on('done-get-user', this.render.bind(this));
 	}
 
 	show () {
+		Bus.on('done-get-user', {callbackName : 'SingleGameView.render', callback : this.render.bind(this)});
 		Bus.emit('get-user');
 		super.show();
 		this.registerActions();
+		this._scene = new SingleScene();
 	}
 
 	render (user) {
@@ -52,10 +53,18 @@ export default class SingleGameView extends BaseView {
 			super.render(data);
 		}
 		this.showInfo();
-
-		SingleScene.init();
-		SingleScene.singlePlayerLoop();
+		
+		this._scene.init();
+		this._scene.singlePlayerLoop();
 	}
+	
+	hide() {
+		super.hide();
+		this._scene.loop = false // останавливаем requestAnimationFrame
+		this._scene = null;
+		Bus.off('done-get-user', 'SingleGameView.render');
+	}
+
 
 	showInfo () {
 		document.getElementById('dropdown-game-info').style.width = '100%';

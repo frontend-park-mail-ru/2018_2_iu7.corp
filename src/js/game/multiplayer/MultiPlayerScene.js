@@ -6,9 +6,10 @@ import Controls from '../controls/Controls.js';
 
 import * as sprites from '../SpriteImports.js';
 
-class MultiPlayerScene extends BaseScene {
+export default class MultiPlayerScene extends BaseScene {
 	constructor () {
 		super();
+		this.loop = true;
 		this._registeredActions = false;
 		this._field = null;
 		this.myId = null;
@@ -16,15 +17,13 @@ class MultiPlayerScene extends BaseScene {
 		this._controls = new Controls('multiplayer'); // режим контролов влиет на тип отправки сообщения в Bus
 		this._initialField = null;
 
-		Bus.on('multiplayer-object-wall.solid', this.addSteelInField.bind(this));
-		Bus.on('multiplayer-object-wall.weak', this.addFragileInField.bind(this));
-		Bus.on('multiplayer-object-wall.weak-down', this.onBrickExplode.bind(this));
-
-		Bus.on('multiplayer-object-player-alive', this.onUpdateUsers.bind(this));
-		Bus.on('multiplayer-object-player-dead', this.onDeadUsers.bind(this));
-
-		Bus.on('multiplayer-object-bomb-placed', this.onPlantBomb.bind(this));
-		Bus.on('multiplayer-object-bomb-detonated', this.onDetonateBomb.bind(this));
+		Bus.on('multiplayer-object-wall.solid', { callbackName : 'MultiPlayerScene.addSteelInField', callback : this.addSteelInField.bind(this)});
+		Bus.on('multiplayer-object-wall.weak', { callbackName : 'MultiPlayerScene.addFragileInField', callback : this.addFragileInField.bind(this)});
+		Bus.on('multiplayer-object-wall.weak-down', { callbackName : 'MultiPlayerScene.onBrickExplode', callback : this.onBrickExplode.bind(this)});
+		Bus.on('multiplayer-object-player-alive', { callbackName : 'MultiPlayerScene.onUpdateUsers', callback : this.onUpdateUsers.bind(this)});
+		Bus.on('multiplayer-object-player-dead', { callbackName : 'MultiPlayerScene.onDeadUsers', callback : this.onDeadUsers.bind(this)});
+		Bus.on('multiplayer-object-bomb-placed', { callbackName : 'MultiPlayerScene.onPlantBomb', callback : this.onPlantBomb.bind(this)});
+		Bus.on('multiplayer-object-bomb-detonated', { callbackName : 'MultiPlayerScene.onDetonateBomb', callback : this.onDetonateBomb.bind(this)});
 	}
 
 	setPlayersId (players) {
@@ -119,28 +118,8 @@ class MultiPlayerScene extends BaseScene {
 		this.clearSecondLayer();
 		this.renderBombs();
 		this.renderPlayers();
-		window.requestAnimationFrame(this.multiPlayerLoop.bind(this));
+		if (this.loop) {
+			window.requestAnimationFrame(this.multiPlayerLoop.bind(this));
+		}
 	}
-	// if (data.id === this.myId) {
-	//   document.removeEventListener('keydown', this.onKeyDown);
-
-	// updateBombs () {
-	// 	this._player.plantBomb();
-	// }
-
-	// updateGame () {
-	// 	Bus.totalOff('single-field');
-	// 	Bus.totalOff('single-user');
-	// 	Bus.totalOff('single-setBomb');
-	// 	Bus.totalOff('single-bomb-explosion');
-	// 	Bus.totalOff('single-scene-start');
-
-	// 	GameBus.totalOff('single-bomb-plant');
-	// 	GameBus.totalOff('single-player-death');
-	// 	GameBus.totalOff('single-bomb-explode');
-
-	// 	Router.open('/');
-	// }
 }
-
-export default new MultiPlayerScene();
