@@ -41,15 +41,14 @@ export default class RoomView extends BaseView {
 		this._connection = new Socket();
 		this._navigationController = new NavigationController();
 
-		Bus.on('done-get-target-room', { callbackName : 'RoomView._setCurrentRoomId', callback : this._setCurrentRoomId.bind(this)});
+		Bus.on('done-get-target-room', { callbackName: 'RoomView._setCurrentRoomId', callback: this._setCurrentRoomId.bind(this) });
 
-
-		Bus.on('multiplayer-room-pending', { callbackName : 'RoomView.render', callback : this.render.bind(this)});
-		Bus.on('multiplayer-room-pending', { callbackName : 'RoomView._setInitialFieldMatrix', callback : this._setInitialFieldMatrix.bind(this)});
-		Bus.on('multiplayer-room-pending', { callbackName : 'RoomView._setPlayersId', callback : this._setPlayersId.bind(this)});
-		Bus.on('multiplayer-room-pending', { callbackName : 'RoomView._setMyId', callback : this._setMyId.bind(this)});
-		Bus.on('multiplayer-room-on', { callbackName : 'RoomView.renderGame', callback : this.renderGame.bind(this)});
-		Bus.on('multiplayer-room-off', { callbackName : 'RoomView.openMenu', callback : this.openMenu.bind(this)});
+		Bus.on('multiplayer-room-pending', { callbackName: 'RoomView.render', callback: this.render.bind(this) });
+		Bus.on('multiplayer-room-pending', { callbackName: 'RoomView._setInitialFieldMatrix', callback: this._setInitialFieldMatrix.bind(this) });
+		Bus.on('multiplayer-room-pending', { callbackName: 'RoomView._setPlayersId', callback: this._setPlayersId.bind(this) });
+		Bus.on('multiplayer-room-pending', { callbackName: 'RoomView._setMyId', callback: this._setMyId.bind(this) });
+		Bus.on('multiplayer-room-on', { callbackName: 'RoomView.renderGame', callback: this.renderGame.bind(this) });
+		Bus.on('multiplayer-room-off', { callbackName: 'RoomView.openMenu', callback: this.openMenu.bind(this) });
 	}
 
 	_setCurrentUser (user) {
@@ -77,7 +76,7 @@ export default class RoomView extends BaseView {
 	}
 
 	show () {
-		Bus.on('done-get-user', { callbackName : 'RoomView._setCurrentUser', callback : this._setCurrentUser.bind(this)});
+		Bus.on('done-get-user', { callbackName: 'RoomView._setCurrentUser', callback: this._setCurrentUser.bind(this) });
 		Bus.emit('get-user');
 		Bus.emit('get-target-room');
 		this._scene = new MultiPlayerScene();

@@ -41,7 +41,7 @@ export default class SigninView extends BaseView {
 	}
 
 	show () {
-		Bus.on('done-get-user', { callbackName : 'SigninView.render', callback : this.render.bind(this)});
+		Bus.on('done-get-user', { callbackName: 'SigninView.render', callback: this.render.bind(this) });
 		Bus.emit('get-user');
 		super.show();
 		this.registerActions();

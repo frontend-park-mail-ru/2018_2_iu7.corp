@@ -14,7 +14,6 @@ export default class ProfileView extends BaseView {
 		this._currentUser = null;
 		this._chatPerson = null;
 		this.preload();
-
 	}
 
 	_setCurrentUser (user) {
@@ -22,8 +21,8 @@ export default class ProfileView extends BaseView {
 	}
 
 	show () {
-		Bus.on('done-get-user', { callbackName : 'ProfileView._setCurrentUser', callback : this._setCurrentUser.bind(this)});
-		Bus.on('profile-render', { callbackName : 'ProfileView.render', callback : this.render.bind(this)});
+		Bus.on('done-get-user', { callbackName: 'ProfileView._setCurrentUser', callback: this._setCurrentUser.bind(this) });
+		Bus.on('profile-render', { callbackName: 'ProfileView.render', callback: this.render.bind(this) });
 		Bus.emit('get-user');
 		Bus.emit('profile-load'); // идем в profileController и загружаем пользователя
 		super.show();
@@ -60,7 +59,6 @@ export default class ProfileView extends BaseView {
 				super.render(data);
 			}
 		}
-
 	}
 
 	preload () {

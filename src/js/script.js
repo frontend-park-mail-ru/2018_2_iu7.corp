@@ -24,32 +24,34 @@ import ProfileController from './controllers/ProfileController.js';
 import GameController from './controllers/GameController.js';
 import ProfileModel from './models/ProfileModel.js';
 
-Bus.on('profile-fetch', { callbackName : 'ProfileModel.loadProfile', callback :(id) => { ProfileModel.loadProfile(id); }});
-Bus.on('changes-fetch', { callbackName : 'ProfileModel.loadProfileChanges', callback : (data) => { ProfileModel.loadProfileChanges(data); }});
-Bus.on('current-profile-fetch',  { callbackName : 'ProfileModel.loadCurrentProfile', callback : () => { ProfileModel.loadCurrentProfile(); }});
+Bus.on('profile-fetch', { callbackName: 'ProfileModel.loadProfile', callback: (id) => { ProfileModel.loadProfile(id); } });
+Bus.on('changes-fetch', { callbackName: 'ProfileModel.loadProfileChanges', callback: (data) => { ProfileModel.loadProfileChanges(data); } });
+Bus.on('current-profile-fetch', { callbackName: 'ProfileModel.loadCurrentProfile', callback: () => { ProfileModel.loadCurrentProfile(); } });
 
-Bus.on('set-target-id', { callbackName : 'ProfileController._setTargetId', callback : (id) => { ProfileController._setTargetId(id); }});
-Bus.on('profile-load', { callbackName : 'ProfileController._loadProfile', callback : () => { ProfileController._loadProfile(); }});
-Bus.on('done-profile-fetch', { callbackName : 'ProfileController._checkIdMatching', callback : (data) => { ProfileController._checkIdMatching(data); }});
-Bus.on('get-user', { callbackName : 'ProfileController._getCurrentUser', callback : () => { ProfileController._getCurrentUser(); }});
+Bus.on('set-target-id', { callbackName: 'ProfileController._setTargetId', callback: (id) => { ProfileController._setTargetId(id); } });
+Bus.on('profile-load', { callbackName: 'ProfileController._loadProfile', callback: () => { ProfileController._loadProfile(); } });
+Bus.on('done-profile-fetch', { callbackName: 'ProfileController._checkIdMatching', callback: (data) => { ProfileController._checkIdMatching(data); } });
+Bus.on('get-user', { callbackName: 'ProfileController._getCurrentUser', callback: () => { ProfileController._getCurrentUser(); } });
 
-Bus.on('set-target-room', { callbackName : 'GameController._setTargetGameId', callback : (id) => { GameController._setTargetGameId(id); }});
-Bus.on('get-target-room', { callbackName : 'GameController._getTargetGameId', callback : () => { GameController._getTargetGameId(); }});
+Bus.on('set-target-room', { callbackName: 'GameController._setTargetGameId', callback: (id) => { GameController._setTargetGameId(id); } });
+Bus.on('get-target-room', { callbackName: 'GameController._getTargetGameId', callback: () => { GameController._getTargetGameId(); } });
 
-Bus.on('unsuccess-signup', { callbackName : 'SignupView.showUnsuccessMessage', callback : () => { SignupView.showUnsuccessMessage(); }});
-Bus.on('unsuccess-signin', { callbackName : 'SigninView.showUnsuccessMessage', callback : () => { SigninView.showUnsuccessMessage(); }});
-Bus.on('submit-data-signup', { callbackName : 'AuthModel.Register', callback : (data) => { AuthModel.Register(data); }});
-Bus.on('submit-data-signin', { callbackName : 'AuthModel.Signin', callback : (data) => { AuthModel.Signin(data); }});
-Bus.on('submit-data-change', { callbackName : 'ProfileController._makeSettingsChanges', callback : (data) => { ProfileController._makeSettingsChanges(data); }});
-Bus.on('submit-data-createroom', { callbackName : 'GameModel.CreateRoom', callback : (data) => { GameModel.CreateRoom(data); }});
-Bus.on('user-signout', { callbackName : 'AuthModel.Signout', callback : () => { AuthModel.Signout(); }});
-Bus.on('wipe-views', { callbackName : 'wipe', callback : () => {
-	Router.open('/');
-}});
-Bus.on('error', { callbackName : 'wipe', callback : (error) => {
-	console.log(error);
-	return null;
-}});
+Bus.on('unsuccess-signup', { callbackName: 'SignupView.showUnsuccessMessage', callback: () => { SignupView.showUnsuccessMessage(); } });
+Bus.on('unsuccess-signin', { callbackName: 'SigninView.showUnsuccessMessage', callback: () => { SigninView.showUnsuccessMessage(); } });
+Bus.on('submit-data-signup', { callbackName: 'AuthModel.Register', callback: (data) => { AuthModel.Register(data); } });
+Bus.on('submit-data-signin', { callbackName: 'AuthModel.Signin', callback: (data) => { AuthModel.Signin(data); } });
+Bus.on('submit-data-change', { callbackName: 'ProfileController._makeSettingsChanges', callback: (data) => { ProfileController._makeSettingsChanges(data); } });
+Bus.on('submit-data-createroom', { callbackName: 'GameModel.CreateRoom', callback: (data) => { GameModel.CreateRoom(data); } });
+Bus.on('user-signout', { callbackName: 'AuthModel.Signout', callback: () => { AuthModel.Signout(); } });
+Bus.on('wipe-views', { callbackName: 'wipe',
+	callback: () => {
+		Router.open('/');
+	} });
+Bus.on('error', { callbackName: 'wipe',
+	callback: (error) => {
+		console.log(error);
+		return null;
+	} });
 
 function main () {
 	[['/', MenuView],

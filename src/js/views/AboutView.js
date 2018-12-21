@@ -54,7 +54,7 @@ export default class AboutView extends BaseView {
 		super(about);
 		this._navigationController = new NavigationController();
 
-		Bus.on('done-get-user', { callbackName : 'AboutView.render', callback : this.render.bind(this)});
+		Bus.on('done-get-user', { callbackName: 'AboutView.render', callback: this.render.bind(this) });
 	}
 
 	show () {

@@ -20,8 +20,8 @@ export default class SingleScene extends BaseScene {
 		this.loop = true;
 		this._controls = new Controls('singleplayer'); // режим контролов влиет на тип отправки сообщения в Bus
 
-		Bus.on('single-user', { callbackName : 'SingleScene.updateUsers', callback : this.updateUsers.bind(this)});
-		Bus.on('single-setBomb', { callbackName : 'SingleScene.updateBombs', callback : this.updateBombs.bind(this)});
+		Bus.on('single-user', { callbackName: 'SingleScene.updateUsers', callback: this.updateUsers.bind(this) });
+		Bus.on('single-setBomb', { callbackName: 'SingleScene.updateBombs', callback: this.updateBombs.bind(this) });
 
 		GameBus.on('single-player-death', this.updateGame.bind(this));
 		GameBus.on('single-creep-death', this.updateCreeps.bind(this));
@@ -29,12 +29,12 @@ export default class SingleScene extends BaseScene {
 
 	generateCreeps (field) {
 		for (let i = 0; i < 6; i++) {
-			let y = Math.floor(Math.random()* 16 + 3);
-			let x = Math.floor(Math.random()* 16 + 3) ;
+			let y = Math.floor(Math.random() * 16 + 3);
+			let x = Math.floor(Math.random() * 16 + 3);
 			while (field[y][x] !== 3) {
 				x = Math.floor(Math.random() * 19);
 			}
-			const creep= new Creep(i,x,y,sprites.creepSprites);
+			const creep = new Creep(i, x, y, sprites.creepSprites);
 			this._creeps.push(creep);
 		}
 	}
@@ -65,7 +65,7 @@ export default class SingleScene extends BaseScene {
 		this._creeps.forEach(creep => {
 			creep.setField(this._field.bricksInField);
 			creep.setCanvasContext(this.secondLayerContext);
-			creep.creepBrain();	
+			creep.creepBrain();
 		});
 
 		this._players[0].setField(this._field.bricksInField);
@@ -86,9 +86,9 @@ export default class SingleScene extends BaseScene {
 	}
 
 	updateCreeps (data) {
-		this._creeps = this._creeps.filter( creep => {
+		this._creeps = this._creeps.filter(creep => {
 			return creep._id !== data.creepId;
-		})
+		});
 	}
 
 	singlePlayerLoop () {
@@ -97,8 +97,8 @@ export default class SingleScene extends BaseScene {
 		this.renderPlayers();
 		this.renderCreeps();
 		this.checkCollisions();
-		
-		if (this.loop) { 
+
+		if (this.loop) {
 			window.requestAnimationFrame(this.singlePlayerLoop.bind(this));
 		}
 	}

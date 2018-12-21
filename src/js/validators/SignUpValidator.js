@@ -8,8 +8,6 @@ export default class SignUpValidator extends BaseValidator {
 			this._isPasswordsMatching());
 	}
 
-
-
 	_hasEmptyFields () {
 		let emptyFlag = true;
 		const form = document.getElementById('signup');
@@ -17,7 +15,7 @@ export default class SignUpValidator extends BaseValidator {
 			inp => {
 				return inp.name !== 'submit';
 			}
-		)
+		);
 
 		for (const inp of inputs) {
 			if (this._isEmptyField(inp.value)) {
@@ -26,7 +24,7 @@ export default class SignUpValidator extends BaseValidator {
 			} else {
 				if (!document.getElementById(inp.name + '_error').hasAttribute('hidden')) {
 					document.getElementById(inp.name + '_error').setAttribute('hidden', 'hidden');
-				}	
+				}
 			}
 		}
 		return emptyFlag;

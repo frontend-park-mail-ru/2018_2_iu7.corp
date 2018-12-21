@@ -15,7 +15,7 @@ export default class ChangeView extends BaseView {
 	}
 
 	show () {
-		Bus.on('done-get-user', { callbackName : 'ChangeView.render', callback : this.render.bind(this)});
+		Bus.on('done-get-user', { callbackName: 'ChangeView.render', callback: this.render.bind(this) });
 
 		Bus.emit('get-user');
 		super.show();
@@ -69,7 +69,6 @@ export default class ChangeView extends BaseView {
 	hide () {
 		super.hide();
 		Bus.off('done-get-user', 'ChangeView.render');
-
 	}
 
 	registerActions () {

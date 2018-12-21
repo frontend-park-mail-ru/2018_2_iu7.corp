@@ -1,7 +1,6 @@
 import GameBus from './GameBus.ts';
 
 export default class BaseScene {
-
 	getCanvasContext () {
 		this.controlsLayer = document.getElementById('canvasControls');
 
@@ -30,7 +29,7 @@ export default class BaseScene {
 	}
 
 	checkCollisions () {
-		this._creeps.forEach( creep => {
+		this._creeps.forEach(creep => {
 			if (creep.xPos === this._players[0].xPos && creep.yPos === this._players[0].yPos) {
 				GameBus.emit('single-player-death');
 			}

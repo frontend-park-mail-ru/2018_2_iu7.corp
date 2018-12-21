@@ -17,13 +17,13 @@ export default class MultiPlayerScene extends BaseScene {
 		this._controls = new Controls('multiplayer'); // режим контролов влиет на тип отправки сообщения в Bus
 		this._initialField = null;
 
-		Bus.on('multiplayer-object-wall.solid', { callbackName : 'MultiPlayerScene.addSteelInField', callback : this.addSteelInField.bind(this)});
-		Bus.on('multiplayer-object-wall.weak', { callbackName : 'MultiPlayerScene.addFragileInField', callback : this.addFragileInField.bind(this)});
-		Bus.on('multiplayer-object-wall.weak-down', { callbackName : 'MultiPlayerScene.onBrickExplode', callback : this.onBrickExplode.bind(this)});
-		Bus.on('multiplayer-object-player-alive', { callbackName : 'MultiPlayerScene.onUpdateUsers', callback : this.onUpdateUsers.bind(this)});
-		Bus.on('multiplayer-object-player-dead', { callbackName : 'MultiPlayerScene.onDeadUsers', callback : this.onDeadUsers.bind(this)});
-		Bus.on('multiplayer-object-bomb-placed', { callbackName : 'MultiPlayerScene.onPlantBomb', callback : this.onPlantBomb.bind(this)});
-		Bus.on('multiplayer-object-bomb-detonated', { callbackName : 'MultiPlayerScene.onDetonateBomb', callback : this.onDetonateBomb.bind(this)});
+		Bus.on('multiplayer-object-wall.solid', { callbackName: 'MultiPlayerScene.addSteelInField', callback: this.addSteelInField.bind(this) });
+		Bus.on('multiplayer-object-wall.weak', { callbackName: 'MultiPlayerScene.addFragileInField', callback: this.addFragileInField.bind(this) });
+		Bus.on('multiplayer-object-wall.weak-down', { callbackName: 'MultiPlayerScene.onBrickExplode', callback: this.onBrickExplode.bind(this) });
+		Bus.on('multiplayer-object-player-alive', { callbackName: 'MultiPlayerScene.onUpdateUsers', callback: this.onUpdateUsers.bind(this) });
+		Bus.on('multiplayer-object-player-dead', { callbackName: 'MultiPlayerScene.onDeadUsers', callback: this.onDeadUsers.bind(this) });
+		Bus.on('multiplayer-object-bomb-placed', { callbackName: 'MultiPlayerScene.onPlantBomb', callback: this.onPlantBomb.bind(this) });
+		Bus.on('multiplayer-object-bomb-detonated', { callbackName: 'MultiPlayerScene.onDetonateBomb', callback: this.onDetonateBomb.bind(this) });
 	}
 
 	setPlayersId (players) {

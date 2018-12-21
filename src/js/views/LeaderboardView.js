@@ -36,8 +36,8 @@ export default class LeaderboardView extends BaseView {
 		 *
 		 */
 	show () {
-		Bus.on('done-get-user', { callbackName : 'LeaderboardView._setCurrentUser', callback : this._setCurrentUser.bind(this)});
-		Bus.on('done-leaderboard-fetch', { callbackName : 'LeaderboardView.render', callback : this.render.bind(this)});
+		Bus.on('done-get-user', { callbackName: 'LeaderboardView._setCurrentUser', callback: this._setCurrentUser.bind(this) });
+		Bus.on('done-leaderboard-fetch', { callbackName: 'LeaderboardView.render', callback: this.render.bind(this) });
 
 		Bus.emit('get-user');
 		super.show();

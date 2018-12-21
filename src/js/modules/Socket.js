@@ -5,7 +5,7 @@ import Router from './Router.js';
 export default class Socket {
 	constructor () {
 		this._socket = null;
-		Bus.on('multiplayer-send-message', { callbackName : 'Socket.sendMessage', callback : this.sendMessage.bind(this)});
+		Bus.on('multiplayer-send-message', { callbackName: 'Socket.sendMessage', callback: this.sendMessage.bind(this) });
 	}
 
 	setRoomId (roomId) {

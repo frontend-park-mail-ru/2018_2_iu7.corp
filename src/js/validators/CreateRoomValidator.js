@@ -18,7 +18,7 @@ export default class CreateRoomValidator extends BaseValidator {
 			inp => {
 				return inp.name !== 'submit';
 			}
-		)
+		);
 
 		for (const inp of inputs) {
 			if (this._isEmptyField(inp.value)) {
@@ -27,12 +27,12 @@ export default class CreateRoomValidator extends BaseValidator {
 			} else {
 				if (!document.getElementById(inp.name + '_error').hasAttribute('hidden')) {
 					document.getElementById(inp.name + '_error').setAttribute('hidden', 'hidden');
-				}	
+				}
 			}
 		}
 		return emptyFlag;
 	}
-	
+
 	_isEmptyField (value) { // проверка на пустоту одного конкретного поля
 		return value === '';
 	}

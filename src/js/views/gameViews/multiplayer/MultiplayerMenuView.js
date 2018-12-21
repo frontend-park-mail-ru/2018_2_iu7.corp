@@ -13,7 +13,7 @@ export default class MultiplayerMenuView extends BaseView {
 	}
 
 	show () {
-		Bus.on('done-get-user', { callbackName : 'MultiplayerMenuView.render', callback : this.render.bind(this)});
+		Bus.on('done-get-user', { callbackName: 'MultiplayerMenuView.render', callback: this.render.bind(this) });
 		Bus.emit('get-user');
 		super.show();
 		this.registerActions();
@@ -32,7 +32,6 @@ export default class MultiplayerMenuView extends BaseView {
 	hide () {
 		super.hide();
 		Bus.off('done-get-user', 'MultiplayerMenuView.render');
-
 	}
 
 	registerActions () {

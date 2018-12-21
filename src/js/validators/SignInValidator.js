@@ -1,6 +1,5 @@
 import BaseValidator from './BaseValidator.js';
 
-
 export default class SignInValidator extends BaseValidator {
 	validate () {
 		return super.validate(this._hasEmptyFields());
@@ -13,7 +12,7 @@ export default class SignInValidator extends BaseValidator {
 			inp => {
 				return inp.name !== 'submit';
 			}
-		)
+		);
 
 		for (const inp of inputs) {
 			if (this._isEmptyField(inp.value)) {
@@ -22,14 +21,13 @@ export default class SignInValidator extends BaseValidator {
 			} else {
 				if (!document.getElementById(inp.name + '_error').hasAttribute('hidden')) {
 					document.getElementById(inp.name + '_error').setAttribute('hidden', 'hidden');
-				}	
+				}
 			}
 		}
 		return emptyFlag;
 	}
 
-
-    _isEmptyField (value) { // проверка на пустоту одного конкретного поля
+	_isEmptyField (value) { // проверка на пустоту одного конкретного поля
 		return value === '';
 	}
 }
