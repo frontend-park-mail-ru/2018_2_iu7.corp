@@ -72,7 +72,7 @@ export default class RoomView extends BaseView {
 	// каждый раз когда в комнату заходит игрок, обновляем массив игроков для будущей сцены
 	// массив игроков да начала игры является массивом id каждого игрока
 	_setPlayersId (data) {
-		console.log('connected: ', data);
+		// console.log('connected: ', data);
 		MultiPlayerScene.setPlayersId(data.players);
 	}
 
@@ -147,6 +147,7 @@ export default class RoomView extends BaseView {
 	}
 
 	hide () {
+		console.log('hidded');
 		super.hide();
 		Bus.totalOff('multiplayer-room-pending');
 		Bus.totalOff('multiplayer-room-on');
@@ -168,6 +169,7 @@ export default class RoomView extends BaseView {
 
 	registerActions () {
 		const startButton = document.getElementById('start-game');
+		console.log(startButton);
 		startButton.addEventListener('click', () => {
 			this._connection.startGame();
 		});
@@ -176,6 +178,5 @@ export default class RoomView extends BaseView {
 		stopButton.addEventListener('click', () => {
 			this._connection.stopGame();
 		});
-		this.viewDiv.addEventListener('click', this._navigationController.keyPressedCallback);
 	}
 }

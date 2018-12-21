@@ -24,7 +24,6 @@ export default class FormController {
      */
 	callbackSubmit (event) {
 		event.preventDefault();
-		console.log(this._validator.validate(), this._validator);
 		if (this._validator && !this._validator.validate()) {
 			return;
 		}

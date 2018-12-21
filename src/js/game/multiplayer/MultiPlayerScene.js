@@ -66,13 +66,12 @@ class MultiPlayerScene extends BaseScene {
 
 	init () {
 		this.getCanvasContext();
-
 		this.addPlayers();
-		this._field = new Field(this._initialField, sprites.fieldSprites, this._firstLayerContext);
+		this._field = new Field(this._initialField, sprites.fieldSprites, this.firstLayerContext);
 		// вместо передачи поля через конструктор
 		this._players.forEach(player => {
 			player.setField(this._field.bricksInField);
-			player.setCanvasContext(this._secondLayerContext);
+			player.setCanvasContext(this.secondLayerContext);
 		});
 
 		if (!this._registeredActions) {

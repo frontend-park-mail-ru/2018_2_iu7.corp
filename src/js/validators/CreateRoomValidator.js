@@ -2,10 +2,39 @@ import BaseValidator from './BaseValidator.js';
 
 export default class CreateRoomValidator extends BaseValidator {
 	validate () {
-		return super.validate(this._timeLimitCheck(),
+		return super.validate(
+			this._hasEmptyFields(),
+			this._timeLimitCheck(),
 			this._participantsCountCheck(),
 			this._fieldWidthCheck(),
-			this._fieldHeightCheck());
+			this._fieldHeightCheck()
+		);
+	}
+
+	_hasEmptyFields () {
+		let emptyFlag = true;
+		const form = document.getElementById('createroom');
+		const inputs = Array.from(form.getElementsByTagName('input')).filter(
+			inp => {
+				return inp.name !== 'submit';
+			}
+		)
+
+		for (const inp of inputs) {
+			if (this._isEmptyField(inp.value)) {
+				this._setError(inp.name + '_error', 'поле должно быть заполнено');
+				emptyFlag = false;
+			} else {
+				if (!document.getElementById(inp.name + '_error').hasAttribute('hidden')) {
+					document.getElementById(inp.name + '_error').setAttribute('hidden', 'hidden');
+				}	
+			}
+		}
+		return emptyFlag;
+	}
+	
+	_isEmptyField (value) { // проверка на пустоту одного конкретного поля
+		return value === '';
 	}
 
 	_timeLimitCheck () {
